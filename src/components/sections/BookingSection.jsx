@@ -205,8 +205,8 @@ export default function BookingSection({ onBookingSuccess }) {
             </div>
           </div>
 
-          {/* Quick Booking Form */}
-          <div id="booking-form" className="rounded-2xl bg-[#0d0b0f] border border-white/10 p-6 md:p-8 shadow-xl spotlight-card">
+          {/* Desktop Only: Quick Booking Form (Preserved for desktop view) */}
+          <div id="booking-form" className="hidden lg:block rounded-2xl bg-[#0d0b0f] border border-white/10 p-6 md:p-8 shadow-xl spotlight-card">
             <div className="text-title-lg font-bold text-text-primary mb-1">Book Your Reel Shoot</div>
             <p className="text-body-sm text-text-muted mb-6">Lock your slot in seconds.</p>
 
@@ -403,6 +403,17 @@ export default function BookingSection({ onBookingSuccess }) {
               </button>
             </form>
             )}
+          </div>
+
+          {/* Mobile View Only: Replaces the duplicate booking form with a single attractive CTA button */}
+          <div className="block lg:hidden w-full pt-2">
+            <Link
+              href="/contact"
+              className="lg:hidden btn-glow-orange btn-shine-sweep w-full py-4 px-8 rounded-full font-bold text-white text-base tracking-wide flex items-center justify-center gap-2 transition-all shadow-lg min-h-[52px]"
+              aria-label="Book Your Shoot"
+            >
+              <span>Book Your Shoot →</span>
+            </Link>
           </div>
 
         </div>

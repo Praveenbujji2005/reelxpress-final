@@ -346,6 +346,11 @@ export default function PricingSection() {
 
   const handleBooking = (e, shootType) => {
     e.preventDefault();
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      const targetUrl = shootType ? `/contact?service=${encodeURIComponent(shootType)}` : '/contact';
+      window.location.href = targetUrl;
+      return;
+    }
     if (shootType) {
       window.dispatchEvent(
         new CustomEvent('select-shoot-type', { detail: { type: shootType } })
@@ -362,7 +367,7 @@ export default function PricingSection() {
         bookingEl.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      window.location.href = '#booking';
+      window.location.href = '/contact';
     }
   };
 

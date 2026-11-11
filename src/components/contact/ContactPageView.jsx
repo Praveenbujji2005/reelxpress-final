@@ -25,6 +25,17 @@ export default function ContactPageView() {
   const [serverError, setServerError] = useState('');
   const [referenceId, setReferenceId] = useState('');
 
+  // Read optional service query param (e.g. from mobile pricing CTAs)
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const serviceParam = params.get('service');
+      if (serviceParam) {
+        setFormData((prev) => ({ ...prev, subject: serviceParam }));
+      }
+    }
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -440,6 +451,15 @@ export default function ContactPageView() {
                       <option value="Brand Launch / Corporate Event">Brand Launch / Corporate Event</option>
                       <option value="Influencer / Creator Collab">Creator Partnership / Collaboration</option>
                       <option value="Custom Instant Package">Custom Instant Video Package</option>
+                      {formData.subject && ![
+                        'General Inquiry',
+                        'Wedding / Reception Shoot',
+                        'Brand Launch / Corporate Event',
+                        'Influencer / Creator Collab',
+                        'Custom Instant Package'
+                      ].includes(formData.subject) && (
+                        <option value={formData.subject}>{formData.subject}</option>
+                      )}
                     </select>
                   </div>
 

@@ -120,6 +120,11 @@ export default function Hero({ onOpenModal, onShowToast }) {
         <a
           href="#booking"
           onClick={(e) => {
+            if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+              e.preventDefault();
+              window.location.href = '/contact';
+              return;
+            }
             e.preventDefault();
             const bookingEl = document.getElementById('booking') || document.getElementById('booking-form');
             if (bookingEl) {
@@ -129,7 +134,7 @@ export default function Hero({ onOpenModal, onShowToast }) {
                 bookingEl.scrollIntoView({ behavior: 'smooth' });
               }
             } else {
-              window.location.href = '/#booking';
+              window.location.href = '/contact';
             }
           }}
           className="btn-glow-orange btn-shine-sweep group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-extrabold text-sm sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[50px]"
