@@ -9,11 +9,11 @@ export default function Footer() {
         
         {/* =====================================================================
             DEDICATED CONTACT US CTA BANNER
+            - Visible on desktop/tablet (hidden on mobile orientation as requested)
             - Glowing orange gradient button
             - Navigates directly to /contact
-            - 100% responsive and accessible on mobile & desktop
            ===================================================================== */}
-        <div className="w-full rounded-3xl bg-[#110e13] border border-white/10 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+        <div className="hidden md:flex w-full rounded-3xl bg-[#110e13] border border-white/10 p-6 sm:p-8 md:p-10 flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
           {/* Subtle Orange Glow Ambient Corner */}
           <div
             className="absolute -top-10 -right-10 w-72 h-72 rounded-full bg-gradient-to-br from-[#FF5E1E]/20 via-transparent to-transparent blur-3xl pointer-events-none"
