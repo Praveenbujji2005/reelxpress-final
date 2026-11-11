@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { OCCASIONS_LIST, SHOOT_TYPE_CATEGORIES } from '@/lib/data';
+import ReelXpressWordmark from '@/components/ui/ReelXpressWordmark';
 
 // Compact modal popup for quick booking / contact form triggered from Navbar & mobile navigation
 export default function QuickContactModal({ isOpen, onClose }) {
@@ -156,11 +157,7 @@ export default function QuickContactModal({ isOpen, onClose }) {
               </div>
               <h3 id="contact-modal-title" className="text-xl sm:text-2xl font-black text-white tracking-tight leading-snug">
                 <span>Book </span>
-                <img
-                  src="/brand/reelxpress-wordmark-white-hd.png"
-                  alt="reelXpress"
-                  className="inline-block h-[0.92em] sm:h-[1.0em] w-auto object-contain align-middle mx-1 drop-shadow-[0_0_12px_rgba(255,109,41,0.4)]"
-                />
+                <ReelXpressWordmark className="inline-block h-[0.92em] sm:h-[1.0em] w-auto align-middle mx-1 drop-shadow-[0_0_12px_rgba(255,94,30,0.4)]" />
               </h3>
               <p className="text-xs text-text-muted mt-1 leading-relaxed">
                 Shoot • Edit • Deliver Reels in Minutes. Saved securely to Firestore.

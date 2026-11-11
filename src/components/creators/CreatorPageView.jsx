@@ -8,6 +8,7 @@ import Footer from '@/components/layout/Footer';
 import BrandWatermark from '@/components/sections/BrandWatermark';
 import ToastNotification from '@/components/ui/ToastNotification';
 import CreatorSuccessModal from '@/components/creators/CreatorSuccessModal';
+import ReelXpressWordmark from '@/components/ui/ReelXpressWordmark';
 import {
   CREATOR_HERO,
   CREATOR_PERKS,
@@ -258,11 +259,7 @@ export default function CreatorPageView() {
             <h2 className="text-display-sm sm:text-display-md font-display-md text-white font-extrabold mb-4">
               <span>Why Join </span>
               <span className="inline-flex items-center align-middle whitespace-nowrap">
-                <img
-                  src="/brand/reelxpress-wordmark-white-hd.png"
-                  alt="ReelXpress"
-                  className="inline-block h-[0.92em] sm:h-[1.0em] w-auto object-contain drop-shadow-[0_0_14px_rgba(255,109,41,0.4)]"
-                />
+                <ReelXpressWordmark className="inline-block h-[0.92em] sm:h-[1.0em] w-auto align-middle drop-shadow-[0_0_14px_rgba(255,94,30,0.4)]" />
                 <span>?</span>
               </span>
             </h2>

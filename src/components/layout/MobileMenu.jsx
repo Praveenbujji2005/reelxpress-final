@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { NAV_LINKS } from '@/lib/data';
 import { SITE_CONFIG } from '@/config/site';
+import ReelXpressWordmark from '@/components/ui/ReelXpressWordmark';
 
 /**
  * Slide-down mobile navigation drawer with backdrop, scroll-lock and high-contrast touch targets
@@ -101,13 +102,7 @@ export default function MobileMenu({ isOpen, onClose }) {
               className="flex items-center min-h-[44px]"
               aria-label={`${SITE_CONFIG.name} Home`}
             >
-              <img
-                src="/brand/reelxpress-nav-logo.png"
-                alt={`${SITE_CONFIG.name} Logo`}
-                width={120}
-                height={28}
-                className="h-7 w-auto object-contain drop-shadow-[0_0_12px_rgba(255,109,41,0.4)]"
-              />
+              <ReelXpressWordmark className="h-7 w-auto align-middle drop-shadow-[0_0_12px_rgba(255,94,30,0.4)]" />
             </Link>
 
             {/* 48x48px touch target close button */}

@@ -1,6 +1,7 @@
 'use client';
 
 import { HOW_IT_WORKS_STEPS } from '@/lib/data';
+import ReelXpressWordmark from '@/components/ui/ReelXpressWordmark';
 
 // 5-step frictionless workflow from booking to instant delivery with animated energy line
 export default function HowItWorksSection() {
@@ -12,11 +13,7 @@ export default function HowItWorksSection() {
         </span>
         <h2 className="text-2xl sm:text-3xl md:text-headline-lg font-headline-lg text-text-primary">
           <span>How </span>
-          <img
-            src="/brand/reelxpress-wordmark-white-hd.png"
-            alt="ReelXpress"
-            className="inline-block h-[0.92em] sm:h-[1.0em] w-auto object-contain align-middle mx-1.5 drop-shadow-[0_0_14px_rgba(255,109,41,0.4)]"
-          />
+          <ReelXpressWordmark className="inline-block h-[0.92em] sm:h-[1.0em] w-auto align-middle mx-1.5 drop-shadow-[0_0_14px_rgba(255,94,30,0.4)]" />
           <span> Works</span>
         </h2>
         <p className="text-body-md font-body-md text-text-muted mt-3">

@@ -119,6 +119,7 @@ export default function FullScreenLoader() {
           '/brand/icon-gold.png',
           '/brand/reelxpress-x-logo.png',
           '/brand/reelxpress-wordmark-white-hd.png',
+          '/brand/reelxpress-wordmark.svg',
         ];
 
         await Promise.allSettled(

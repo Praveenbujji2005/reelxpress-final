@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { FOOTER_NAV_LINKS, FOOTER_LEGAL_LINKS } from '@/lib/data';
+import ReelXpressWordmark from '@/components/ui/ReelXpressWordmark';
 
 // Shared website footer with branding, internal navigation, legal links, and copyright
 export default function Footer() {
@@ -49,11 +50,7 @@ export default function Footer() {
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
           <div className="max-w-md">
             <Link href="/reelxpress" className="inline-flex items-center gap-3 mb-4 group" aria-label="reelXpress">
-              <img
-                src="/brand/reelxpress-wordmark-white-hd.png"
-                alt="reelXpress"
-                className="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_0_16px_rgba(255,94,30,0.4)] transition-transform duration-300 group-hover:scale-105"
-              />
+              <ReelXpressWordmark className="h-8 sm:h-9 w-auto align-middle drop-shadow-[0_0_16px_rgba(255,94,30,0.4)] transition-transform duration-300 group-hover:scale-105" />
             </Link>
             <p className="text-body-sm font-body-sm text-text-muted leading-relaxed mb-6">
               The intersection of speed and cinema. On-demand video production for the modern era.

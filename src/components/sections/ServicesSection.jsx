@@ -1,6 +1,7 @@
 'use client';
 
 import { WHY_REELXPRESS_DATA } from '@/lib/data';
+import ReelXpressWordmark from '@/components/ui/ReelXpressWordmark';
 
 // "Why ReelXpress?" Section: The high-speed edge for your vertical storytelling
 export default function ServicesSection() {
@@ -13,11 +14,7 @@ export default function ServicesSection() {
         <h2 className="text-2xl sm:text-3xl md:text-headline-lg font-headline-lg text-text-primary">
           <span>Why </span>
           <span className="inline-flex items-center align-middle whitespace-nowrap">
-            <img
-              src="/brand/reelxpress-wordmark-white-hd.png"
-              alt="ReelXpress"
-              className="inline-block h-[0.92em] sm:h-[1.0em] w-auto object-contain drop-shadow-[0_0_14px_rgba(255,109,41,0.4)]"
-            />
+            <ReelXpressWordmark className="inline-block h-[0.92em] sm:h-[1.0em] w-auto align-middle drop-shadow-[0_0_14px_rgba(255,94,30,0.4)]" />
             <span>?</span>
           </span>
         </h2>

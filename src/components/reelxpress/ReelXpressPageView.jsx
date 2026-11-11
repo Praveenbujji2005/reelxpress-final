@@ -8,6 +8,7 @@ import Footer from '@/components/layout/Footer';
 import StatCard from '@/components/hero/StatCard';
 import { WHY_REELXPRESS_DATA } from '@/lib/data';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import ReelXpressWordmark from '@/components/ui/ReelXpressWordmark';
 
 export default function ReelXpressPageView() {
   useScrollReveal();
@@ -78,11 +79,7 @@ export default function ReelXpressPageView() {
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.1] flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             <span>Why</span>
             <span className="inline-flex items-center align-middle">
-              <img
-                src="/brand/reelxpress-wordmark-white-hd.png"
-                alt="reelXpress"
-                className="h-10 sm:h-12 md:h-16 lg:h-20 w-auto object-contain drop-shadow-[0_0_24px_rgba(255,109,41,0.5)]"
-              />
+              <ReelXpressWordmark className="h-10 sm:h-12 md:h-16 lg:h-20 w-auto align-middle drop-shadow-[0_0_24px_rgba(255,94,30,0.5)]" />
             </span>
             <span>?</span>
           </h1>
