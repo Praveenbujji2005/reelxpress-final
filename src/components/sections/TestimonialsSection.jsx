@@ -193,9 +193,11 @@ export default function TestimonialsSection() {
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
-              <div className="w-full transition-all duration-300">
+              <div
+                key={`mobile-${currentMobileReview.id || mobileIndex}`}
+                className="w-full fade-in-content"
+              >
                 <TestimonialCard
-                  key={`mobile-${currentMobileReview.id || mobileIndex}`}
                   name={currentMobileReview.name}
                   role={currentMobileReview.role}
                   quote={currentMobileReview.quote || currentMobileReview.review}
