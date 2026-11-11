@@ -101,13 +101,13 @@ export default function StatCard({ value, label, hasStar = false }) {
   return (
     <div
       ref={cardRef}
-      className="spotlight-card rounded-2xl bg-[#161217] border border-border-specular p-4 sm:p-5 md:p-6 text-center shadow-[0_15px_40px_rgba(0,0,0,0.6)] hover:border-border-amber transition-all duration-300 group hover:-translate-y-1"
+      className="spotlight-card rounded-2xl bg-[#110e13] border border-white/10 p-4 sm:p-5 md:p-6 text-center shadow-[0_15px_40px_rgba(0,0,0,0.6)] hover:border-border-amber transition-all duration-300 group hover:-translate-y-1"
     >
       <div className="flex items-center justify-center gap-1.5 text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-1 tabular-nums">
         <span>{displayValue}</span>
         {hasStar && (
           <span
-            className="material-symbols-outlined text-primary-container text-xl sm:text-2xl drop-shadow-[0_0_8px_rgba(255,109,41,0.5)]"
+            className="material-symbols-outlined text-primary-container text-xl sm:text-2xl drop-shadow-[0_0_8px_rgba(255,94,30,0.65)]"
             data-weight="fill"
             aria-hidden="true"
           >

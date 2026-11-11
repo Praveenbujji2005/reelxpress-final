@@ -234,7 +234,7 @@ function PricingCardSkeleton({ count = 4, colsClass = 'grid-cols-1 sm:grid-cols-
       {Array.from({ length: count }).map((_, idx) => (
         <div
           key={`pricing-skel-${idx}`}
-          className="relative rounded-[24px] sm:rounded-[28px] bg-[#140f13] p-5 sm:p-6 flex flex-col justify-between border border-white/5 min-h-[530px] ambient-skeleton shadow-lg"
+          className="relative rounded-[24px] sm:rounded-[28px] bg-[#110e13] p-5 sm:p-6 flex flex-col justify-between border border-white/5 min-h-[530px] ambient-skeleton shadow-lg"
         >
           <div>
             <div className="w-20 h-3.5 rounded-full bg-white/10 mb-2.5 ambient-pulse" />
@@ -376,7 +376,7 @@ export default function PricingSection() {
         <div
           role="tablist"
           aria-label="Pricing Categories"
-          className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-[#181216] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] gap-0.5 sm:gap-1 max-w-full select-none shrink-0"
+          className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-[#110e13] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.7)] gap-0.5 sm:gap-1 max-w-full select-none shrink-0"
         >
           {TABS.map((tab, idx) => {
             const isActive = activeTab === tab.id;
@@ -391,9 +391,9 @@ export default function PricingSection() {
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => setActiveTab(tab.id)}
                 onKeyDown={(e) => handleTabKeyDown(e, idx)}
-                className={`px-2.5 xs:px-3 sm:px-6 md:px-7 py-1.5 sm:py-2.5 md:py-3 rounded-full text-[11px] sm:text-sm md:text-[15px] font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6d29] ${
+                className={`px-2.5 xs:px-3 sm:px-6 md:px-7 py-1.5 sm:py-2.5 md:py-3 rounded-full text-[11px] sm:text-sm md:text-[15px] font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container ${
                   isActive
-                    ? 'bg-[#ff6d29] text-white shadow-[0_4px_16px_rgba(255,109,41,0.45)]'
+                    ? 'bg-gradient-to-r from-[#FF5E1E] to-[#FF7A00] text-white shadow-[0_4px_18px_rgba(255,94,30,0.55)]'
                     : 'text-[#9e969d] hover:text-white bg-transparent'
                 }`}
               >
@@ -490,7 +490,7 @@ export default function PricingSection() {
           {instantPlans.map((pkg, idx) => (
             <div
               key={`instant-plan-${pkg.id || idx}-${idx}`}
-              className={`relative rounded-[24px] sm:rounded-[28px] bg-[#140f13] p-5 sm:p-6 min-h-[530px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
+              className={`relative rounded-[24px] sm:rounded-[28px] bg-[#110e13] p-5 sm:p-6 min-h-[530px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
                 pkg.isPopular
                   ? 'border border-[#ff6d29]/70 shadow-[0_12px_40px_rgba(255,109,41,0.22)]'
                   : 'border border-white/10 hover:border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
@@ -553,10 +553,10 @@ export default function PricingSection() {
               <a
                 href="#booking"
                 onClick={(e) => handleBooking(e, pkg.shootType)}
-                className={`group w-full mt-8 py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6d29] ${
+                className={`group w-full mt-8 py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-none ${
                   pkg.isPopular
-                    ? 'bg-[#ff6d29] hover:bg-[#ff5500] text-white shadow-[0_8px_25px_rgba(255,109,41,0.4)]'
-                    : 'bg-white/10 hover:bg-white/15 border border-white/15 text-white'
+                    ? 'btn-glow-orange btn-shine-sweep text-white'
+                    : 'btn-glow-dark text-white'
                 }`}
               >
                 <span>{pkg.ctaText}</span>
@@ -589,7 +589,7 @@ export default function PricingSection() {
           {businessPlans.map((pkg, idx) => (
             <div
               key={`business-plan-${pkg.id || idx}-${idx}`}
-              className={`relative rounded-[24px] sm:rounded-[28px] bg-[#140f13] p-6 sm:p-7 min-h-[530px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
+              className={`relative rounded-[24px] sm:rounded-[28px] bg-[#110e13] p-6 sm:p-7 min-h-[530px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
                 pkg.isPopular
                   ? 'border border-[#ff6d29]/70 shadow-[0_12px_40px_rgba(255,109,41,0.22)]'
                   : 'border border-white/10 hover:border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
@@ -652,10 +652,10 @@ export default function PricingSection() {
               <a
                 href="#booking"
                 onClick={(e) => handleBooking(e, pkg.shootType)}
-                className={`group w-full mt-7 py-3 px-6 rounded-full font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6d29] ${
+                className={`group w-full mt-7 py-3 px-6 rounded-full font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-none ${
                   pkg.btnVariant === 'white'
-                    ? 'bg-white hover:bg-white/90 text-black shadow-lg font-extrabold'
-                    : 'bg-[#ff6d29] hover:bg-[#ff5500] text-white shadow-[0_8px_25px_rgba(255,109,41,0.4)]'
+                    ? 'btn-glow-dark text-white'
+                    : 'btn-glow-orange btn-shine-sweep text-white'
                 }`}
               >
                 <span>{pkg.ctaText}</span>
@@ -688,7 +688,7 @@ export default function PricingSection() {
           {weddingPlans.map((pkg, idx) => (
             <div
               key={`wedding-plan-${pkg.id || idx}-${idx}`}
-              className={`relative rounded-[24px] sm:rounded-[28px] bg-[#140f13] p-5 sm:p-6 min-h-[530px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
+              className={`relative rounded-[24px] sm:rounded-[28px] bg-[#110e13] p-5 sm:p-6 min-h-[530px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
                 pkg.isPopular
                   ? 'border border-[#ff6d29]/70 shadow-[0_12px_40px_rgba(255,109,41,0.22)]'
                   : 'border border-white/10 hover:border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
@@ -751,10 +751,10 @@ export default function PricingSection() {
               <a
                 href="#booking"
                 onClick={(e) => handleBooking(e, pkg.shootType)}
-                className={`group w-full mt-8 py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6d29] ${
+                className={`group w-full mt-8 py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-none ${
                   pkg.isPopular
-                    ? 'bg-[#ff6d29] hover:bg-[#ff5500] text-white shadow-[0_8px_25px_rgba(255,109,41,0.4)]'
-                    : 'bg-white/10 hover:bg-white/15 border border-white/15 text-white'
+                    ? 'btn-glow-orange btn-shine-sweep text-white'
+                    : 'btn-glow-dark text-white'
                 }`}
               >
                 <span>{pkg.ctaText}</span>

@@ -119,13 +119,13 @@ export default function FaqSection() {
             Explore our FAQ section to find clear and concise answers to common queries about our services, processes, and more.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
             <a
               href="#booking"
-              className="inline-flex items-center justify-between sm:justify-center gap-3 px-6 py-3.5 rounded-full bg-surface-container-high hover:bg-surface-bright text-white font-semibold text-sm border border-border-specular hover:border-border-amber transition-all duration-200 shadow-md hover:shadow-[0_0_20px_rgba(255,109,41,0.25)] group cursor-pointer"
+              className="btn-glow-orange btn-shine-sweep inline-flex items-center justify-between sm:justify-center gap-3 px-7 py-3.5 rounded-full font-bold text-white text-sm transition-all shadow-md group cursor-pointer"
             >
               <span>Book your event now</span>
-              <span className="w-6 h-6 rounded-full bg-white/10 group-hover:bg-primary-container text-white flex items-center justify-center transition-colors shrink-0">
+              <span className="w-6 h-6 rounded-full bg-white/20 text-white flex items-center justify-center transition-colors shrink-0">
                 <svg
                   className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform"
                   fill="none"
@@ -141,7 +141,7 @@ export default function FaqSection() {
 
             <Link
               href="/creators"
-              className="inline-flex items-center justify-center px-6 py-3.5 rounded-full bg-transparent hover:bg-white/5 text-text-primary font-semibold text-sm border border-border-specular hover:border-white/30 transition-all duration-200 cursor-pointer text-center"
+              className="btn-glow-dark inline-flex items-center justify-center px-7 py-3.5 rounded-full font-bold text-white text-sm transition-all cursor-pointer text-center"
             >
               Become a creator
             </Link>
@@ -157,7 +157,7 @@ export default function FaqSection() {
               {[1, 2, 3, 4, 5].map((n) => (
                 <div
                   key={n}
-                  className="rounded-xl p-3.5 sm:p-4 md:p-5 bg-[#181216] border border-white/5 flex items-center justify-between ambient-skeleton shadow-sm min-h-[58px]"
+                  className="rounded-xl p-3.5 sm:p-4 md:p-5 bg-[#110e13] border border-white/5 flex items-center justify-between ambient-skeleton shadow-sm min-h-[58px]"
                 >
                   <div className="w-3/4 h-5 rounded-md bg-white/10 ambient-pulse" />
                   <div className="w-7 h-7 rounded-full bg-white/10 shrink-0 ambient-pulse" />

@@ -127,7 +127,7 @@ export default function QuickContactModal({ isOpen, onClose }) {
       onClick={handleResetAndClose}
     >
       <div
-        className="relative w-full max-w-[440px] rounded-3xl bg-[#141115]/95 border border-[#ff6d29]/40 p-5 sm:p-7 shadow-[0_25px_80px_rgba(255,109,41,0.3),0_10px_30px_rgba(0,0,0,0.8)] backdrop-blur-2xl text-left text-text-primary overflow-hidden transition-all duration-300"
+        className="relative w-full max-w-[440px] rounded-3xl bg-[#110e13]/98 border border-[#FF5E1E]/40 p-5 sm:p-7 shadow-[0_25px_80px_rgba(255,94,30,0.3),0_10px_30px_rgba(0,0,0,0.8)] backdrop-blur-2xl text-left text-text-primary overflow-hidden transition-all duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Ambient Top Glow */}
@@ -289,7 +289,7 @@ export default function QuickContactModal({ isOpen, onClose }) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full mt-3 py-3 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-[0_0_20px_rgba(255,109,41,0.4)] hover:shadow-[0_0_30px_rgba(255,109,41,0.7)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 touch-manipulation"
+                className="btn-glow-orange btn-shine-sweep w-full mt-3 py-3.5 rounded-full text-white font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 touch-manipulation min-h-[46px]"
               >
                 {isSubmitting ? (
                   <>

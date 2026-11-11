@@ -13,7 +13,7 @@ export const NAV_LINKS = [
   { label: "ReelXpress", href: "/reelxpress" },
   { label: "Pricing", href: "/#pricing" },
   { label: "Real work", href: "/#showcase" },
-  { label: "Contact", href: "/#booking" },
+  { label: "Contact", href: "/contact" },
   { label: "Testimonials", href: "/#testimonials" },
   { label: "Partner", href: "/creators" },
   { label: "Blog", href: "/#blog" },
@@ -28,7 +28,7 @@ export const FOOTER_NAV_LINKS = [
   { label: "Testimonials", href: "/#testimonials" },
   { label: "Blog", href: "/#blog" },
   { label: "Partner", href: "/creators" },
-  { label: "Contact Us", href: "/#booking" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 export const FOOTER_LEGAL_LINKS = [

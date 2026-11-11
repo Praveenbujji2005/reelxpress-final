@@ -17,7 +17,7 @@ import { getTestimonials, getCachedTestimonials } from '@/lib/cmsServices';
 // SKELETON PLACEHOLDER FOR TESTIMONIAL CARDS
 function TestimonialCardSkeleton() {
   return (
-    <div className="w-[260px] xs:w-[280px] sm:w-[304px] md:w-[323px] h-[200px] rounded-2xl p-4 sm:p-5 md:p-6 bg-[#161217] border border-white/10 flex flex-col justify-between ambient-skeleton shrink-0 shadow-lg">
+    <div className="w-[260px] xs:w-[280px] sm:w-[304px] md:w-[323px] h-[200px] rounded-2xl p-4 sm:p-5 md:p-6 bg-[#110e13] border border-white/10 flex flex-col justify-between ambient-skeleton shrink-0 shadow-lg">
       <div>
         <div className="flex gap-1.5 mb-3">
           {[1, 2, 3, 4, 5].map((s) => (
@@ -212,7 +212,7 @@ export default function TestimonialsSection() {
               <button
                 onClick={prevMobile}
                 aria-label="Previous testimonial"
-                className="w-10 h-10 rounded-full bg-[#181216] border border-white/15 text-white flex items-center justify-center hover:bg-primary-container hover:border-primary-container active:scale-95 transition-all shadow-md cursor-pointer touch-manipulation"
+                className="w-10 h-10 rounded-full bg-[#110e13] border border-white/15 text-white flex items-center justify-center hover:bg-primary-container hover:border-primary-container active:scale-95 transition-all shadow-md cursor-pointer touch-manipulation"
               >
                 <span className="material-symbols-outlined text-lg">arrow_back</span>
               </button>
@@ -240,7 +240,7 @@ export default function TestimonialsSection() {
               <button
                 onClick={nextMobile}
                 aria-label="Next testimonial"
-                className="w-10 h-10 rounded-full bg-[#181216] border border-white/15 text-white flex items-center justify-center hover:bg-primary-container hover:border-primary-container active:scale-95 transition-all shadow-md cursor-pointer touch-manipulation"
+                className="w-10 h-10 rounded-full bg-[#110e13] border border-white/15 text-white flex items-center justify-center hover:bg-primary-container hover:border-primary-container active:scale-95 transition-all shadow-md cursor-pointer touch-manipulation"
               >
                 <span className="material-symbols-outlined text-lg">arrow_forward</span>
               </button>

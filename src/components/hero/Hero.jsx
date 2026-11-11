@@ -47,42 +47,25 @@ export default function Hero({ onOpenModal, onShowToast }) {
       </h1>
 
       {/* Sub-line */}
-      <p className="reveal-on-scroll text-sm sm:text-lg md:text-xl font-normal text-text-muted/90 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed delay-100">
+      <p className="reveal-on-scroll text-sm sm:text-lg md:text-xl font-normal text-text-muted/90 max-w-2xl mx-auto mb-10 sm:mb-14 leading-relaxed delay-100">
         You live the moment. ReelXpress captures it — instantly. Shot on latest iPhone gear with on-spot live editing.
       </p>
 
-      {/* Primary CTAs: BOOK NOW & BECOME A PARTNER */}
-      <div className="reveal-on-scroll flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12 sm:mb-14 w-full z-20 delay-150">
-        <a
-          href="#booking"
-          className="btn-shine-sweep btn-ripple w-full sm:w-auto inline-flex items-center justify-center px-9 sm:px-11 py-4 sm:py-4.5 rounded-2xl bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white font-extrabold text-sm sm:text-base tracking-wider uppercase shadow-[0_0_30px_rgba(255,109,41,0.55)] hover:shadow-[0_0_45px_rgba(255,109,41,0.85)] hover:scale-[1.03] active:scale-95 transition-all duration-200 cursor-pointer"
-        >
-          <span>BOOK NOW</span>
-        </a>
-        <Link
-          href="/creators"
-          className="w-full sm:w-auto inline-flex items-center justify-center px-9 sm:px-11 py-4 sm:py-4.5 rounded-2xl bg-[#0c0a0c] border-2 border-primary-container/80 text-primary-container hover:bg-primary-container/10 hover:border-primary-container font-extrabold text-sm sm:text-base tracking-wider uppercase shadow-md hover:scale-[1.03] active:scale-95 transition-all duration-200 cursor-pointer"
-        >
-          <span>BECOME A PARTNER</span>
-        </Link>
-      </div>
-
       {/* =========================================================================
           KEY CREATIVE SHOWCASE ("THE REAL WORK")
-          - Enclosing box/card background removed as requested
           - Video carousel sits openly and seamlessly on the hero section background
           - Preserves #showcase anchor for navbar navigation
          ========================================================================= */}
       <div id="showcase" className="reveal-scale-on-scroll relative w-full max-w-7xl mx-auto mb-10 sm:mb-14 overflow-visible scroll-mt-20 md:scroll-mt-28">
-        {/* Ambient Warm Radial Glow Behind Showcase (Toned Down) */}
+        {/* Ambient Warm Radial Glow Behind Showcase */}
         <div
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[620px] md:w-[920px] h-[340px] sm:h-[480px] rounded-full bg-gradient-to-br from-[#ff6d29]/10 via-[#5c1d00]/05 to-transparent blur-3xl pointer-events-none -z-10"
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[620px] md:w-[920px] h-[340px] sm:h-[480px] rounded-full bg-gradient-to-br from-[#FF5E1E]/12 via-[#5c1d00]/05 to-transparent blur-3xl pointer-events-none -z-10"
           aria-hidden="true"
         />
 
         {/* Section Header */}
         <div className="relative text-center max-w-3xl mx-auto mb-6 md:mb-10 z-20">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-glass-tinted border border-border-amber text-primary text-label-sm font-label-sm uppercase tracking-widest mb-3 shadow-[0_0_15px_rgba(255,109,41,0.15)]">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-glass-tinted border border-border-amber text-primary text-label-sm font-label-sm uppercase tracking-widest mb-3 shadow-[0_0_15px_rgba(255,94,30,0.2)]">
             <span className="w-1.5 h-1.5 rounded-full bg-primary-container rec-indicator" />
             <span>LIVE FEED</span>
           </div>
@@ -103,7 +86,7 @@ export default function Hero({ onOpenModal, onShowToast }) {
             href="https://www.instagram.com/reelxpress___"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-shine-sweep btn-ripple inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-primary-container text-text-primary font-bold text-title-md font-title-md shadow-[0_0_30px_rgba(255,109,41,0.55)] hover:shadow-[0_0_45px_rgba(255,109,41,0.85)] hover:scale-[1.03] active:scale-95 transition-all duration-150 group cursor-pointer"
+            className="btn-glow-orange btn-shine-sweep inline-flex items-center justify-center gap-2 px-8 py-3.5 sm:py-4 rounded-full text-white font-bold text-title-md font-title-md transition-all group cursor-pointer"
           >
             <span>View More on Instagram</span>
             <span className="material-symbols-outlined text-lg transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
@@ -117,12 +100,58 @@ export default function Hero({ onOpenModal, onShowToast }) {
           STATS ROW (45,000+ Reels / 5,000+ Bookings / 4.8 Rating)
           Clean social proof foundation directly beneath the showcase deck
          ========================================================================= */}
-      <div className="reveal-on-scroll relative z-30 w-full max-w-4xl mx-auto mb-8 sm:mb-12 px-4">
+      <div className="reveal-on-scroll relative z-30 w-full max-w-4xl mx-auto mb-6 sm:mb-8 px-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           <StatCard value="45,000+" label="Reels delivered" />
           <StatCard value="5,000+" label="Bookings done" />
           <StatCard value="4.8" label="Average Rating" hasStar={true} />
         </div>
+      </div>
+
+      {/* =========================================================================
+          REPOSITIONED PRIMARY CTAs (Immediately following the Average Rating section)
+          - Book Now: High-contrast glowing orange gradient with subtle outer glow
+          - Become a Creator: Sleek dark luxury button with glowing orange border
+          - Responsive: Stacked on mobile with full-touch targets, side-by-side on desktop
+          - Smooth scroll to #booking and link to /creators
+         ========================================================================= */}
+      <div className="reveal-on-scroll relative z-30 w-full max-w-xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-6 mt-2 sm:mt-4 mb-4 sm:mb-8 px-4">
+        {/* Book Now Button */}
+        <a
+          href="#booking"
+          onClick={(e) => {
+            e.preventDefault();
+            const bookingEl = document.getElementById('booking') || document.getElementById('booking-form');
+            if (bookingEl) {
+              if (typeof window !== 'undefined' && window.lenis) {
+                window.lenis.scrollTo(bookingEl, { offset: -60, duration: 1.2 });
+              } else {
+                bookingEl.scrollIntoView({ behavior: 'smooth' });
+              }
+            } else {
+              window.location.href = '/#booking';
+            }
+          }}
+          className="btn-glow-orange btn-shine-sweep group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-extrabold text-sm sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[50px]"
+          aria-label="Book reelXpress Now"
+        >
+          <span>BOOK NOW</span>
+          <span className="material-symbols-outlined text-lg sm:text-xl transition-transform duration-200 group-hover:translate-x-1">
+            arrow_forward
+          </span>
+        </a>
+
+        {/* Become a Creator Button */}
+        <Link
+          href="/creators"
+          className="btn-glow-dark group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-extrabold text-sm sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[50px]"
+          aria-label="Become a Creator"
+        >
+          <span>BECOME A CREATOR</span>
+          <span className="material-symbols-outlined text-lg sm:text-xl text-primary transition-transform duration-200 group-hover:translate-x-1">
+            north_east
+          </span>
+        </Link>
       </div>
     </section>
   );

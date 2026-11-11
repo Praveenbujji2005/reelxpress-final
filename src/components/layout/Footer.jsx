@@ -4,16 +4,55 @@ import { FOOTER_NAV_LINKS, FOOTER_LEGAL_LINKS } from '@/lib/data';
 // Shared website footer with branding, internal navigation, legal links, and copyright
 export default function Footer() {
   return (
-    <footer className="bg-surface-deep text-primary full-width border-t border-border-specular">
-      <div className="w-full px-6 md:px-margin max-w-[1440px] mx-auto py-space-2xl flex flex-col justify-between gap-space-xl">
+    <footer className="bg-[#080808] text-primary full-width border-t border-white/10 relative z-20">
+      <div className="w-full px-4 sm:px-6 md:px-margin max-w-[1440px] mx-auto py-12 sm:py-16 md:py-space-2xl flex flex-col justify-between gap-10 sm:gap-14">
         
+        {/* =====================================================================
+            DEDICATED CONTACT US CTA BANNER
+            - Glowing orange gradient button
+            - Navigates directly to /contact
+            - 100% responsive and accessible on mobile & desktop
+           ===================================================================== */}
+        <div className="w-full rounded-3xl bg-[#110e13] border border-white/10 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+          {/* Subtle Orange Glow Ambient Corner */}
+          <div
+            className="absolute -top-10 -right-10 w-72 h-72 rounded-full bg-gradient-to-br from-[#FF5E1E]/20 via-transparent to-transparent blur-3xl pointer-events-none"
+            aria-hidden="true"
+          />
+
+          <div className="text-center md:text-left max-w-xl z-10">
+            <span className="text-primary font-bold text-xs uppercase tracking-widest block mb-2">
+              HAVE QUESTIONS OR A CUSTOM EVENT?
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
+              Let&apos;s Connect with Our Team
+            </h3>
+            <p className="text-sm sm:text-base text-text-muted leading-relaxed">
+              From wedding coverage to high-velocity brand reels, our Bengaluru production desk is ready to assist you.
+            </p>
+          </div>
+
+          <div className="z-10 shrink-0 w-full sm:w-auto flex justify-center">
+            <Link
+              href="/contact"
+              className="btn-glow-orange btn-shine-sweep group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-bold text-white text-base tracking-wide uppercase transition-all min-h-[48px] w-full sm:w-auto"
+              aria-label="Contact Us Page"
+            >
+              <span>CONTACT US</span>
+              <span className="material-symbols-outlined text-lg sm:text-xl transition-transform duration-200 group-hover:translate-x-1">
+                arrow_forward
+              </span>
+            </Link>
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
           <div className="max-w-md">
             <Link href="/reelxpress" className="inline-flex items-center gap-3 mb-4 group" aria-label="reelXpress">
               <img
                 src="/brand/reelxpress-wordmark-white-hd.png"
                 alt="reelXpress"
-                className="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_0_16px_rgba(255,109,41,0.4)] transition-transform duration-300 group-hover:scale-105"
+                className="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_0_16px_rgba(255,94,30,0.4)] transition-transform duration-300 group-hover:scale-105"
               />
             </Link>
             <p className="text-body-sm font-body-sm text-text-muted leading-relaxed mb-6">
@@ -24,14 +63,21 @@ export default function Footer() {
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href="/#booking"
-                className="btn-shine-sweep btn-ripple inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary-container text-text-primary font-bold text-label-md shadow-[0_0_20px_rgba(255,109,41,0.4)] hover:scale-[1.03] active:scale-95 transition-all cursor-pointer"
+                className="btn-glow-orange btn-shine-sweep inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-white font-bold text-xs sm:text-sm transition-all cursor-pointer shadow-md"
               >
                 <span>Book a Creator</span>
                 <span className="material-symbols-outlined text-sm">bolt</span>
               </Link>
               <Link
+                href="/contact"
+                className="btn-glow-dark inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-white font-semibold text-xs sm:text-sm hover:border-primary transition-all cursor-pointer"
+              >
+                <span>Contact Us</span>
+                <span className="material-symbols-outlined text-sm text-primary">mail</span>
+              </Link>
+              <Link
                 href="/creators"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high border border-border-specular text-text-primary font-semibold text-label-md hover:border-border-amber transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-text-muted hover:text-white font-semibold text-xs sm:text-sm transition-all cursor-pointer"
               >
                 <span>Become a Partner</span>
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>

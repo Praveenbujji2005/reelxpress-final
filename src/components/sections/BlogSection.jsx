@@ -53,7 +53,7 @@ export default function BlogSection() {
         {BLOG_POSTS.map((post) => (
           <article
             key={post.id}
-            className="reveal-on-scroll spotlight-card rounded-2xl bg-[#161217] border border-border-specular p-5 md:p-7 flex flex-col justify-between hover:border-border-amber transition-all duration-300 hover:-translate-y-2 group"
+            className="reveal-on-scroll spotlight-card rounded-2xl bg-[#110e13] border border-white/10 p-5 md:p-7 flex flex-col justify-between hover:border-border-amber transition-all duration-300 hover:-translate-y-2 group"
           >
             <div>
               <span className="inline-block px-3 py-1 rounded-full bg-surface-container text-primary text-label-sm font-bold uppercase tracking-wider mb-4 border border-border-specular/40">

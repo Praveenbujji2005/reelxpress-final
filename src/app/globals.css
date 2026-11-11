@@ -12,13 +12,13 @@
    1. Core Layout & Base Rules
    -------------------------------------------------------------------------- */
 :root {
-  --color-primary: #ffb599;
-  --color-primary-container: #ff6d29;
-  --color-surface-base: #161316;
-  --color-background: #151215;
-  --color-surface-deep: #0e0c0e;
-  --color-border-specular: rgba(255, 255, 255, 0.12);
-  --color-border-amber: rgba(255, 109, 41, 0.35);
+  --color-primary: #FF7A33;
+  --color-primary-container: #FF5E1E;
+  --color-surface-base: #121013;
+  --color-background: #080808;
+  --color-surface-deep: #080808;
+  --color-border-specular: rgba(255, 255, 255, 0.10);
+  --color-border-amber: rgba(255, 94, 30, 0.40);
 }
 
 /* Smooth scrolling wrapped in prefers-reduced-motion check */
@@ -75,7 +75,7 @@ html.lenis body {
 }
 
 body {
-  background-color: #151215;
+  background-color: #080808;
   color: #ffffff;
   overflow-x: clip;
   min-height: 100vh;
@@ -206,6 +206,46 @@ section[id] {
 .btn-ripple {
   position: relative;
   overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Premium Glowing Orange & Dark CTA Buttons
+   -------------------------------------------------------------------------- */
+.btn-glow-orange {
+  background: linear-gradient(135deg, #FF4500 0%, #FF5E1E 50%, #FFA033 100%);
+  color: #ffffff;
+  box-shadow: 0 0 26px rgba(255, 94, 30, 0.45), 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-glow-orange:hover {
+  box-shadow: 0 0 40px rgba(255, 94, 30, 0.75), 0 12px 30px rgba(0, 0, 0, 0.5);
+  transform: translateY(-1.5px) scale(1.02);
+}
+
+.btn-glow-orange:active {
+  transform: translateY(0.5px) scale(0.97);
+  box-shadow: 0 0 18px rgba(255, 94, 30, 0.4);
+}
+
+.btn-glow-dark {
+  background: #0f0d11;
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 94, 30, 0.65);
+  box-shadow: 0 0 20px rgba(255, 94, 30, 0.2), 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-glow-dark:hover {
+  border-color: #FF7A33;
+  background: rgba(255, 94, 30, 0.12);
+  box-shadow: 0 0 32px rgba(255, 94, 30, 0.45), 0 12px 28px rgba(0, 0, 0, 0.45);
+  transform: translateY(-1.5px) scale(1.02);
+}
+
+.btn-glow-dark:active {
+  transform: translateY(0.5px) scale(0.97);
+  box-shadow: 0 0 14px rgba(255, 94, 30, 0.25);
 }
 
 /* --------------------------------------------------------------------------

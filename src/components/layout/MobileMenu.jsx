@@ -138,21 +138,16 @@ export default function MobileMenu({ isOpen, onClose }) {
               </Link>
             ))}
 
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-                if (typeof window !== 'undefined') {
-                  window.dispatchEvent(new CustomEvent('open-contact-modal'));
-                }
-              }}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-primary-container text-white font-bold text-base shadow-[0_0_25px_rgba(255,109,41,0.5)] mt-3 cursor-pointer min-h-[50px] touch-manipulation active:scale-95 transition-transform"
+            <a
+              href="/#booking"
+              onClick={() => handleLinkClick('/#booking')}
+              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full btn-glow-orange font-bold text-base mt-3 cursor-pointer min-h-[48px] touch-manipulation"
             >
               <span>Book Now</span>
               <svg className="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
-            </button>
+            </a>
           </div>
         </div>
       </div>
