@@ -22,7 +22,7 @@ export default function TestimonialCard({ name, role, quote, review, rating = 5 
 
   return (
     <article
-      className="w-[260px] xs:w-[280px] sm:w-[304px] md:w-[323px] min-h-[200px] shrink-0 rounded-2xl bg-surface-glass border border-border-specular backdrop-blur-xl p-4 sm:p-5 md:p-6 flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1.5 hover:border-border-amber hover:shadow-[0_12px_35px_rgba(255,109,41,0.22)] cursor-default select-none"
+      className="w-full max-w-[380px] md:w-[323px] min-h-[200px] shrink-0 rounded-2xl bg-[#161217] border border-border-specular p-4 sm:p-5 md:p-6 flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1.5 hover:border-border-amber hover:shadow-[0_12px_35px_rgba(255,109,41,0.22)] cursor-default select-none mx-auto"
     >
       <div>
         {/* 5-Star Rating in Brand Accent Color */}

@@ -376,7 +376,7 @@ export default function PricingSection() {
         <div
           role="tablist"
           aria-label="Pricing Categories"
-          className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-[#181216] border border-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] gap-0.5 sm:gap-1 max-w-full select-none shrink-0"
+          className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-[#181216] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] gap-0.5 sm:gap-1 max-w-full select-none shrink-0"
         >
           {TABS.map((tab, idx) => {
             const isActive = activeTab === tab.id;

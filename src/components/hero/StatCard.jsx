@@ -101,7 +101,7 @@ export default function StatCard({ value, label, hasStar = false }) {
   return (
     <div
       ref={cardRef}
-      className="spotlight-card rounded-2xl bg-surface-glass border border-border-specular backdrop-blur-xl p-4 sm:p-5 md:p-6 text-center shadow-[0_15px_40px_rgba(0,0,0,0.6)] hover:border-border-amber transition-all duration-300 group hover:-translate-y-1"
+      className="spotlight-card rounded-2xl bg-[#161217] border border-border-specular p-4 sm:p-5 md:p-6 text-center shadow-[0_15px_40px_rgba(0,0,0,0.6)] hover:border-border-amber transition-all duration-300 group hover:-translate-y-1"
     >
       <div className="flex items-center justify-center gap-1.5 text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-1 tabular-nums">
         <span>{displayValue}</span>

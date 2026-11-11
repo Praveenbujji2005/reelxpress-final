@@ -27,7 +27,7 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
 
   return (
     <>
-      <header className="sticky top-3 sm:top-4 z-50 px-3 w-full flex justify-center pointer-events-none">
+      <header className="fixed top-3 sm:top-4 left-0 right-0 z-50 px-3 w-full flex justify-center pointer-events-none">
         <div
           className="pointer-events-auto rounded-full px-5 sm:px-7 py-2 sm:py-2.5 flex items-center justify-between gap-5 sm:gap-8 bg-[#161217] border border-[#2b2430] shadow-[0_10px_35px_rgba(0,0,0,0.7)] select-none transition-all duration-200"
           role="navigation"

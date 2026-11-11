@@ -29,7 +29,15 @@ export function useScrollReveal() {
       el.setAttribute('data-revealed', 'true');
     };
 
-    // 1. Immediately reveal all elements in Hero, Showcase, or within initial 1.5x viewport height
+    // On mobile touch devices: immediately reveal everything with 0 observers to eliminate WebKit lag
+    const isMobile =
+      typeof window !== 'undefined' &&
+      (window.innerWidth < 768 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches));
+
+    if (isMobile) {
+      revealElements.forEach(markRevealed);
+      return;
+    }
     const initialCutoff = (typeof window !== 'undefined' ? window.innerHeight : 900) * 1.5;
     revealElements.forEach((el) => {
       if (el.closest('#hero') || el.closest('#showcase')) {

@@ -99,7 +99,7 @@ export default function FloatingActionButtons() {
         href="/#booking"
         onClick={handleBookClick}
         aria-label="Book reelXpress Now"
-        className="group relative flex items-center justify-between gap-3 px-5 sm:px-6 py-3 sm:py-3.5 rounded-full text-white font-semibold text-sm sm:text-[15px] tracking-tight transition-all duration-200 cursor-pointer overflow-hidden bg-white/[0.08] hover:bg-white/[0.14] active:bg-white/[0.18] backdrop-blur-xl border border-white/20 hover:border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-95"
+        className="group relative flex items-center justify-between gap-3 px-5 sm:px-6 py-3 sm:py-3.5 rounded-full text-white font-semibold text-sm sm:text-[15px] tracking-tight transition-all duration-200 cursor-pointer overflow-hidden bg-[#181418]/95 hover:bg-[#201a20] active:bg-[#241d24] border border-white/20 hover:border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-95"
       >
         {/* Subtle shine sweep on hover */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none" />
@@ -109,7 +109,7 @@ export default function FloatingActionButtons() {
         </span>
 
         {/* Circular Arrow Badge - Crystal Glass Circle */}
-        <div className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/25 group-hover:bg-white/25 group-hover:scale-105 transition-all duration-200 shadow-inner">
+        <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center shrink-0 border border-white/25 group-hover:bg-white/25 group-hover:scale-105 transition-all duration-200 shadow-inner">
           <svg
             className="w-4 h-4 text-white fill-none stroke-current stroke-[2.5] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
             viewBox="0 0 24 24"
@@ -124,7 +124,7 @@ export default function FloatingActionButtons() {
       <Link
         href="/creators"
         aria-label="Become a Creator"
-        className="group relative flex items-center justify-center px-5 sm:px-6 py-3 sm:py-3.5 rounded-full text-white font-semibold text-sm sm:text-[15px] tracking-tight transition-all duration-200 cursor-pointer overflow-hidden bg-white/[0.08] hover:bg-white/[0.14] active:bg-white/[0.18] backdrop-blur-xl border border-white/20 hover:border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-95 text-center"
+        className="group relative flex items-center justify-center px-5 sm:px-6 py-3 sm:py-3.5 rounded-full text-white font-semibold text-sm sm:text-[15px] tracking-tight transition-all duration-200 cursor-pointer overflow-hidden bg-[#181418]/95 hover:bg-[#201a20] active:bg-[#241d24] border border-white/20 hover:border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-95 text-center"
       >
         {/* Subtle shine sweep on hover */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none" />

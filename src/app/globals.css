@@ -37,13 +37,13 @@
 html {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
   -webkit-text-size-adjust: 100%;
 }
@@ -77,7 +77,6 @@ html.lenis body {
 body {
   background-color: #151215;
   color: #ffffff;
-  overflow-x: hidden;
   overflow-x: clip;
   min-height: 100vh;
   min-height: 100dvh;
@@ -145,7 +144,6 @@ section[id] {
   box-shadow: 0 0 12px rgba(255, 109, 41, 0.9), 0 0 24px rgba(255, 109, 41, 0.5);
   z-index: 100;
   pointer-events: none;
-  will-change: transform;
 }
 
 /* --------------------------------------------------------------------------
@@ -316,7 +314,7 @@ section[id] {
 @media (max-width: 900px) {
   #fanned-carousel-track { height: 465px; }
 }
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   #fanned-carousel-container {
     overflow: hidden;
   }
@@ -324,6 +322,11 @@ section[id] {
     height: 455px;
     perspective: none !important;
     transform-style: flat !important;
+    -webkit-transform-style: flat !important;
+  }
+  .fanned-card {
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
   }
 }
 @media (max-width: 380px) {
@@ -345,15 +348,12 @@ section[id] {
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
   transform-origin: center center;
   transition: transform 0.55s cubic-bezier(0.2, 0.9, 0.3, 1),
               opacity 0.45s ease,
               filter 0.45s ease,
               box-shadow 0.45s ease,
               border-color 0.3s ease;
-  will-change: transform, opacity;
 }
 
 /* Active card subtle highlight without any bright orange border */
@@ -484,28 +484,18 @@ section[id] {
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
 }
 
 .reveal-scale-on-scroll {
   opacity: 1;
   transform: scale(1) translateY(0);
   transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
 }
 
-/* Progressive reveal for off-screen elements when JS engine is active */
+/* Progressive reveal for off-screen elements on desktop when JS engine is active */
 html.js-ready .reveal-on-scroll:not(.revealed):not(.is-revealed):not([data-revealed="true"]) {
   opacity: 0;
   transform: translateY(20px);
-}
-
-@media (max-width: 768px) {
-  /* On mobile: lighter displacement and subtle baseline visibility prevents blank void */
-  html.js-ready .reveal-on-scroll:not(.revealed):not(.is-revealed):not([data-revealed="true"]) {
-    opacity: 0.15;
-    transform: translateY(8px);
-  }
 }
 
 html.js-ready .reveal-on-scroll.revealed,
@@ -515,19 +505,11 @@ html.js-ready .reveal-on-scroll[data-revealed="true"],
 .reveal-on-scroll[data-revealed="true"] {
   opacity: 1;
   transform: translateY(0);
-  will-change: auto;
 }
 
 html.js-ready .reveal-scale-on-scroll:not(.revealed):not(.is-revealed):not([data-revealed="true"]) {
   opacity: 0;
   transform: scale(0.97) translateY(16px);
-}
-
-@media (max-width: 768px) {
-  html.js-ready .reveal-scale-on-scroll:not(.revealed):not(.is-revealed):not([data-revealed="true"]) {
-    opacity: 0.2;
-    transform: scale(0.98) translateY(6px);
-  }
 }
 
 html.js-ready .reveal-scale-on-scroll.revealed,
@@ -537,7 +519,21 @@ html.js-ready .reveal-scale-on-scroll[data-revealed="true"],
 .reveal-scale-on-scroll[data-revealed="true"] {
   opacity: 1;
   transform: scale(1) translateY(0);
-  will-change: auto;
+}
+
+/* On mobile viewports: Always render 100% visible with zero transform transitions.
+   Completely eliminates WebKit blank screen drops and compositor tile eviction on iPhone Safari & Chrome */
+@media (max-width: 768px) {
+  .reveal-on-scroll,
+  .reveal-scale-on-scroll,
+  html.js-ready .reveal-on-scroll,
+  html.js-ready .reveal-scale-on-scroll,
+  html.js-ready .reveal-on-scroll:not(.revealed):not(.is-revealed):not([data-revealed="true"]),
+  html.js-ready .reveal-scale-on-scroll:not(.revealed):not(.is-revealed):not([data-revealed="true"]) {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* Hero section elements must always remain visible on initial paint */
@@ -1128,7 +1124,6 @@ a:hover .brand-x-gold {
 
 .animate-marquee-right {
   animation: marquee-to-right 32s linear infinite;
-  will-change: transform;
 }
 
 @media (hover: hover) {
@@ -1161,12 +1156,10 @@ a:hover .brand-x-gold {
 
 .animate-marquee-left {
   animation: marquee-scroll-left 40s linear infinite;
-  will-change: transform;
 }
 
 .animate-marquee-right-slow {
   animation: marquee-scroll-right 50s linear infinite;
-  will-change: transform;
 }
 
 @media (hover: hover) {
@@ -1195,7 +1188,6 @@ a:hover .brand-x-gold {
 
 .animate-hero-phone {
   animation: heroPhoneFloat 6s ease-in-out infinite;
-  will-change: transform;
 }
 
 @keyframes phoneFloat1 {
@@ -1218,12 +1210,10 @@ a:hover .brand-x-gold {
 
 .animate-phone-float-1 {
   animation: phoneFloat1 6s ease-in-out infinite;
-  will-change: transform;
 }
 
 .animate-phone-float-2 {
   animation: phoneFloat2 6s ease-in-out infinite;
-  will-change: transform;
 }
 
 @keyframes pulseDotRing {

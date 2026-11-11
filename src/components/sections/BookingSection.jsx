@@ -150,7 +150,7 @@ export default function BookingSection({ onBookingSuccess }) {
     <section className="py-16 md:py-space-2xl px-4 sm:px-6 md:px-margin max-w-[1440px] mx-auto scroll-mt-20 md:scroll-mt-28" id="booking">
       
       {/* Express Network Banner */}
-      <div className="reveal-scale-on-scroll rounded-3xl bg-surface-glass-tinted border border-border-amber backdrop-blur-2xl p-5 sm:p-8 md:p-14 shadow-[0_20px_80px_rgba(255,109,41,0.25)] mb-12">
+      <div className="reveal-scale-on-scroll rounded-3xl bg-[#1c151b] border border-border-amber p-5 sm:p-8 md:p-14 shadow-[0_20px_80px_rgba(255,109,41,0.25)] mb-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           
           <div>
@@ -206,7 +206,7 @@ export default function BookingSection({ onBookingSuccess }) {
           </div>
 
           {/* Quick Booking Form */}
-          <div id="booking-form" className="rounded-2xl bg-surface-deep/90 border border-border-specular p-6 md:p-8 backdrop-blur-xl shadow-xl spotlight-card">
+          <div id="booking-form" className="rounded-2xl bg-[#140f14] border border-border-specular p-6 md:p-8 shadow-xl spotlight-card">
             <div className="text-title-lg font-bold text-text-primary mb-1">Book Your Reel Shoot</div>
             <p className="text-body-sm text-text-muted mb-6">Lock your slot in seconds.</p>
 

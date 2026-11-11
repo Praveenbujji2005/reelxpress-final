@@ -30,7 +30,7 @@ export default function ServicesSection() {
         {WHY_REELXPRESS_DATA.map((item) => (
           <div
             key={item.title}
-            className={`reveal-on-scroll spotlight-card p-6 sm:p-7 rounded-2xl bg-surface-glass border border-border-specular backdrop-blur-xl hover:border-border-amber transition-all duration-300 group hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] ${item.delayClass}`}
+            className={`reveal-on-scroll spotlight-card p-6 sm:p-7 rounded-2xl bg-[#161217] border border-border-specular hover:border-border-amber transition-all duration-300 group hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] ${item.delayClass}`}
           >
             <div className="flex items-center justify-between mb-6">
               <div className="w-12 h-12 rounded-xl bg-surface-glass-tinted border border-border-amber flex items-center justify-center text-primary-container group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(255,109,41,0.5)] transition-all duration-300">

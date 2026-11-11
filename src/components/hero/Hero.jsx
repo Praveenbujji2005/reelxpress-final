@@ -21,7 +21,7 @@ export default function Hero({ onOpenModal, onShowToast }) {
     <section
       id="hero"
       aria-label="ReelXpress Hero"
-      className="relative pt-10 md:pt-16 pb-12 sm:pb-16 px-4 sm:px-6 md:px-margin w-full max-w-[1600px] mx-auto text-center flex flex-col items-center overflow-visible scroll-mt-20 md:scroll-mt-28"
+      className="relative pt-14 sm:pt-16 md:pt-20 pb-12 sm:pb-16 px-4 sm:px-6 md:px-margin w-full max-w-[1600px] mx-auto text-center flex flex-col items-center overflow-visible scroll-mt-20 md:scroll-mt-28"
     >
       {/* Subtle Grid Pattern Overlay */}
       <div
@@ -82,7 +82,7 @@ export default function Hero({ onOpenModal, onShowToast }) {
 
         {/* Section Header */}
         <div className="relative text-center max-w-3xl mx-auto mb-6 md:mb-10 z-20">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-glass-tinted border border-border-amber text-primary text-label-sm font-label-sm uppercase tracking-widest backdrop-blur-md mb-3 shadow-[0_0_15px_rgba(255,109,41,0.15)]">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-glass-tinted border border-border-amber text-primary text-label-sm font-label-sm uppercase tracking-widest mb-3 shadow-[0_0_15px_rgba(255,109,41,0.15)]">
             <span className="w-1.5 h-1.5 rounded-full bg-primary-container rec-indicator" />
             <span>LIVE FEED</span>
           </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import TestimonialCard from './TestimonialCard';
 import { ROW_1_TESTIMONIALS, ROW_2_TESTIMONIALS } from '@/lib/data';
 import { getTestimonials, getCachedTestimonials } from '@/lib/cmsServices';
@@ -8,17 +8,12 @@ import { getTestimonials, getCachedTestimonials } from '@/lib/cmsServices';
 /**
  * TestimonialsSection Component
  *
- * Full-width dual-row marquee displaying client reviews & ratings:
- * - Section label: "TESTIMONIALS" in accent color
- * - Heading: "Insights from Satisfied Clients"
- * - Subtext highlighting same-day professional reels
- * - Top Row: Scrolls LEFT (40s) with Testimonials 1, 3, 5
- * - Bottom Row: Scrolls RIGHT (50s) with Testimonials 2, 4, 6
- * - Infinite seamless loop with dual sibling tracks
- * - Pause on hover
- * - Edge fade masks
- * - Respects prefers-reduced-motion
+ * Adaptive Architecture:
+ * - Desktop (>= 768px): Full-width dual-row seamless infinite marquee (left & right)
+ * - Mobile (< 768px): Touch-swipeable interactive card carousel with pagination dots & arrows
+ *   eliminates cut-off cards, text truncation, and WebKit GPU tile memory exhaustion on iPhone.
  */
+
 // SKELETON PLACEHOLDER FOR TESTIMONIAL CARDS
 function TestimonialCardSkeleton() {
   return (
@@ -49,6 +44,11 @@ export default function TestimonialsSection() {
   const [row2, setRow2] = useState(ROW_2_TESTIMONIALS);
   const [isLoading, setIsLoading] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+
+  // Mobile Carousel State
+  const [mobileIndex, setMobileIndex] = useState(0);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
 
   useEffect(() => {
     // 1. Instant check from cache for 0ms initial render
@@ -107,9 +107,48 @@ export default function TestimonialsSection() {
     return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, []);
 
-  // Use minimal duplication (2x per track) to maintain a seamless CSS infinite loop while minimizing DOM node count
+  const allReviews = [...row1, ...row2];
+  const totalMobile = allReviews.length || 1;
+
+  // Auto-advance mobile carousel every 5s if not paused
+  useEffect(() => {
+    if (isPaused || isLoading || totalMobile <= 1) return;
+    const timer = setInterval(() => {
+      setMobileIndex((prev) => (prev + 1) % totalMobile);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [isPaused, isLoading, totalMobile]);
+
+  const nextMobile = useCallback(() => {
+    setMobileIndex((prev) => (prev + 1) % totalMobile);
+  }, [totalMobile]);
+
+  const prevMobile = useCallback(() => {
+    setMobileIndex((prev) => (prev - 1 + totalMobile) % totalMobile);
+  }, [totalMobile]);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    const diffX = e.changedTouches[0].clientX - touchStartX.current;
+    const diffY = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX < 0) {
+        nextMobile();
+      } else {
+        prevMobile();
+      }
+    }
+  };
+
+  // Minimal duplication for seamless desktop infinite marquee loop
   const topRowList = row1.length <= 3 ? [...row1, ...row1] : row1;
   const bottomRowList = row2.length <= 3 ? [...row2, ...row2] : row2;
+
+  const currentMobileReview = allReviews[mobileIndex] || allReviews[0] || {};
 
   return (
     <section
@@ -130,117 +169,175 @@ export default function TestimonialsSection() {
         </p>
       </div>
 
-      {/* Full-Width Dual-Row Marquee Container */}
-      <div className="relative w-full overflow-hidden">
-        {/* Edge Gradient Masks for Smooth Fade Out on Left & Right */}
-        <div
-          className="absolute left-0 inset-y-0 w-8 sm:w-24 md:w-40 bg-gradient-to-r from-background via-background/70 to-transparent z-10 pointer-events-none"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute right-0 inset-y-0 w-8 sm:w-24 md:w-40 bg-gradient-to-l from-background via-background/70 to-transparent z-10 pointer-events-none"
-          aria-hidden="true"
-        />
-
-        {isLoading ? (
-          <div className="space-y-4 sm:space-y-6">
-            <div className="flex gap-4 sm:gap-6 overflow-hidden">
-              {[1, 2, 3, 4].map((n) => (
-                <TestimonialCardSkeleton key={`skel-row1-${n}`} />
-              ))}
+      {isLoading ? (
+        <div className="space-y-4 sm:space-y-6 px-4 max-w-md mx-auto md:max-w-none">
+          <div className="flex gap-4 justify-center overflow-hidden">
+            {[1, 2, 3].map((n) => (
+              <TestimonialCardSkeleton key={`skel-row1-${n}`} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* =========================================================================
+              MOBILE INTERACTIVE CAROUSEL (< 768px):
+              - Perfectly centered card with zero clipping
+              - Touch swipe gestures (left / right)
+              - Prev / Next buttons
+              - Pagination indicator dots
+              - Eliminates WebKit tile memory exhaustion and clipped cards
+             ========================================================================= */}
+          <div className="block md:hidden px-4 max-w-md mx-auto">
+            <div
+              className="relative touch-pan-y"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <div className="w-full transition-all duration-300">
+                <TestimonialCard
+                  key={`mobile-${currentMobileReview.id || mobileIndex}`}
+                  name={currentMobileReview.name}
+                  role={currentMobileReview.role}
+                  quote={currentMobileReview.quote || currentMobileReview.review}
+                  review={currentMobileReview.review || currentMobileReview.quote}
+                  rating={currentMobileReview.rating}
+                />
+              </div>
             </div>
-            <div className="flex gap-4 sm:gap-6 overflow-hidden">
-              {[5, 6, 7, 8].map((n) => (
-                <TestimonialCardSkeleton key={`skel-row2-${n}`} />
-              ))}
+
+            {/* Mobile Controls: Prev, Pagination Dots, Next */}
+            <div className="flex items-center justify-between mt-5 px-2">
+              <button
+                onClick={prevMobile}
+                aria-label="Previous testimonial"
+                className="w-10 h-10 rounded-full bg-[#181216] border border-white/15 text-white flex items-center justify-center hover:bg-primary-container hover:border-primary-container active:scale-95 transition-all shadow-md cursor-pointer touch-manipulation"
+              >
+                <span className="material-symbols-outlined text-lg">arrow_back</span>
+              </button>
+
+              {/* Dots */}
+              <div className="flex items-center gap-1.5 py-1">
+                {allReviews.map((_, dotIdx) => (
+                  <button
+                    key={`dot-${dotIdx}`}
+                    onClick={() => setMobileIndex(dotIdx)}
+                    aria-label={`Go to review ${dotIdx + 1}`}
+                    className="p-1 cursor-pointer touch-manipulation"
+                  >
+                    <span
+                      className={`block rounded-full transition-all duration-200 ${
+                        dotIdx === mobileIndex
+                          ? 'w-5 h-2 bg-primary-container shadow-[0_0_8px_rgba(255,109,41,0.7)]'
+                          : 'w-2 h-2 bg-white/25 hover:bg-white/50'
+                      }`}
+                    />
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={nextMobile}
+                aria-label="Next testimonial"
+                className="w-10 h-10 rounded-full bg-[#181216] border border-white/15 text-white flex items-center justify-center hover:bg-primary-container hover:border-primary-container active:scale-95 transition-all shadow-md cursor-pointer touch-manipulation"
+              >
+                <span className="material-symbols-outlined text-lg">arrow_forward</span>
+              </button>
             </div>
           </div>
-        ) : (
-          <div className="space-y-4 sm:space-y-6 fade-in-content">
-            {/* =========================================================================
-                ROW 1: Top Row scrolling continuously towards the LEFT (40s)
-                Contains Testimonials 1, 3, 5
-               ========================================================================= */}
-            <div className="testimonials-marquee-row flex overflow-hidden w-full testimonials-mask-fade">
-              {/* Primary Track */}
-              <div
-                className="animate-marquee-left flex items-stretch shrink-0 gap-4 sm:gap-6 pr-4 sm:pr-6"
-                style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
-              >
-                {topRowList.map((item, idx) => (
-                  <TestimonialCard
-                    key={`row1-primary-${item.id}-${idx}`}
-                    name={item.name}
-                    role={item.role}
-                    quote={item.quote || item.review}
-                    review={item.review || item.quote}
-                    rating={item.rating}
-                  />
-                ))}
+
+          {/* =========================================================================
+              DESKTOP DUAL-ROW MARQUEE (>= 768px):
+              - Preserves original aesthetic on tablet and desktop screens
+              - Seamless infinite marquee scrolling left and right
+              - Edge gradient masks
+             ========================================================================= */}
+          <div className="hidden md:block relative w-full overflow-hidden">
+            {/* Edge Gradient Masks for Smooth Fade Out */}
+            <div
+              className="absolute left-0 inset-y-0 w-24 md:w-40 bg-gradient-to-r from-background via-background/70 to-transparent z-10 pointer-events-none"
+              aria-hidden="true"
+            />
+            <div
+              className="absolute right-0 inset-y-0 w-24 md:w-40 bg-gradient-to-l from-background via-background/70 to-transparent z-10 pointer-events-none"
+              aria-hidden="true"
+            />
+
+            <div className="space-y-4 sm:space-y-6 fade-in-content">
+              {/* ROW 1: Scrolling LEFT */}
+              <div className="testimonials-marquee-row flex overflow-hidden w-full testimonials-mask-fade">
+                <div
+                  className="animate-marquee-left flex items-stretch shrink-0 gap-4 sm:gap-6 pr-4 sm:pr-6"
+                  style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
+                >
+                  {topRowList.map((item, idx) => (
+                    <TestimonialCard
+                      key={`row1-primary-${item.id}-${idx}`}
+                      name={item.name}
+                      role={item.role}
+                      quote={item.quote || item.review}
+                      review={item.review || item.quote}
+                      rating={item.rating}
+                    />
+                  ))}
+                </div>
+
+                <div
+                  className="animate-marquee-left flex items-stretch shrink-0 gap-4 sm:gap-6 pr-4 sm:pr-6"
+                  style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
+                  aria-hidden="true"
+                >
+                  {topRowList.map((item, idx) => (
+                    <TestimonialCard
+                      key={`row1-dup-${item.id}-${idx}`}
+                      name={item.name}
+                      role={item.role}
+                      quote={item.quote || item.review}
+                      review={item.review || item.quote}
+                      rating={item.rating}
+                    />
+                  ))}
+                </div>
               </div>
 
-              {/* Sibling Duplicate Track for Seamless Zero-Jump Loop */}
-              <div
-                className="animate-marquee-left flex items-stretch shrink-0 gap-4 sm:gap-6 pr-4 sm:pr-6"
-                style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
-                aria-hidden="true"
-              >
-                {topRowList.map((item, idx) => (
-                  <TestimonialCard
-                    key={`row1-dup-${item.id}-${idx}`}
-                    name={item.name}
-                    role={item.role}
-                    quote={item.quote || item.review}
-                    review={item.review || item.quote}
-                    rating={item.rating}
-                  />
-                ))}
-              </div>
-            </div>
+              {/* ROW 2: Scrolling RIGHT */}
+              <div className="testimonials-marquee-row flex overflow-hidden w-full testimonials-mask-fade">
+                <div
+                  className="animate-marquee-right-slow flex items-stretch shrink-0 gap-4 sm:gap-6 pr-4 sm:pr-6"
+                  style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
+                >
+                  {bottomRowList.map((item, idx) => (
+                    <TestimonialCard
+                      key={`row2-primary-${item.id}-${idx}`}
+                      name={item.name}
+                      role={item.role}
+                      quote={item.quote || item.review}
+                      review={item.review || item.quote}
+                      rating={item.rating}
+                    />
+                  ))}
+                </div>
 
-            {/* =========================================================================
-                ROW 2: Bottom Row scrolling continuously towards the RIGHT (50s)
-                Contains Testimonials 2, 4, 6
-               ========================================================================= */}
-            <div className="testimonials-marquee-row flex overflow-hidden w-full testimonials-mask-fade">
-              {/* Primary Track */}
-              <div
-                className="animate-marquee-right-slow flex items-stretch shrink-0 gap-4 sm:gap-6 pr-4 sm:pr-6"
-                style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
-              >
-                {bottomRowList.map((item, idx) => (
-                  <TestimonialCard
-                    key={`row2-primary-${item.id}-${idx}`}
-                    name={item.name}
-                    role={item.role}
-                    quote={item.quote || item.review}
-                    review={item.review || item.quote}
-                    rating={item.rating}
-                  />
-                ))}
-              </div>
-
-              {/* Sibling Duplicate Track for Seamless Zero-Jump Loop */}
-              <div
-                className="animate-marquee-right-slow flex items-stretch shrink-0 gap-4 sm:gap-6 pr-4 sm:pr-6"
-                style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
-                aria-hidden="true"
-              >
-                {bottomRowList.map((item, idx) => (
-                  <TestimonialCard
-                    key={`row2-dup-${item.id}-${idx}`}
-                    name={item.name}
-                    role={item.role}
-                    quote={item.quote || item.review}
-                    review={item.review || item.quote}
-                    rating={item.rating}
-                  />
-                ))}
+                <div
+                  className="animate-marquee-right-slow flex items-stretch shrink-0 gap-4 sm:gap-6 pr-4 sm:pr-6"
+                  style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
+                  aria-hidden="true"
+                >
+                  {bottomRowList.map((item, idx) => (
+                    <TestimonialCard
+                      key={`row2-dup-${item.id}-${idx}`}
+                      name={item.name}
+                      role={item.role}
+                      quote={item.quote || item.review}
+                      review={item.review || item.quote}
+                      rating={item.rating}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </>
+      )}
     </section>
   );
 }

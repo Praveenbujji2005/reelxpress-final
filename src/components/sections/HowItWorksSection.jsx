@@ -36,8 +36,8 @@ export default function HowItWorksSection() {
               key={stepItem.step}
               className={`reveal-on-scroll spotlight-card p-5 sm:p-5.5 rounded-2xl ${
                 stepItem.isHighlight
-                  ? 'bg-surface-glass-tinted border border-border-amber backdrop-blur-xl shadow-[0_0_20px_rgba(255,109,41,0.15)]'
-                  : 'bg-surface-glass border border-border-specular backdrop-blur-xl hover:border-border-amber'
+                  ? 'bg-surface-glass-tinted border border-border-amber shadow-[0_0_20px_rgba(255,109,41,0.15)]'
+                  : 'bg-[#161217] border border-border-specular hover:border-border-amber'
               } hover:-translate-y-2 transition-all duration-300 group ${stepItem.delayClass}`}
             >
               <div
