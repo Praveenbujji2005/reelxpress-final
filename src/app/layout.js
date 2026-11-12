@@ -101,7 +101,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${cormorantGaramond.variable} bg-background text-text-primary antialiased selection:bg-primary-container selection:text-text-primary min-h-screen min-h-[100dvh] relative font-sans`}
+        className={`${plusJakartaSans.variable} ${cormorantGaramond.variable} bg-background text-text-primary antialiased selection:bg-primary-container selection:text-text-primary min-h-screen min-h-[100dvh] relative font-sans`}
         suppressHydrationWarning
       >
         {/* Full-Screen ReelXpress Pro Loading Experience */}

@@ -16,7 +16,7 @@ function formatTime(seconds) {
 // Clicking any video card opens full-window vertical player with prominent "< Back" navigation
 export default function PortfolioCarousel({ onShowToast: _onShowToast } = {}) {
   const [reels, setReels] = useState(REEL_PORTFOLIO);
-  const [activeReelIndex, setActiveReelIndex] = useState(2); // Center card active by default
+  const [activeReelIndex, setActiveReelIndex] = useState(3); // Center card active by default (reel 4 of 7)
   const [windowWidth, setWindowWidth] = useState(1200);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -392,7 +392,7 @@ export default function PortfolioCarousel({ onShowToast: _onShowToast } = {}) {
           const posterSrc =
             reel.poster ||
             reel.posterUrl ||
-            `/thumbnails/hero-video-${(index % 5) + 1}.jpg`;
+            `/thumbnails/hero-video-${(index % 7) + 1}.jpg`;
 
           return (
             <div
@@ -575,8 +575,9 @@ export default function PortfolioCarousel({ onShowToast: _onShowToast } = {}) {
               <video
                 ref={fullscreenVideoRef}
                 src={reels[fullscreenIndex].videoUrl || reels[fullscreenIndex].videoSrc}
-                poster={reels[fullscreenIndex].poster || `/thumbnails/hero-video-${(fullscreenIndex % 5) + 1}.jpg`}
+                poster={reels[fullscreenIndex].poster || `/thumbnails/hero-video-${(fullscreenIndex % 7) + 1}.jpg`}
                 playsInline
+                loop
                 webkit-playsinline="true"
                 x5-playsinline="true"
                 preload="auto"
@@ -592,7 +593,10 @@ export default function PortfolioCarousel({ onShowToast: _onShowToast } = {}) {
                   }
                 }}
                 onEnded={() => {
-                  setIsFullscreenPlaying(false);
+                  if (fullscreenVideoRef.current) {
+                    fullscreenVideoRef.current.currentTime = 0;
+                    fullscreenVideoRef.current.play().catch(() => {});
+                  }
                 }}
                 className="w-full h-full object-cover"
               />

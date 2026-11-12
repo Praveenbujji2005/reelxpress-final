@@ -24,3 +24,5 @@ scratch/
 # OS metadata
 .DS_Store
 *.pem
+
+AGENTS.md

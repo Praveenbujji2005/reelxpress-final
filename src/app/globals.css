@@ -38,6 +38,8 @@ html {
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
+  font-family: var(--font-plus-jakarta-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.012em;
 }
 
 body {
@@ -46,6 +48,9 @@ body {
   overflow-x: clip;
   position: relative;
   -webkit-text-size-adjust: 100%;
+  font-family: var(--font-plus-jakarta-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.012em;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
 * {
@@ -529,19 +534,21 @@ section[id] {
 .reveal-on-scroll {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
 .reveal-scale-on-scroll {
   opacity: 1;
   transform: scale(1) translateY(0);
-  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
-/* Progressive reveal for off-screen elements on desktop when JS engine is active */
+/* Progressive reveal for off-screen elements when JS engine is active */
 html.js-ready .reveal-on-scroll:not(.revealed):not(.is-revealed):not([data-revealed="true"]) {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(28px);
 }
 
 html.js-ready .reveal-on-scroll.revealed,
@@ -555,7 +562,7 @@ html.js-ready .reveal-on-scroll[data-revealed="true"],
 
 html.js-ready .reveal-scale-on-scroll:not(.revealed):not(.is-revealed):not([data-revealed="true"]) {
   opacity: 0;
-  transform: scale(0.97) translateY(16px);
+  transform: scale(0.96) translateY(24px);
 }
 
 html.js-ready .reveal-scale-on-scroll.revealed,
@@ -567,20 +574,13 @@ html.js-ready .reveal-scale-on-scroll[data-revealed="true"],
   transform: scale(1) translateY(0);
 }
 
-/* On mobile viewports: Always render 100% visible with zero transform transitions.
-   Completely eliminates WebKit blank screen drops and compositor tile eviction on iPhone Safari & Chrome */
-@media (max-width: 768px) {
-  .reveal-on-scroll,
-  .reveal-scale-on-scroll,
-  html.js-ready .reveal-on-scroll,
-  html.js-ready .reveal-scale-on-scroll,
-  html.js-ready .reveal-on-scroll:not(.revealed):not(.is-revealed):not([data-revealed="true"]),
-  html.js-ready .reveal-scale-on-scroll:not(.revealed):not(.is-revealed):not([data-revealed="true"]) {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
-}
+/* Stagger delay utility helpers for fluid cascading arrivals */
+.delay-50  { transition-delay: 50ms !important; }
+.delay-100 { transition-delay: 100ms !important; }
+.delay-150 { transition-delay: 150ms !important; }
+.delay-200 { transition-delay: 200ms !important; }
+.delay-300 { transition-delay: 300ms !important; }
+.delay-400 { transition-delay: 400ms !important; }
 
 /* Hero section elements must always remain visible on initial paint */
 #hero .reveal-on-scroll,

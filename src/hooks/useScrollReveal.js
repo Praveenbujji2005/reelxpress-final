@@ -3,18 +3,33 @@
 import { useEffect } from 'react';
 
 /**
- * Bulletproof Scroll Reveal Hook for High-Performance Mobile & Desktop Scrolling
+ * High-Performance Scroll Reveal Hook
  *
- * Designed specifically for iOS Safari momentum scrolling and 120Hz ProMotion:
- * 1. Immediately reveals any elements within initial 1.5x viewport height on mount.
- * 2. Uses a generous 350px rootMargin so off-screen elements are pre-revealed long before
- *    the user scrolls into them, eliminating empty/blank screen gaps.
- * 3. Includes a dual safety fallback timer (350ms and 1200ms) that guarantees no section
- *    can ever remain permanently hidden or stuck at opacity: 0 under throttled mobile conditions.
+ * Triggers smooth fade-in and slide-up animations as elements scroll into view
+ * on both mobile and desktop viewports.
+ * - Immediately reveals elements visible above the fold on initial paint.
+ * - Uses IntersectionObserver with a gentle negative bottom rootMargin so elements
+ *   gracefully slide up and fade in as they enter the viewport.
+ * - Respects prefers-reduced-motion.
  */
 export function useScrollReveal() {
   useEffect(() => {
-    // Flag the document so CSS transitions take effect smoothly
+    // Check user's motion preferences
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      document.documentElement.classList.add('js-ready');
+      document
+        .querySelectorAll('.reveal-on-scroll, .reveal-scale-on-scroll')
+        .forEach((el) => {
+          el.classList.add('is-revealed');
+          el.setAttribute('data-revealed', 'true');
+        });
+      return;
+    }
+
     document.documentElement.classList.add('js-ready');
 
     const revealElements = Array.from(
@@ -29,33 +44,25 @@ export function useScrollReveal() {
       el.setAttribute('data-revealed', 'true');
     };
 
-    // On mobile touch devices: immediately reveal everything with 0 observers to eliminate WebKit lag
-    const isMobile =
-      typeof window !== 'undefined' &&
-      (window.innerWidth < 768 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches));
-
-    if (isMobile) {
-      revealElements.forEach(markRevealed);
-      return;
-    }
-    const initialCutoff = (typeof window !== 'undefined' ? window.innerHeight : 900) * 1.5;
+    // 1. Immediately reveal elements already in the viewport on initial paint (Hero & Above-the-fold)
+    const vh = typeof window !== 'undefined' ? window.innerHeight : 800;
     revealElements.forEach((el) => {
-      if (el.closest('#hero') || el.closest('#showcase')) {
+      if (el.closest('#hero')) {
         markRevealed(el);
         return;
       }
       try {
         const rect = el.getBoundingClientRect();
-        if (rect.top <= initialCutoff) {
+        // If element is already in the viewport on initial page load
+        if (rect.top < vh * 0.9 && rect.bottom > 0) {
           markRevealed(el);
         }
       } catch {}
     });
 
-    // 2. High-performance IntersectionObserver with generous 350px rootMargin
-    let observer = null;
+    // 2. Observer for remaining elements to reveal on scroll
     if (typeof IntersectionObserver !== 'undefined') {
-      observer = new IntersectionObserver(
+      const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -65,8 +72,8 @@ export function useScrollReveal() {
           });
         },
         {
-          threshold: 0.01,
-          rootMargin: '350px 0px 350px 0px',
+          threshold: 0.1,
+          rootMargin: '0px 0px -40px 0px',
         }
       );
 
@@ -75,37 +82,13 @@ export function useScrollReveal() {
           observer.observe(el);
         }
       });
+
+      return () => {
+        observer.disconnect();
+      };
     } else {
+      // Fallback for browsers without IntersectionObserver
       revealElements.forEach(markRevealed);
     }
-
-    // 3. Fast safety fallback (350ms): reveal elements within 2.5x viewport height
-    const fastTimer = setTimeout(() => {
-      const fastCutoff = (typeof window !== 'undefined' ? window.innerHeight : 900) * 2.5;
-      revealElements.forEach((el) => {
-        if (!el.classList.contains('is-revealed')) {
-          try {
-            const rect = el.getBoundingClientRect();
-            if (rect.top <= fastCutoff) {
-              markRevealed(el);
-              observer?.unobserve(el);
-            }
-          } catch {}
-        }
-      });
-    }, 350);
-
-    // 4. Guaranteed complete fallback (1200ms): unconditionally reveal all elements
-    // Guarantees zero blank spaces on any mobile device even if observer callbacks are paused during fling-scroll
-    const guaranteedTimer = setTimeout(() => {
-      revealElements.forEach(markRevealed);
-      observer?.disconnect();
-    }, 1200);
-
-    return () => {
-      clearTimeout(fastTimer);
-      clearTimeout(guaranteedTimer);
-      observer?.disconnect();
-    };
   }, []);
 }

@@ -266,7 +266,7 @@ function PricingCardSkeleton({ count = 4, colsClass = 'grid-cols-1 sm:grid-cols-
 function PricingCard({ pkg, isCenter = false, isCarousel = false, onBooking }) {
   return (
     <div
-      className={`relative rounded-2xl bg-[#110e13]/90 backdrop-blur-md p-5 sm:p-6 min-h-[530px] flex flex-col justify-between transition-all duration-500 ${
+      className={`relative rounded-2xl bg-[#130f14]/95 backdrop-blur-md p-5 sm:p-6 min-h-[530px] flex flex-col justify-between transition-all duration-500 ${
         pkg.isPopular
           ? 'border border-[#ff6d29]/80 shadow-[0_12px_45px_rgba(255,109,41,0.25)]'
           : 'border border-white/10 hover:border-white/20 shadow-[0_10px_35px_rgba(0,0,0,0.6)]'
@@ -274,7 +274,7 @@ function PricingCard({ pkg, isCenter = false, isCarousel = false, onBooking }) {
         isCarousel
           ? isCenter
             ? 'scale-[1.01] opacity-100 ring-1 ring-[#ff6d29]/50'
-            : 'scale-[0.96] opacity-65'
+            : 'scale-[0.98] opacity-90 hover:opacity-100'
           : 'hover:-translate-y-1'
       }`}
     >
@@ -293,16 +293,22 @@ function PricingCard({ pkg, isCenter = false, isCarousel = false, onBooking }) {
           {pkg.name}
         </h3>
 
-        <p className="text-xs sm:text-[12.5px] text-[#a8a1a8] leading-relaxed mb-5 font-normal min-h-[40px]">
+        <p className="text-xs sm:text-[12.5px] text-[#a8a1a8] leading-relaxed mb-4 font-normal min-h-[40px]">
           {pkg.description}
         </p>
 
-        <div className="flex items-baseline gap-1.5 pb-5 border-b border-white/10 mb-5">
-          <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            {pkg.price}
-          </span>
-          <span className="text-xs font-normal text-white/50 tracking-normal">
-            {pkg.priceSuffix}
+        {/* Dedicated Elevated High-Contrast Price Box */}
+        <div className="rounded-xl bg-white/[0.07] border border-white/15 p-3.5 mb-5 shadow-[0_4px_18px_rgba(0,0,0,0.4)] flex items-baseline justify-between gap-2">
+          <div className="flex items-baseline gap-1.5 flex-wrap">
+            <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              {pkg.price}
+            </span>
+            <span className="text-xs font-semibold text-white/70 tracking-normal">
+              {pkg.priceSuffix}
+            </span>
+          </div>
+          <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#ff6d29] bg-[#ff6d29]/15 px-2 py-0.5 rounded-full border border-[#ff6d29]/30 shrink-0">
+            {pkg.tag}
           </span>
         </div>
 
@@ -723,16 +729,22 @@ export default function PricingSection() {
                   {pkg.name}
                 </h3>
 
-                <p className="text-xs sm:text-[12.5px] text-[#a8a1a8] leading-relaxed mb-5 font-normal min-h-[40px]">
+                <p className="text-xs sm:text-[12.5px] text-[#a8a1a8] leading-relaxed mb-4 font-normal min-h-[40px]">
                   {pkg.description}
                 </p>
 
-                <div className="flex items-baseline gap-1.5 pb-5 border-b border-white/10 mb-5">
-                  <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                    {pkg.price}
-                  </span>
-                  <span className="text-xs font-normal text-white/50 tracking-normal">
-                    {pkg.priceSuffix}
+                {/* Dedicated Elevated High-Contrast Price Box */}
+                <div className="rounded-xl bg-white/[0.07] border border-white/15 p-3.5 mb-5 shadow-[0_4px_18px_rgba(0,0,0,0.4)] flex items-baseline justify-between gap-2">
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                      {pkg.price}
+                    </span>
+                    <span className="text-xs font-semibold text-white/70 tracking-normal">
+                      {pkg.priceSuffix}
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#ff6d29] bg-[#ff6d29]/15 px-2 py-0.5 rounded-full border border-[#ff6d29]/30 shrink-0">
+                    {pkg.tag}
                   </span>
                 </div>
 
@@ -822,16 +834,22 @@ export default function PricingSection() {
                   {pkg.name}
                 </h3>
 
-                <p className="text-xs sm:text-[12.5px] text-[#a8a1a8] leading-relaxed mb-5 font-normal min-h-[40px]">
+                <p className="text-xs sm:text-[12.5px] text-[#a8a1a8] leading-relaxed mb-4 font-normal min-h-[40px]">
                   {pkg.description}
                 </p>
 
-                <div className="flex items-baseline gap-1.5 pb-5 border-b border-white/10 mb-5">
-                  <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                    {pkg.price}
-                  </span>
-                  <span className="text-xs font-normal text-white/50 tracking-normal">
-                    {pkg.priceSuffix}
+                {/* Dedicated Elevated High-Contrast Price Box */}
+                <div className="rounded-xl bg-white/[0.07] border border-white/15 p-3.5 mb-5 shadow-[0_4px_18px_rgba(0,0,0,0.4)] flex items-baseline justify-between gap-2">
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                      {pkg.price}
+                    </span>
+                    <span className="text-xs font-semibold text-white/70 tracking-normal">
+                      {pkg.priceSuffix}
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#ff6d29] bg-[#ff6d29]/15 px-2 py-0.5 rounded-full border border-[#ff6d29]/30 shrink-0">
+                    {pkg.tag}
                   </span>
                 </div>
 

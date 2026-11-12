@@ -10,6 +10,8 @@ import {
 } from '@/lib/cmsServices';
 import { useAdminAuth } from '@/context/AdminAuthContext';
 
+const MAX_HERO_REELS = 7;
+
 export default function AdminHeroPage() {
   const { user } = useAdminAuth();
   const [slides, setSlides] = useState([]);
@@ -41,6 +43,10 @@ export default function AdminHeroPage() {
   };
 
   const handleCreateNew = () => {
+    if (slides.length >= MAX_HERO_REELS) {
+      showToast(`Maximum limit of ${MAX_HERO_REELS} reels reached.`);
+      return;
+    }
     setEditingSlide({
       id: 'new_' + Date.now(),
       title: '',
@@ -90,6 +96,11 @@ export default function AdminHeroPage() {
     e.preventDefault();
     if (!editingSlide.title || !editingSlide.creator) {
       alert('Title and creator are required.');
+      return;
+    }
+    const isNew = !editingSlide.id || editingSlide.id.startsWith('new_');
+    if (isNew && slides.length >= MAX_HERO_REELS) {
+      alert(`Cannot add more than ${MAX_HERO_REELS} reels. Please edit or delete an existing reel.`);
       return;
     }
     try {
@@ -164,20 +175,39 @@ export default function AdminHeroPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Hero Section &amp; Carousel Management
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Hero Section &amp; Carousel Management
+            </h1>
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                slides.length >= MAX_HERO_REELS
+                  ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
+                  : 'bg-white/10 border-white/15 text-white/80'
+              }`}
+            >
+              {slides.length} / {MAX_HERO_REELS} Reels Max
+            </span>
+          </div>
           <p className="text-sm text-text-muted mt-1">
-            Manage reel portfolio slides, posters, Instagram destinations, and display order.
+            Manage reel portfolio slides, posters, Instagram destinations, and display order (Max {MAX_HERO_REELS} reels).
           </p>
         </div>
 
         <button
           onClick={handleCreateNew}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer self-start sm:self-auto"
+          disabled={slides.length >= MAX_HERO_REELS}
+          className={`px-4 py-2.5 rounded-xl font-bold text-sm tracking-wide shadow-lg flex items-center gap-2 transition-all self-start sm:self-auto ${
+            slides.length >= MAX_HERO_REELS
+              ? 'bg-white/10 text-white/40 cursor-not-allowed border border-white/10'
+              : 'bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white hover:scale-105 active:scale-95 cursor-pointer'
+          }`}
+          title={slides.length >= MAX_HERO_REELS ? `Maximum ${MAX_HERO_REELS} reels reached` : 'Add New Reel Slide'}
         >
-          <span className="material-symbols-outlined text-sm">add</span>
-          <span>Add New Reel Slide</span>
+          <span className="material-symbols-outlined text-sm">
+            {slides.length >= MAX_HERO_REELS ? 'lock' : 'add'}
+          </span>
+          <span>{slides.length >= MAX_HERO_REELS ? 'Max 7 Reels Reached' : 'Add New Reel Slide'}</span>
         </button>
       </div>
 

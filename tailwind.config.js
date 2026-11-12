@@ -87,6 +87,7 @@ module.exports = {
         'gutter': '1.5rem',
       },
       fontFamily: {
+        sans: ['var(--font-plus-jakarta-sans)', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
         'title-md': ['var(--font-plus-jakarta-sans)', 'sans-serif'],
         'label-md': ['var(--font-plus-jakarta-sans)', 'sans-serif'],
         'headline-sm': ['var(--font-plus-jakarta-sans)', 'sans-serif'],

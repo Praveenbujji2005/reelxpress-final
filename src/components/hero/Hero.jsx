@@ -57,8 +57,8 @@ export default function Hero({ onShowToast }) {
           - Desktop: Side-by-side in one row (sm:flex-row)
           - Mobile: Stacked vertically with "Become a Creator" below "Book Now" (flex-col)
          ========================================================================= */}
-      <div className="reveal-on-scroll relative z-30 w-full max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-6 mb-8 sm:mb-10 px-4">
-        {/* Book Now Button */}
+      <div className="reveal-on-scroll relative z-30 w-full max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-6 mb-8 sm:mb-10 px-4">
+        {/* Book Now Button (Reduced size on mobile) */}
         <a
           href="#booking"
           onClick={(e) => {
@@ -79,23 +79,23 @@ export default function Hero({ onShowToast }) {
               window.location.href = '/contact';
             }
           }}
-          className="btn-glow-orange btn-shine-sweep group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-extrabold text-sm sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[50px] shadow-lg"
+          className="btn-glow-orange btn-shine-sweep group w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-10 py-2.5 sm:py-4.5 rounded-full font-bold sm:font-extrabold text-xs sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[38px] sm:min-h-[50px] shadow-lg"
           aria-label="Book reelXpress Now"
         >
           <span>BOOK NOW</span>
-          <span className="material-symbols-outlined text-lg sm:text-xl transition-transform duration-200 group-hover:translate-x-1">
+          <span className="material-symbols-outlined text-base sm:text-xl transition-transform duration-200 group-hover:translate-x-1">
             arrow_forward
           </span>
         </a>
 
-        {/* Become a Creator Button */}
+        {/* Become a Creator Button (Slightly larger than Book Now on mobile) */}
         <Link
           href="/creators"
-          className="btn-glow-dark group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-extrabold text-sm sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[50px] shadow-lg"
+          className="btn-glow-dark group w-auto inline-flex items-center justify-center gap-2 px-6.5 sm:px-10 py-3 sm:py-4.5 rounded-full font-bold sm:font-extrabold text-[13px] sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[44px] sm:min-h-[50px] shadow-lg"
           aria-label="Become a Creator"
         >
           <span>BECOME A CREATOR</span>
-          <span className="material-symbols-outlined text-lg sm:text-xl text-primary transition-transform duration-200 group-hover:translate-x-1">
+          <span className="material-symbols-outlined text-[17px] sm:text-xl text-primary transition-transform duration-200 group-hover:translate-x-1">
             north_east
           </span>
         </Link>
