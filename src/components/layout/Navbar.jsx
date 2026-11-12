@@ -143,13 +143,13 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
               </Link>
             </nav>
 
-            {/* Mobile Hamburger Trigger: Clean 3-line icon with NO outer circular ring */}
+            {/* Mobile Hamburger Trigger */}
             <button
               type="button"
               onClick={onOpenMobileMenu}
-              aria-label={isMobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
+              aria-label="Menu"
               aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu-drawer"
+              aria-controls="mobile-nav-fullscreen"
               className="md:hidden flex items-center justify-center w-10 h-10 min-w-[40px] text-white hover:text-primary-container active:scale-90 transition-colors cursor-pointer shrink-0 touch-manipulation focus-visible:outline-none"
             >
               {isMobileMenuOpen ? (
