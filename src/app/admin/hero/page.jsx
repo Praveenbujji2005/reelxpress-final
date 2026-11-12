@@ -196,7 +196,7 @@ export default function AdminHeroPage() {
               }`}
             >
               {/* Image Preview Container (9:16 portrait) */}
-              <div className="relative aspect-[9/14] bg-black/60 overflow-hidden group">
+              <div className="relative aspect-[9/16] bg-black/60 overflow-hidden group">
                 <img
                   src={slide.poster}
                   alt={slide.title}
@@ -388,29 +388,43 @@ export default function AdminHeroPage() {
                 <label className="block text-xs uppercase tracking-wider font-bold text-text-muted mb-1.5">
                   Reel Poster Image (Single Frame)
                 </label>
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-[#0c0a0c] border border-white/15">
-                  <div className="w-16 h-24 rounded-xl overflow-hidden bg-black shrink-0 border border-white/20">
-                    <img
-                      src={editingSlide.poster}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs cursor-pointer transition-colors">
-                      <span className="material-symbols-outlined text-sm">cloud_upload</span>
-                      <span>{isUploading ? 'Uploading Image...' : 'Upload & Replace Image'}</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        disabled={isUploading}
-                        onChange={handleImageUpload}
-                        className="hidden"
+                <div className="space-y-3 p-4 rounded-2xl bg-[#0c0a0c] border border-white/15">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-28 aspect-[9/16] rounded-xl overflow-hidden bg-black shrink-0 border border-white/20">
+                      <img
+                        src={editingSlide.poster}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
                       />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs cursor-pointer transition-colors">
+                        <span className="material-symbols-outlined text-sm">cloud_upload</span>
+                        <span>{isUploading ? 'Uploading Image...' : 'Upload & Replace Image'}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          disabled={isUploading}
+                          onChange={handleImageUpload}
+                          className="hidden"
+                        />
+                      </label>
+                      <p className="text-[11px] text-text-muted mt-1.5">
+                        Recommended: High resolution 9:16 portrait image (JPEG/PNG). Auto-optimized for instant loading.
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">
+                      Or Direct Image / Poster URL
                     </label>
-                    <p className="text-[11px] text-text-muted mt-1.5">
-                      Recommended: High resolution 9:16 portrait image (JPEG/PNG).
-                    </p>
+                    <input
+                      type="text"
+                      placeholder="e.g. /thumbnails/reel-frame-1.jpg or https://..."
+                      value={editingSlide.poster || ''}
+                      onChange={(e) => setEditingSlide({ ...editingSlide, poster: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl bg-[#070507] border border-white/10 text-white text-xs focus:border-[#ff6d29] focus:outline-none"
+                    />
                   </div>
                 </div>
               </div>

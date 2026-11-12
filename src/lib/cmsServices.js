@@ -782,6 +782,14 @@ function mergeCloudWithDefaults(defaults, cloudDocs, options = {}) {
         merged.answer = answer;
         merged.q = question;
         merged.a = answer;
+      } else if (options.type === 'hero') {
+        merged.poster =
+          merged.poster ||
+          merged.posterUrl ||
+          merged.imageUrl ||
+          merged.image ||
+          merged.thumbnail ||
+          '/thumbnails/reel-frame-1.jpg';
       }
 
       map.set(targetId, merged);
@@ -789,7 +797,11 @@ function mergeCloudWithDefaults(defaults, cloudDocs, options = {}) {
   }
 
   const result = Array.from(map.values());
-  result.sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+  result.sort((a, b) => {
+    const orderDiff = (Number(a.order) || 0) - (Number(b.order) || 0);
+    if (orderDiff !== 0) return orderDiff;
+    return String(a.id || '').localeCompare(String(b.id || ''));
+  });
   return result;
 }
 
@@ -1354,21 +1366,79 @@ export async function deleteHeroSlide(slideId, adminEmail) {
 }
 
 // =============================================================================
-// 8. IMAGE UPLOAD HELPER (Firebase Storage with base64 Data URL fallback)
+// 8. IMAGE UPLOAD HELPER (Client-Side Compression + Firebase Storage with base64 Data URL fallback)
 // =============================================================================
+
+/**
+ * Compresses an image file in-browser to max 1080x1920 (vertical 9:16 portrait)
+ * to ensure lightning-fast uploads and prevent Firestore 1MB document limit breaches.
+ */
+async function compressImageFile(file, maxWidth = 1080, maxHeight = 1920, quality = 0.85) {
+  if (
+    typeof window === 'undefined' ||
+    typeof document === 'undefined' ||
+    !file ||
+    !file.type ||
+    !file.type.startsWith('image/')
+  ) {
+    return file;
+  }
+
+  return new Promise((resolve) => {
+    try {
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        let { width, height } = img;
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (blob && (blob.size < file.size || file.size > 800000)) {
+              resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+            } else {
+              resolve(file);
+            }
+          },
+          'image/jpeg',
+          quality
+        );
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(file);
+      };
+      img.src = objectUrl;
+    } catch {
+      resolve(file);
+    }
+  });
+}
 
 export async function uploadImageFile(file, folder = 'uploads') {
   if (!file) throw new Error('No file provided for upload.');
 
+  // Pre-compress image for ultra-fast upload & safe storage
+  const targetFile = await compressImageFile(file);
+
   // Direct Firebase Storage upload if accessible
   if (isFirebaseConfigured && storage) {
     try {
-      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+      const sanitizedName = (targetFile.name || file.name || 'image.jpg').replace(/[^a-zA-Z0-9.]/g, '_');
       const storageRef = ref(storage, `${folder}/${Date.now()}_${sanitizedName}`);
       const snapshot = await Promise.race([
-        uploadBytes(storageRef, file),
+        uploadBytes(storageRef, targetFile),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Firebase Storage Upload timed out after 5000ms')), 5000)
+          setTimeout(() => reject(new Error('Firebase Storage Upload timed out after 6000ms')), 6000)
         ),
       ]);
       const downloadUrl = await getDownloadURL(snapshot.ref);
@@ -1378,11 +1448,11 @@ export async function uploadImageFile(file, folder = 'uploads') {
     }
   }
 
-  // Fast reliable fallback: convert to base64 Data URL so images preview and persist immediately
+  // Fast reliable fallback: convert compressed file to base64 Data URL so images preview and persist immediately
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(targetFile);
   });
 }

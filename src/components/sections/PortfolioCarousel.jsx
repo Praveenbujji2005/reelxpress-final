@@ -12,8 +12,7 @@ export default function PortfolioCarousel({ onShowToast }) {
     typeof window !== 'undefined' ? window.innerWidth : 390
   );
 
-  // Per-card media loading and failure states for flawless skeleton shimmers
-  const [loadedImages, setLoadedImages] = useState({});
+  // Per-card media failure state for fallback handling
   const [failedImages, setFailedImages] = useState({});
 
   const dragStartX = useRef(0);
@@ -30,6 +29,7 @@ export default function PortfolioCarousel({ onShowToast }) {
       const activeSlides = cached.filter((s) => s.enabled !== false);
       if (activeSlides.length > 0) {
         setReels(activeSlides);
+        setActiveReelIndex((prev) => (prev >= activeSlides.length ? Math.floor(activeSlides.length / 2) : prev));
       }
     }
 
@@ -40,7 +40,7 @@ export default function PortfolioCarousel({ onShowToast }) {
           const activeSlides = slides.filter((s) => s.enabled !== false);
           if (activeSlides.length > 0) {
             setReels(activeSlides);
-            setActiveReelIndex((prev) => Math.min(prev, Math.floor(activeSlides.length / 2)));
+            setActiveReelIndex((prev) => (prev >= activeSlides.length ? Math.floor(activeSlides.length / 2) : prev));
           }
         }
       })
@@ -52,7 +52,10 @@ export default function PortfolioCarousel({ onShowToast }) {
         getHeroSlides({ forceRefresh: true }).then((slides) => {
           if (slides && slides.length > 0) {
             const activeSlides = slides.filter((s) => s.enabled !== false);
-            if (activeSlides.length > 0) setReels(activeSlides);
+            if (activeSlides.length > 0) {
+              setReels(activeSlides);
+              setActiveReelIndex((prev) => (prev >= activeSlides.length ? Math.floor(activeSlides.length / 2) : prev));
+            }
           }
         });
       }
@@ -84,9 +87,12 @@ export default function PortfolioCarousel({ onShowToast }) {
         spacing = 124;
       }
 
-      let diff = (index - activeReelIndex) % totalCards;
-      if (diff > Math.floor(totalCards / 2)) diff -= totalCards;
-      if (diff < -Math.floor(totalCards / 2)) diff += totalCards;
+      // Calculate shortest circular difference in ring of totalCards for symmetrical alignment
+      const rawDiff = index - activeReelIndex;
+      let diff = ((rawDiff % totalCards) + totalCards) % totalCards;
+      if (diff > totalCards / 2) {
+        diff -= totalCards;
+      }
 
       const absDiff = Math.abs(diff);
 
@@ -108,7 +114,7 @@ export default function PortfolioCarousel({ onShowToast }) {
         ty = 0;
         rot = 0;
         scale = absDiff === 0 ? 1 : 0.94;
-        zIndex = absDiff === 0 ? 30 : 20 - absDiff;
+        zIndex = absDiff === 0 ? 30 : Math.max(1, 20 - absDiff);
         opacity = absDiff === 0 ? 1 : absDiff === 1 ? 0.72 : 0;
         filter = absDiff === 0 ? 'brightness(1) contrast(1)' : 'brightness(0.8) contrast(0.95)';
         pointerEvents = absDiff <= 1 ? 'auto' : 'none';
@@ -118,7 +124,8 @@ export default function PortfolioCarousel({ onShowToast }) {
         scale = absDiff === 0 ? 1.08 : absDiff === 1 ? 0.92 : absDiff === 2 ? 0.78 : 0.65;
         rot = diff === 0 ? 0 : diff < 0 ? (diff === -1 ? -4.5 : diff === -2 ? -9 : -13) : diff === 1 ? 4.5 : diff === 2 ? 9 : 13;
         zIndex = absDiff === 0 ? 30 : absDiff === 1 ? 20 : absDiff === 2 ? 10 : 5;
-        opacity = absDiff === 0 ? 1 : absDiff === 1 ? 0.9 : absDiff === 2 ? 0.72 : (absDiff === 3 ? 0.35 : 0);
+        opacity = absDiff === 0 ? 1 : absDiff === 1 ? 0.9 : absDiff === 2 ? 0.72 : 0;
+        pointerEvents = absDiff <= 2 ? 'auto' : 'none';
         filter =
           absDiff === 0
             ? 'brightness(1) contrast(1)'
@@ -134,6 +141,7 @@ export default function PortfolioCarousel({ onShowToast }) {
         rot = diff === 0 ? 0 : diff < 0 ? (diff === -1 ? -5.5 : diff === -2 ? -11 : -16) : diff === 1 ? 5.5 : diff === 2 ? 11 : 16;
         zIndex = absDiff === 0 ? 30 : absDiff === 1 ? 20 : absDiff === 2 ? 10 : 5;
         opacity = absDiff === 0 ? 1 : absDiff === 1 ? 0.94 : absDiff === 2 ? 0.82 : (absDiff === 3 ? 0.65 : 0);
+        pointerEvents = absDiff <= 3 ? 'auto' : 'none';
         filter =
           absDiff === 0
             ? 'brightness(1) contrast(1)'
@@ -142,6 +150,10 @@ export default function PortfolioCarousel({ onShowToast }) {
             : absDiff === 2
             ? 'brightness(0.84) contrast(0.94)'
             : 'brightness(0.74) contrast(0.90)';
+      }
+
+      if (opacity === 0) {
+        pointerEvents = 'none';
       }
 
       return {
@@ -222,35 +234,8 @@ export default function PortfolioCarousel({ onShowToast }) {
     }
   };
 
-  // Determine media readiness for smart loading indicators
-  const activeReel = reels[activeReelIndex];
-  const isActiveLoaded = activeReel ? Boolean(loadedImages[activeReel.id]) : false;
-  const loadedCount = Object.keys(loadedImages).length;
-
   return (
     <div id="fanned-carousel-container" className="my-6 md:my-10 relative w-full overflow-hidden sm:overflow-visible">
-      {/* Dynamic Status / Visual Readiness Indicator */}
-      <div className="flex items-center justify-center mb-4 sm:mb-6 relative z-20">
-        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#181216] border border-white/10 text-xs font-medium text-text-muted shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-all duration-300">
-          {!isActiveLoaded && loadedCount === 0 ? (
-            <>
-              <span className="w-2 h-2 rounded-full bg-primary-container rec-indicator" />
-              <span className="text-white font-semibold">Getting the visuals ready...</span>
-            </>
-          ) : !isActiveLoaded ? (
-            <>
-              <span className="w-2 h-2 rounded-full bg-primary-container rec-indicator" />
-              <span className="text-white font-semibold">Loading the latest reels...</span>
-            </>
-          ) : (
-            <>
-              <span className="w-2 h-2 rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-              <span className="text-white/90">Swipe or tap any reel to preview • Direct from Bengaluru creators</span>
-            </>
-          )}
-        </div>
-      </div>
-
       {/* 3D Perspective Stage Track */}
       <div
         id="fanned-carousel-track"
@@ -261,15 +246,23 @@ export default function PortfolioCarousel({ onShowToast }) {
           const isCenter = index === activeReelIndex;
           const cardStyle = getCardStyle(index);
 
-          let diff = (index - activeReelIndex) % totalCards;
-          if (diff > Math.floor(totalCards / 2)) diff -= totalCards;
-          if (diff < -Math.floor(totalCards / 2)) diff += totalCards;
-          const absDiff = Math.abs(diff);
-
           const reelIdKey = String(reel.id !== undefined && reel.id !== null ? reel.id : index);
-          const isLoaded = Boolean(loadedImages[reelIdKey]);
           const hasFailed = Boolean(failedImages[reelIdKey]);
-          const posterWebp = reel.poster?.replace(/\.jpg$/, '.webp');
+
+          // Image source resolution with complete fallback chain
+          const posterSrc =
+            reel.poster ||
+            reel.posterUrl ||
+            reel.imageUrl ||
+            reel.image ||
+            reel.thumbnail ||
+            reel.thumbnailUrl ||
+            '/thumbnails/reel-frame-1.jpg';
+
+          // Only use <source type="image/webp"> for static local sample photos that have a real .webp sibling
+          const isLocalSample =
+            typeof posterSrc === 'string' && /^\/thumbnails\/reel-frame-[1-7]\.jpg$/.test(posterSrc);
+          const posterWebp = isLocalSample ? posterSrc.replace(/\.jpg$/, '.webp') : null;
 
           return (
             <div
@@ -282,7 +275,7 @@ export default function PortfolioCarousel({ onShowToast }) {
               data-reel={index}
               role="button"
               tabIndex={0}
-              aria-label={`View reel on Instagram`}
+              aria-label={reel.title ? `${reel.title} - View reel on Instagram` : 'View reel on Instagram'}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -290,23 +283,7 @@ export default function PortfolioCarousel({ onShowToast }) {
                 }
               }}
             >
-              {/* Skeleton Shimmer Placeholder: Displayed in background until media completes decoding */}
-              {!isLoaded && !hasFailed && (
-                <div
-                  className="absolute inset-0 ambient-skeleton flex flex-col items-center justify-center pointer-events-none z-0"
-                  aria-hidden="true"
-                >
-                  <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-3 text-primary-container/70 ambient-pulse shadow-inner">
-                    <span className="material-symbols-outlined text-2xl">movie</span>
-                  </div>
-                  <div className="w-16 h-1.5 rounded-full bg-white/10 ambient-pulse mb-1.5" />
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-primary-container/80">
-                    Preparing reel...
-                  </span>
-                </div>
-              )}
-
-              {/* Fallback View: Displayed if media network request encounters an error */}
+              {/* Fallback View: Displayed only if media completely fails to load */}
               {hasFailed && (
                 <div className="absolute inset-0 bg-[#161217] flex flex-col items-center justify-center p-6 text-center z-10 border border-white/10">
                   <div className="w-12 h-12 rounded-full bg-primary-container/20 border border-primary-container/40 flex items-center justify-center text-primary-container mb-3">
@@ -317,41 +294,20 @@ export default function PortfolioCarousel({ onShowToast }) {
                 </div>
               )}
 
-              {/* High-Performance Modern WebP Image with JPG Fallback */}
+              {/* Single Frame / Reel Photo Still */}
               <picture className="w-full h-full block">
                 {posterWebp && <source srcSet={posterWebp} type="image/webp" />}
                 <img
-                  ref={(node) => {
-                    if (node && node.complete && node.naturalWidth > 0 && !loadedImages[reelIdKey]) {
-                      setLoadedImages((prev) => ({ ...prev, [reelIdKey]: true }));
-                    }
-                  }}
-                  src={reel.poster}
+                  src={posterSrc}
                   alt={reel.title || 'Reel Photo'}
                   width={290}
                   height={516}
-                  loading={absDiff <= 1 ? 'eager' : 'lazy'}
-                  fetchPriority={isCenter ? 'high' : absDiff === 1 ? 'auto' : 'low'}
+                  loading="eager"
                   decoding="async"
-                  onLoad={() => setLoadedImages((prev) => ({ ...prev, [reelIdKey]: true }))}
                   onError={() => setFailedImages((prev) => ({ ...prev, [reelIdKey]: true }))}
-                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-105 z-10 ${
-                    isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                  }`}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-10"
                 />
               </picture>
-
-              {/* Subtle interactive hover highlight (zero text, purely the photo) */}
-              <div
-                className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex items-center justify-center z-10"
-                aria-hidden="true"
-              >
-                <div className="w-12 h-12 rounded-full bg-black/80 border border-white/30 flex items-center justify-center text-white shadow-xl scale-90 group-hover:scale-100 transition-transform duration-300">
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                  </svg>
-                </div>
-              </div>
             </div>
           );
         })}

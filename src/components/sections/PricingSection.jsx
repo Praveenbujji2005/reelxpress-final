@@ -450,24 +450,6 @@ export default function PricingSection() {
             <p className="text-xs sm:text-sm md:text-base text-[#a8a1a8] mt-2.5 max-w-2xl mx-auto leading-relaxed">
               High-speed vertical video packages shot on flagship iPhone gear with on-spot professional editing. Your finished, color-graded reels are delivered directly to your device via AirDrop or instant cloud link within 15–30 minutes before your shoot concludes.
             </p>
-            <div className="mt-3.5 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-[11px] sm:text-xs text-white/70">
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ff6d29]" />
-                15–30 Min On-Site Turnaround
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ff6d29]" />
-                Shot on Latest iPhone Pro
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ff6d29]" />
-                AirDrop &amp; Cloud Delivery
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ff6d29]" />
-                Free Revisions &amp; Raw Clips
-              </span>
-            </div>
           </>
         )}
       </div>
