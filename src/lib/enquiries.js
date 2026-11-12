@@ -22,7 +22,7 @@ export function validateEnquiryData(data) {
   const customerName = (data.customerName || data.fullName || data.name || '').trim();
   const email = (data.email || '').trim();
   const phone = (data.phone || '').trim();
-  const selectedService = (data.selectedService || data.serviceType || data.type || '').trim();
+  const selectedService = (data.selectedService || data.serviceType || data.type || data.subject || '').trim();
 
   if (!customerName || customerName.length < 2) {
     errors.push('Customer name must be at least 2 characters long.');

@@ -21,7 +21,7 @@ export default function Hero({ onOpenModal, onShowToast }) {
     <section
       id="hero"
       aria-label="ReelXpress Hero"
-      className="relative pt-14 sm:pt-16 md:pt-20 pb-12 sm:pb-16 px-4 sm:px-6 md:px-margin w-full max-w-[1600px] mx-auto text-center flex flex-col items-center overflow-visible scroll-mt-20 md:scroll-mt-28"
+      className="relative pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-12 sm:pb-16 px-4 sm:px-6 md:px-margin w-full max-w-[1600px] mx-auto text-center flex flex-col items-center overflow-visible scroll-mt-20 md:scroll-mt-28"
     >
       {/* Subtle Grid Pattern Overlay */}
       <div
@@ -79,21 +79,6 @@ export default function Hero({ onOpenModal, onShowToast }) {
 
         {/* Fanned-Out Reel Portfolio Carousel */}
         <PortfolioCarousel onOpenModal={onOpenModal} onShowToast={onShowToast} />
-
-        {/* View More on Instagram CTA */}
-        <div className="relative z-20 flex justify-center mt-6 md:mt-8">
-          <a
-            href="https://www.instagram.com/reelxpress___"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-glow-orange btn-shine-sweep inline-flex items-center justify-center gap-2 px-8 py-3.5 sm:py-4 rounded-full text-white font-bold text-title-md font-title-md transition-all group cursor-pointer"
-          >
-            <span>View More on Instagram</span>
-            <span className="material-symbols-outlined text-lg transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-              north_east
-            </span>
-          </a>
-        </div>
       </div>
 
       {/* =========================================================================

@@ -2,157 +2,178 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { OCCASIONS_LIST, SHOOT_TYPE_CATEGORIES } from '@/lib/data';
 
-// Final CTA banner: JOIN THE EXPRESS NETWORK & Quick Booking Form
+// Subject / Shoot Type Dropdown Options
+const SUBJECT_OPTIONS = [
+  'General Inquiry',
+  'Wedding / Reception Reel Shoot',
+  'Brand Launch / Corporate Event',
+  'Creator Partnership / Collaboration',
+  'Custom Instant Video Package',
+  'Quick Shoot (1 Hour - Single Reel)',
+];
+
 export default function BookingSection({ onBookingSuccess }) {
   const [formData, setFormData] = useState({
-    name: '',
+    fullName: '',
     email: '',
     phone: '',
-    companyName: '',
-    date: '',
-    type: OCCASIONS_LIST[0],
-    city: '',
+    subject: SUBJECT_OPTIONS[0],
     message: '',
     website_trap: '', // Anti-spam honeypot
   });
+
+  const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-  const [submitSuccess, setSubmitSuccess] = useState(null);
+  const [referenceId, setReferenceId] = useState('');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Auto-select package when user clicks a pricing card CTA
+  // Auto-select shoot type if triggered from external CTA (e.g., pricing cards)
   useEffect(() => {
     const handleSelectType = (e) => {
       if (e.detail?.type) {
-        setFormData((prev) => ({ ...prev, type: e.detail.type }));
+        const matching = SUBJECT_OPTIONS.find((opt) =>
+          opt.toLowerCase().includes(e.detail.type.toLowerCase())
+        );
+        setFormData((prev) => ({
+          ...prev,
+          subject: matching || e.detail.type,
+        }));
       }
     };
     window.addEventListener('select-shoot-type', handleSelectType);
     return () => window.removeEventListener('select-shoot-type', handleSelectType);
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitError(null);
-    setSubmitSuccess(null);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+    if (submitError) setSubmitError(null);
+  };
 
-    // Client-side validations
-    const customerName = formData.name.trim();
-    if (!customerName || customerName.length < 2) {
-      setSubmitError('Please enter your full name.');
-      return;
+  const validate = () => {
+    const errors = {};
+    const nameTrimmed = formData.fullName.trim();
+    if (!nameTrimmed || nameTrimmed.length < 2) {
+      errors.fullName = 'Please enter your full name (at least 2 characters).';
     }
 
     const emailTrimmed = formData.email.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailTrimmed)) {
-      setSubmitError('Please enter a valid email address.');
-      return;
+    if (!emailTrimmed || !emailRegex.test(emailTrimmed)) {
+      errors.email = 'Please enter a valid email address.';
     }
 
     const cleanPhone = formData.phone.replace(/\D/g, '').replace(/^91/, '');
-    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
-      setSubmitError('Please enter a valid 10-digit Indian mobile number (e.g., 9876543210).');
-      return;
+    if (!cleanPhone || cleanPhone.length < 10) {
+      errors.phone = 'Please enter a valid 10-digit phone number.';
     }
 
-    if (!formData.date) {
-      setSubmitError('Please select a preferred event date.');
-      return;
+    if (!formData.subject.trim()) {
+      errors.subject = 'Please select a shoot type / subject.';
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const selectedDate = new Date(formData.date);
-    if (selectedDate < today) {
-      setSubmitError('Please select a current or future event date.');
-      return;
+    const msgTrimmed = formData.message.trim();
+    if (!msgTrimmed || msgTrimmed.length < 10) {
+      errors.message = 'Please provide a message with at least 10 characters.';
     }
 
-    if (!formData.city.trim()) {
-      setSubmitError('Please enter your shoot location / city zone.');
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    // Check honeypot trap
+    if (formData.website_trap) {
+      setSubmitSuccess(true);
       return;
     }
 
     setIsSubmitting(true);
+    setSubmitError(null);
 
+    const cleanPhone = formData.phone.replace(/\D/g, '').replace(/^91/, '');
     const payload = {
-      customerName,
-      fullName: customerName,
-      email: emailTrimmed,
+      customerName: formData.fullName.trim(),
+      fullName: formData.fullName.trim(),
+      email: formData.email.trim(),
       phone: `+91 ${cleanPhone}`,
-      companyName: formData.companyName.trim(),
-      selectedService: formData.type,
-      serviceType: formData.type,
+      companyName: formData.subject.trim(),
+      selectedService: formData.subject.trim(),
+      serviceType: formData.subject.trim(),
       enquiryMessage: formData.message.trim(),
       message: formData.message.trim(),
-      city: formData.city.trim(),
-      eventDate: formData.date,
+      city: 'Bengaluru',
       website_trap: formData.website_trap,
-      sourcePage: 'Website Booking Section',
-      source: 'booking_section',
+      sourcePage: 'Website Contact Section',
+      source: 'enquiry_form',
     };
 
     try {
-      // Send directly to Firebase Firestore enquiry endpoint
       const res = await fetch('/api/enquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok || !data.success) {
-        setSubmitError(data.error || 'Failed to submit enquiry. Please verify details and try again.');
-        setIsSubmitting(false);
-        return;
+        throw new Error(data.error || 'Failed to submit enquiry. Please verify details and try again.');
       }
 
-      setSubmitSuccess(
-        data.message || 'Your shoot slot has been locked! Our coordinator will connect via WhatsApp within minutes.'
-      );
+      setSubmitSuccess(true);
+      const generatedId = data.enquiry?.id || 'RX-' + Math.floor(100000 + Math.random() * 900000);
+      setReferenceId(generatedId);
+
       onBookingSuccess?.({
         name: payload.customerName,
-        date: payload.eventDate,
-        city: payload.city,
         type: payload.selectedService,
       });
 
-      // Reset form
+      // Reset form fields
       setFormData({
-        name: '',
+        fullName: '',
         email: '',
         phone: '',
-        companyName: '',
-        date: '',
-        type: OCCASIONS_LIST[0],
-        city: '',
+        subject: SUBJECT_OPTIONS[0],
         message: '',
         website_trap: '',
       });
     } catch (err) {
       console.error('[BookingSection] Submission failed:', err);
-      setSubmitError(
-        err.message || 'Unable to store your enquiry. Please verify your connection and try again.'
-      );
+      setSubmitError(err.message || 'Unable to store your enquiry. Please verify your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const handleReset = () => {
+    setSubmitSuccess(false);
+    setSubmitError(null);
+    setReferenceId('');
+    setFormErrors({});
+  };
+
   return (
     <section className="py-16 md:py-space-2xl px-4 sm:px-6 md:px-margin max-w-[1440px] mx-auto scroll-mt-20 md:scroll-mt-28" id="booking">
-      
       {/* Express Network Banner */}
       <div className="reveal-scale-on-scroll rounded-3xl bg-[#110e13] border border-border-amber p-5 sm:p-8 md:p-14 shadow-[0_20px_80px_rgba(255,94,30,0.2)] mb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           
+          {/* LEFT COLUMN: Contact Details & Express Network Info */}
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container/20 border border-border-amber text-primary text-label-sm font-label-sm uppercase tracking-widest mb-4">
               <span className="w-2 h-2 rounded-full bg-primary rec-indicator" />
@@ -162,19 +183,10 @@ export default function BookingSection({ onBookingSuccess }) {
               The fastest creative community for modern creators.
             </h2>
             <p className="text-body-lg font-body-lg text-text-muted mb-8 leading-relaxed">
-              We Shoot • Edit • Deliver Reels in Minutes. Book certified mobile videographers or become an elite partner today.
+              We Shoot • Edit • Deliver Reels in Minutes. Book certified mobile videographers or reach our production desk today.
             </p>
 
-            <div className="flex flex-wrap gap-4 mb-8">
-              <Link
-                href="/creators"
-                className="btn-glow-orange btn-shine-sweep inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-white font-bold text-title-md transition-all cursor-pointer shadow-md"
-              >
-                <span>Apply as a Creator</span>
-                <span className="material-symbols-outlined text-base">arrow_forward</span>
-              </Link>
-            </div>
-
+            {/* Direct Contact Info */}
             <div className="space-y-4 pt-6 border-t border-border-specular">
               <a
                 href="tel:+919988338180"
@@ -205,215 +217,232 @@ export default function BookingSection({ onBookingSuccess }) {
             </div>
           </div>
 
-          {/* Desktop Only: Quick Booking Form (Preserved for desktop view) */}
-          <div id="booking-form" className="hidden lg:block rounded-2xl bg-[#0d0b0f] border border-white/10 p-6 md:p-8 shadow-xl spotlight-card">
-            <div className="text-title-lg font-bold text-text-primary mb-1">Book Your Reel Shoot</div>
-            <p className="text-body-sm text-text-muted mb-6">Lock your slot in seconds.</p>
+          {/* RIGHT COLUMN: Original "Send Us a Message" Form */}
+          <div id="booking-form" className="w-full rounded-2xl bg-[#0d0b0f] border border-white/10 p-6 sm:p-8 md:p-10 shadow-xl spotlight-card">
+            
+            {/* Form Title & Subtitle */}
+            <div className="mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight mb-1.5">
+                Send Us a Message
+              </h3>
+              <p className="text-xs sm:text-sm text-text-muted">
+                Fill in the details below and our team will get in touch shortly.
+              </p>
+            </div>
 
-            {submitSuccess && (
-              <div className="mb-4 p-4 rounded-xl bg-emerald-950/70 border border-emerald-500/50 text-emerald-200 text-sm flex items-start gap-2.5 animate-fadeIn shadow-lg">
-                <span className="material-symbols-outlined text-emerald-400 text-lg shrink-0 mt-0.5">check_circle</span>
-                <div className="flex-1">
-                  <div className="font-bold text-emerald-300">Slot Reserved!</div>
-                  <div className="text-xs text-emerald-200/90 mt-0.5">{submitSuccess}</div>
+            {/* SUCCESS STATE */}
+            {submitSuccess ? (
+              <div className="py-8 text-center space-y-5 animate-fadeIn">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#FF5E1E] to-[#FF8800] text-white flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(255,94,30,0.6)]">
+                  <span className="material-symbols-outlined text-3xl">check_circle</span>
                 </div>
-              </div>
-            )}
-
-            {submitError && (
-              <div className="mb-4 p-4 rounded-xl bg-red-950/70 border border-red-500/50 text-red-200 text-sm flex items-start gap-2.5 animate-fadeIn shadow-lg">
-                <span className="material-symbols-outlined text-red-400 text-lg shrink-0 mt-0.5">error</span>
-                <div className="flex-1">
-                  <div className="font-bold text-red-300">Booking Notice</div>
-                  <div className="text-xs text-red-200/90 mt-0.5 leading-relaxed">{submitError}</div>
+                <div>
+                  <h4 className="text-xl font-bold text-white">Message Sent Successfully!</h4>
+                  <p className="text-xs sm:text-sm text-text-muted mt-1.5 leading-relaxed">
+                    Thank you! Our Bengaluru production desk will reach out via WhatsApp / Call within minutes.
+                  </p>
+                  {referenceId && (
+                    <div className="mt-3 inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-primary font-mono">
+                      Ref: {referenceId}
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
-
-            {!mounted ? (
-              <div className="space-y-4 py-2 animate-pulse" aria-hidden="true">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
-                  <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="btn-glow-dark px-6 py-2.5 rounded-full text-xs font-bold uppercase cursor-pointer"
+                  >
+                    Send Another Message
+                  </button>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
-                  <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
-                  <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
-                </div>
-                <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
-                <div className="h-20 rounded-xl bg-surface-base border border-border-specular/40" />
-                <div className="h-14 rounded-xl bg-primary-container/40" />
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4" suppressHydrationWarning>
-              {/* Anti-spam honeypot (invisible to real users) */}
-              <input
-                type="text"
-                name="website_trap"
-                value={formData.website_trap}
-                onChange={(e) => setFormData({ ...formData, website_trap: e.target.value })}
-                tabIndex={-1}
-                autoComplete="off"
-                className="hidden"
-                aria-hidden="true"
-              />
-
-              {/* Full Name & Company */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-label-sm font-label-sm text-text-muted uppercase tracking-wider mb-1.5 font-semibold">
-                    Customer Name*
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Sravanthi Reddy"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-surface-base border border-border-specular text-text-primary placeholder:text-text-muted/60 focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container/40 transition-all text-[16px] sm:text-body-md font-body-md"
-                  />
-                </div>
-                <div>
-                  <label className="block text-label-sm font-label-sm text-text-muted uppercase tracking-wider mb-1.5 font-semibold">
-                    Company / Brand (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Acme Corp / Creator Studio"
-                    value={formData.companyName}
-                    onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-surface-base border border-border-specular text-text-primary placeholder:text-text-muted/60 focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container/40 transition-all text-[16px] sm:text-body-md font-body-md"
-                  />
-                </div>
-              </div>
-
-              {/* Email & Phone */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-label-sm font-label-sm text-text-muted uppercase tracking-wider mb-1.5 font-semibold">
-                    Email Address*
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="e.g. sravanthi@gmail.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-surface-base border border-border-specular text-text-primary placeholder:text-text-muted/60 focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container/40 transition-all text-[16px] sm:text-body-md font-body-md"
-                  />
-                </div>
-                <div>
-                  <label className="block text-label-sm font-label-sm text-text-muted uppercase tracking-wider mb-1.5 font-semibold">
-                    Phone Number*
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="+91 98765 43210"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-surface-base border border-border-specular text-text-primary placeholder:text-text-muted/60 focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container/40 transition-all text-[16px] sm:text-body-md font-body-md"
-                  />
-                </div>
-              </div>
-
-              {/* Event Date & Location */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-label-sm font-label-sm text-text-muted uppercase tracking-wider mb-1.5 font-semibold">
-                    Event Date*
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    min={new Date().toISOString().split('T')[0]}
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-surface-base border border-border-specular text-text-primary placeholder:text-text-muted/60 focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container/40 transition-all text-[16px] sm:text-body-md font-body-md [color-scheme:dark]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-label-sm font-label-sm text-text-muted uppercase tracking-wider mb-1.5 font-semibold">
-                    Location (City / Area)*
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Indiranagar, Bengaluru"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-surface-base border border-border-specular text-text-primary placeholder:text-text-muted/60 focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container/40 transition-all text-[16px] sm:text-body-md font-body-md"
-                  />
-                </div>
-              </div>
-
-              {/* Shoot Type & Occasion */}
-              <div>
-                <label className="block text-label-sm font-label-sm text-text-muted uppercase tracking-wider mb-1.5 font-semibold">
-                  Shoot Type &amp; Occasion (Selected Service)*
-                </label>
-                <select
-                  value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-surface-base border border-border-specular text-text-primary focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container/40 transition-all text-[16px] sm:text-body-md font-body-md cursor-pointer"
-                >
-                  {SHOOT_TYPE_CATEGORIES.map((cat) => (
-                    <optgroup key={cat.group} label={cat.group} className="bg-[#181318] text-[#ff6d29] font-bold">
-                      {cat.options.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#130f14] text-white font-normal py-1">
-                          {opt}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
-              </div>
-
-              {/* Enquiry Message */}
-              <div>
-                <label className="block text-label-sm font-label-sm text-text-muted uppercase tracking-wider mb-1.5 font-semibold">
-                  Project Details / Enquiry Message
-                </label>
-                <textarea
-                  rows={2}
-                  placeholder="Tell us about your shoot: timeline, style references, number of reels needed..."
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-surface-base border border-border-specular text-text-primary placeholder:text-text-muted/60 focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container/40 transition-all text-[16px] sm:text-body-md font-body-md resize-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="btn-glow-orange btn-shine-sweep w-full mt-2 py-4 rounded-full text-white font-bold text-title-md font-title-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed shadow-lg"
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Locking Your Slot...</span>
-                  </>
-                ) : (
-                  <span>Book Now →</span>
+              <>
+                {/* Error Banner */}
+                {submitError && (
+                  <div className="mb-5 p-4 rounded-xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs sm:text-sm flex items-start gap-2.5 animate-fadeIn shadow-lg">
+                    <span className="material-symbols-outlined text-red-400 text-lg shrink-0 mt-0.5">error</span>
+                    <div className="flex-1">
+                      <div className="font-bold text-red-300">Submission Notice</div>
+                      <div className="text-xs text-red-200/90 mt-0.5 leading-relaxed">{submitError}</div>
+                    </div>
+                  </div>
                 )}
-              </button>
-            </form>
-            )}
-          </div>
 
-          {/* Mobile View Only: Replaces the duplicate booking form with a single attractive CTA button */}
-          <div className="block lg:hidden w-full pt-2">
-            <Link
-              href="/contact"
-              className="lg:hidden btn-glow-orange btn-shine-sweep w-full py-4 px-8 rounded-full font-bold text-white text-base tracking-wide flex items-center justify-center gap-2 transition-all shadow-lg min-h-[52px]"
-              aria-label="Book Your Shoot"
-            >
-              <span>Book Your Shoot →</span>
-            </Link>
+                {/* Skeleton during initial client-mount to prevent SSR extension mismatches */}
+                {!mounted ? (
+                  <div className="space-y-4 py-2 animate-pulse" aria-hidden="true">
+                    <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
+                      <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
+                    </div>
+                    <div className="h-12 rounded-xl bg-surface-base border border-border-specular/40" />
+                    <div className="h-28 rounded-xl bg-surface-base border border-border-specular/40" />
+                    <div className="h-14 rounded-full bg-primary-container/40" />
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+                    {/* Anti-spam honeypot */}
+                    <input
+                      type="text"
+                      name="website_trap"
+                      value={formData.website_trap}
+                      onChange={handleChange}
+                      tabIndex={-1}
+                      autoComplete="off"
+                      className="hidden"
+                      aria-hidden="true"
+                    />
+
+                    {/* Field 1: Full Name */}
+                    <div>
+                      <label htmlFor="booking-fullName" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
+                        Full Name <span className="text-primary-container">*</span>
+                      </label>
+                      <input
+                        id="booking-fullName"
+                        type="text"
+                        name="fullName"
+                        required
+                        placeholder="e.g. Sravanthi Reddy"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 rounded-xl bg-[#09080b] border ${
+                          formErrors.fullName ? 'border-red-500 ring-1 ring-red-500' : 'border-white/15 focus:border-primary-container'
+                        } text-white placeholder:text-text-muted/40 text-sm focus:outline-none transition-colors`}
+                      />
+                      {formErrors.fullName && (
+                        <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.fullName}</p>
+                      )}
+                    </div>
+
+                    {/* Fields 2 & 3: Email Address & Phone Number */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="booking-email" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
+                          Email Address <span className="text-primary-container">*</span>
+                        </label>
+                        <input
+                          id="booking-email"
+                          type="email"
+                          name="email"
+                          required
+                          placeholder="e.g. sravanthi@gmail.com"
+                          value={formData.email}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 rounded-xl bg-[#09080b] border ${
+                            formErrors.email ? 'border-red-500 ring-1 ring-red-500' : 'border-white/15 focus:border-primary-container'
+                          } text-white placeholder:text-text-muted/40 text-sm focus:outline-none transition-colors`}
+                        />
+                        {formErrors.email && (
+                          <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.email}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label htmlFor="booking-phone" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
+                          Phone Number <span className="text-primary-container">*</span>
+                        </label>
+                        <input
+                          id="booking-phone"
+                          type="tel"
+                          name="phone"
+                          required
+                          placeholder="e.g. 9876543210"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 rounded-xl bg-[#09080b] border ${
+                            formErrors.phone ? 'border-red-500 ring-1 ring-red-500' : 'border-white/15 focus:border-primary-container'
+                          } text-white placeholder:text-text-muted/40 text-sm focus:outline-none transition-colors`}
+                        />
+                        {formErrors.phone && (
+                          <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.phone}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Field 4: Subject / Shoot Type (Dropdown) */}
+                    <div>
+                      <label htmlFor="booking-subject" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
+                        Subject / Shoot Type <span className="text-primary-container">*</span>
+                      </label>
+                      <select
+                        id="booking-subject"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-xl bg-[#09080b] border border-white/15 text-white text-sm focus:outline-none focus:border-primary-container transition-colors cursor-pointer"
+                      >
+                        {SUBJECT_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#110e13] text-white py-1">
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                      {formErrors.subject && (
+                        <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.subject}</p>
+                      )}
+                    </div>
+
+                    {/* Field 5: Your Message */}
+                    <div>
+                      <label htmlFor="booking-message" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
+                        Your Message <span className="text-primary-container">*</span>
+                      </label>
+                      <textarea
+                        id="booking-message"
+                        name="message"
+                        rows={4}
+                        required
+                        placeholder="Tell us about your event, location, date, and specific requirements..."
+                        value={formData.message}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 rounded-xl bg-[#09080b] border ${
+                          formErrors.message ? 'border-red-500 ring-1 ring-red-500' : 'border-white/15 focus:border-primary-container'
+                        } text-white placeholder:text-text-muted/40 text-sm focus:outline-none transition-colors resize-y`}
+                      />
+                      {formErrors.message && (
+                        <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.message}</p>
+                      )}
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full btn-glow-orange btn-shine-sweep group inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-bold text-white text-base tracking-wide uppercase transition-all shadow-lg min-h-[50px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none touch-manipulation"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                            </svg>
+                            <span>Sending Message...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>SUBMIT MESSAGE</span>
+                            <span className="material-symbols-outlined text-xl transition-transform duration-200 group-hover:translate-x-1">
+                              send
+                            </span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <p className="text-center text-[11px] text-text-muted/70 pt-1">
+                      By submitting, you agree to our{' '}
+                      <Link href="/privacy" className="underline hover:text-white">Privacy Policy</Link> and{' '}
+                      <Link href="/terms" className="underline hover:text-white">Terms of Service</Link>.
+                    </p>
+                  </form>
+                )}
+              </>
+            )}
           </div>
 
         </div>

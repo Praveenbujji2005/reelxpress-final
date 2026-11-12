@@ -268,22 +268,6 @@ export default function ContactPageView() {
                 </li>
               </ul>
             </div>
-
-            {/* Creator CTA Card */}
-            <div className="rounded-3xl bg-gradient-to-br from-[#161218] to-[#110e13] border border-white/10 p-6 shadow-lg flex items-center justify-between gap-4">
-              <div>
-                <h3 className="text-base font-bold text-white">Are you a Reel Creator?</h3>
-                <p className="text-xs text-text-muted mt-1">
-                  Join our verified creator network &amp; earn with instant payouts.
-                </p>
-              </div>
-              <Link
-                href="/creators"
-                className="btn-glow-dark shrink-0 px-4 py-2 rounded-full text-xs font-bold uppercase"
-              >
-                Join Now
-              </Link>
-            </div>
           </div>
 
           {/* RIGHT COLUMN: Contact Form */}

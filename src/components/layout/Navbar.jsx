@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import QuickContactModal from '@/components/ui/QuickContactModal';
 import { SITE_CONFIG } from '@/config/site';
+import ReelXpressWordmark from '@/components/ui/ReelXpressWordmark';
 
 /**
  * Responsive Navbar Component
@@ -90,7 +91,7 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
              ===================================================================== */}
           <div className="flex items-center">
             {/* Desktop Left Nav Links */}
-            <nav className="hidden md:flex items-center gap-6 sm:gap-7 text-xs sm:text-[13px] font-semibold text-white/70">
+            <nav className="hidden md:flex items-center gap-6 sm:gap-7 text-xs sm:text-[13px] font-semibold text-white/85">
               <Link
                 href="/#pricing"
                 className="hover:text-white transition-colors py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-primary-container hover:after:w-full after:transition-all after:duration-200"
@@ -101,7 +102,7 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
                 href="/reelxpress"
                 className="hover:text-white transition-colors py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-primary-container hover:after:w-full after:transition-all after:duration-200"
               >
-                {SITE_CONFIG.name}
+                Why ReelXpress
               </Link>
             </nav>
 
@@ -110,21 +111,15 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
           </div>
 
           {/* =====================================================================
-              CENTER: Orange 'X' Logo Mark
+              CENTER: Official Brand Wordmark (Crisp Text + Orange 'X' Icon)
              ===================================================================== */}
-          <div className="shrink-0 flex items-center justify-center px-1 sm:px-2">
+          <div className="shrink-0 flex items-center justify-center px-1 sm:px-3">
             <Link
               href="/"
-              className="inline-flex items-center justify-center group select-none py-1 min-w-[44px] min-h-[44px] transition-transform duration-200 hover:scale-[1.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container rounded-full"
+              className="inline-flex items-center justify-center group select-none py-1 min-w-[44px] min-h-[44px] transition-transform duration-200 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container rounded-full"
               aria-label={`${SITE_CONFIG.name} Home`}
             >
-              <img
-                src="/brand/reelxpress-x-logo.png"
-                alt={`${SITE_CONFIG.name} Mark`}
-                width={26}
-                height={36}
-                className="w-5 sm:w-6 h-auto object-contain drop-shadow-[0_0_12px_rgba(255,94,30,0.65)] transition-transform duration-200 group-hover:scale-110"
-              />
+              <ReelXpressWordmark className="h-6 sm:h-7 w-auto align-middle drop-shadow-[0_0_14px_rgba(255,94,30,0.45)] transition-transform duration-200 group-hover:scale-105" />
             </Link>
           </div>
 
@@ -133,7 +128,7 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
              ===================================================================== */}
           <div className="flex items-center">
             {/* Desktop Right Nav Links */}
-            <nav className="hidden md:flex items-center gap-6 sm:gap-7 text-xs sm:text-[13px] font-semibold text-white/70">
+            <nav className="hidden md:flex items-center gap-6 sm:gap-7 text-xs sm:text-[13px] font-semibold text-white/85">
               <Link
                 href="/#showcase"
                 className="hover:text-white transition-colors py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-primary-container hover:after:w-full after:transition-all after:duration-200"

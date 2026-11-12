@@ -82,8 +82,8 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Navigation & Legal Links Columns */}
-          <div className="flex flex-col sm:flex-row gap-8 sm:gap-14">
+          {/* Navigation & Legal Links Columns (side-by-side on all screens) */}
+          <div className="grid grid-cols-2 gap-6 sm:gap-14 w-full sm:w-auto">
             {/* Navigation Column */}
             <div>
               <div className="text-label-sm font-bold text-text-primary uppercase tracking-wider mb-4 flex items-center gap-1.5">
