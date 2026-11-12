@@ -71,6 +71,52 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
 
   return (
     <>
+      {/* =========================================================================
+          MOBILE NAVBAR (< 768px / md:hidden)
+          - Height 56px, 16px side padding, same width as hero
+          - Sticky top-0, backdrop blur, thin border, safe-area-inset-top
+          - Logo left, 44x44 hamburger right, vertically centered
+          ========================================================================= */}
+      <header
+        className="md:hidden sticky top-0 left-0 right-0 z-50 w-full bg-[#080808]/90 backdrop-blur-xl border-b border-white/10 pt-[env(safe-area-inset-top)] select-none"
+        role="banner"
+      >
+        <div className="h-14 px-4 flex items-center justify-between w-full max-w-[1600px] mx-auto">
+          {/* Logo Left */}
+          <Link
+            href="/"
+            className="flex items-center min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container rounded-lg"
+            aria-label={`${SITE_CONFIG.name} Home`}
+          >
+            <ReelXpressWordmark className="h-6 w-auto drop-shadow-[0_0_12px_rgba(255,94,30,0.35)]" />
+          </Link>
+
+          {/* Hamburger Right (at least 44x44px) */}
+          <button
+            type="button"
+            onClick={onOpenMobileMenu}
+            aria-label="Open menu"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu-drawer"
+            className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] text-white hover:text-primary-container active:scale-95 transition-transform cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container rounded-lg"
+          >
+            {isMobileMenuOpen ? (
+              <svg className="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </header>
+
+      {/* =========================================================================
+          DESKTOP & TABLET NAVBAR (>= 768px / hidden md:flex)
+          - Preserved exactly as-is: floating pill layout with center logo
+          ========================================================================= */}
       <header
         style={{
           opacity: isHeroVisible ? 1 : 0,
@@ -78,7 +124,7 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
           visibility: isHeroVisible ? 'visible' : 'hidden',
           pointerEvents: isHeroVisible ? 'auto' : 'none',
         }}
-        className="fixed top-3 sm:top-4 left-0 right-0 z-50 px-3 w-full flex justify-center transition-all duration-300 ease-out"
+        className="hidden md:flex fixed top-3 sm:top-4 left-0 right-0 z-50 px-3 w-full justify-center transition-all duration-300 ease-out"
         aria-hidden={!isHeroVisible}
       >
         <div
@@ -86,12 +132,9 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
           role="navigation"
           aria-label="Main Navigation"
         >
-          {/* =====================================================================
-              LEFT WING: Desktop Links (Pricing, Services) / Mobile Spacer
-             ===================================================================== */}
+          {/* LEFT WING: Desktop Links (Pricing, Services) */}
           <div className="flex items-center">
-            {/* Desktop Left Nav Links */}
-            <nav className="hidden md:flex items-center gap-6 sm:gap-7 text-xs sm:text-[13px] font-semibold text-white/85">
+            <nav className="flex items-center gap-6 sm:gap-7 text-xs sm:text-[13px] font-semibold text-white/85">
               <Link
                 href="/#pricing"
                 className="hover:text-white transition-colors py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-primary-container hover:after:w-full after:transition-all after:duration-200"
@@ -105,14 +148,9 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
                 Why us
               </Link>
             </nav>
-
-            {/* Mobile Left Spacer to keep center logo perfectly balanced (matching hamburger button footprint) */}
-            <div className="w-10 h-10 min-w-[40px] md:hidden opacity-0 pointer-events-none shrink-0" aria-hidden="true" />
           </div>
 
-          {/* =====================================================================
-              CENTER: Official Brand Wordmark (Crisp Text + Orange 'X' Icon)
-             ===================================================================== */}
+          {/* CENTER: Official Brand Wordmark (Crisp Text + Orange 'X' Icon) */}
           <div className="shrink-0 flex items-center justify-center px-1 sm:px-3">
             <Link
               href="/"
@@ -123,12 +161,9 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
             </Link>
           </div>
 
-          {/* =====================================================================
-              RIGHT WING: Desktop Links (Real work, Contact) / Mobile Hamburger
-             ===================================================================== */}
+          {/* RIGHT WING: Desktop Links (Real work, Contact) */}
           <div className="flex items-center">
-            {/* Desktop Right Nav Links */}
-            <nav className="hidden md:flex items-center gap-6 sm:gap-7 text-xs sm:text-[13px] font-semibold text-white/85">
+            <nav className="flex items-center gap-6 sm:gap-7 text-xs sm:text-[13px] font-semibold text-white/85">
               <Link
                 href="/#showcase"
                 className="hover:text-white transition-colors py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-primary-container hover:after:w-full after:transition-all after:duration-200"
@@ -142,26 +177,6 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
                 Contact
               </Link>
             </nav>
-
-            {/* Mobile Hamburger Trigger: Clean 3-line icon with NO outer circular ring */}
-            <button
-              type="button"
-              onClick={onOpenMobileMenu}
-              aria-label={isMobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu-drawer"
-              className="md:hidden flex items-center justify-center w-10 h-10 min-w-[40px] text-white hover:text-primary-container active:scale-90 transition-colors cursor-pointer shrink-0 touch-manipulation focus-visible:outline-none"
-            >
-              {isMobileMenuOpen ? (
-                <svg className="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
           </div>
         </div>
       </header>

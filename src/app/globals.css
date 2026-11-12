@@ -26,11 +26,27 @@
   html {
     scroll-behavior: smooth;
   }
+  .hero-mobile-fadein {
+    animation: heroMobileFadeIn 0.35s ease-out forwards;
+  }
+  @keyframes heroMobileFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto !important;
+  }
+  .hero-mobile-fadein {
+    animation: none !important;
   }
 }
 

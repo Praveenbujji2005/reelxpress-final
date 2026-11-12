@@ -284,7 +284,7 @@ export default function WhatsAppWidget() {
         aria-label={!isMobile && isOpen ? 'Close WhatsApp chat' : 'Chat with ReelXpress on WhatsApp'}
         aria-expanded={!isMobile && isOpen}
         aria-haspopup={!isMobile ? 'dialog' : undefined}
-        className="fixed bottom-4 sm:bottom-6 right-3 sm:right-6 z-[99995] w-14 h-14 min-w-[56px] min-h-[56px] rounded-full bg-gradient-to-tr from-[#20ba5a] to-[#25D366] text-white flex items-center justify-center shadow-[0_8px_24px_rgba(37,211,102,0.45)] hover:shadow-[0_12px_32px_rgba(37,211,102,0.65)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366] group"
+        className="fixed bottom-[calc(16px+env(safe-area-inset-bottom))] md:bottom-6 right-4 md:right-6 z-40 md:z-[99995] w-[52px] h-[52px] min-w-[52px] min-h-[52px] md:w-14 md:h-14 md:min-w-[56px] md:min-h-[56px] rounded-full bg-gradient-to-tr from-[#20ba5a] to-[#25D366] text-white flex items-center justify-center shadow-[0_8px_24px_rgba(37,211,102,0.45)] hover:shadow-[0_12px_32px_rgba(37,211,102,0.65)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366] group"
       >
         {/* Soft pulse glow ring behind button */}
         <span
@@ -295,7 +295,7 @@ export default function WhatsAppWidget() {
         {!isMobile && isOpen ? (
           /* Smooth Cross Close Icon (Desktop Open State) */
           <svg
-            className="w-6 h-6 fill-none stroke-current stroke-2 transition-transform duration-200 rotate-0 group-hover:rotate-90"
+            className="w-5 h-5 md:w-6 md:h-6 fill-none stroke-current stroke-2 transition-transform duration-200 rotate-0 group-hover:rotate-90"
             viewBox="0 0 24 24"
             aria-hidden="true"
           >
@@ -304,7 +304,7 @@ export default function WhatsAppWidget() {
         ) : (
           /* Official WhatsApp Brand Icon */
           <svg
-            className="w-7 h-7 fill-current drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 group-hover:scale-110"
+            className="w-6 h-6 md:w-7 md:h-7 fill-current drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 group-hover:scale-110"
             viewBox="0 0 24 24"
             aria-hidden="true"
           >

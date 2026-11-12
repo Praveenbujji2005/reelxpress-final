@@ -83,48 +83,50 @@ export default function MobileMenu({ isOpen, onClose }) {
         />
       )}
 
-      {/* Drawer */}
+      {/* Full-width Menu Sheet */}
       <div
         id="mobile-menu-drawer"
         data-lenis-prevent
-        className={`fixed inset-x-0 top-0 z-[100025] p-3 sm:p-4 max-h-[92vh] max-h-[92dvh] overflow-y-auto transform transition-transform duration-300 md:hidden ${
+        className={`fixed inset-x-0 top-0 z-[100025] w-full max-h-[100svh] overflow-y-auto bg-[#0b090c]/98 border-b border-white/15 backdrop-blur-2xl shadow-2xl transition-transform duration-300 md:hidden pt-[env(safe-area-inset-top)] pb-6 px-4 ${
           isOpen ? 'translate-y-0 pointer-events-auto' : '-translate-y-full pointer-events-none'
         }`}
         role="dialog"
         aria-modal="true"
-        aria-label="Mobile Navigation Drawer"
+        aria-label="Mobile Navigation Menu"
       >
-        <div className="rounded-3xl bg-[#161217]/98 border border-white/15 backdrop-blur-2xl p-5 sm:p-6 shadow-2xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+        <div className="w-full max-w-[1600px] mx-auto">
+          {/* Header inside sheet: Logo left, Close right (height 56px matching navbar) */}
+          <div className="h-14 flex items-center justify-between border-b border-white/10 pb-1">
             <Link
               href="/"
               onClick={() => handleLinkClick('/')}
-              className="flex items-center min-h-[44px]"
+              className="flex items-center min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container rounded-lg"
               aria-label={`${SITE_CONFIG.name} Home`}
             >
-              <ReelXpressWordmark className="h-7 w-auto align-middle drop-shadow-[0_0_12px_rgba(255,94,30,0.4)]" />
+              <ReelXpressWordmark className="h-6 w-auto drop-shadow-[0_0_12px_rgba(255,94,30,0.35)]" />
             </Link>
 
-            {/* 48x48px touch target close button */}
+            {/* At least 44x44px close button */}
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close Menu"
-              className="w-12 h-12 min-w-[48px] min-h-[48px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-text-muted hover:text-white active:scale-90 cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container"
+              aria-label="Close menu"
+              className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg text-white/80 hover:text-white active:scale-95 transition-all flex items-center justify-center cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container"
             >
-              <svg className="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          <div className="flex flex-col space-y-2">
+          {/* Navigation Links (each min 48px height using next/link) */}
+          <nav className="flex flex-col pt-3 pb-2 divide-y divide-white/5" aria-label="Mobile Navigation Links">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
                 onClick={() => handleLinkClick(link.href)}
-                className="text-base font-bold text-white hover:text-primary-container active:bg-white/5 rounded-xl px-3 py-3 border-b border-white/5 flex items-center justify-between min-h-[48px] touch-manipulation transition-colors"
+                className="h-12 min-h-[48px] flex items-center justify-between text-[15px] font-semibold text-white/90 hover:text-white active:bg-white/5 px-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container"
               >
                 <span>{link.label}</span>
                 <svg className="w-4 h-4 text-white/40 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
@@ -133,17 +135,20 @@ export default function MobileMenu({ isOpen, onClose }) {
               </Link>
             ))}
 
-            <a
-              href="/#booking"
-              onClick={() => handleLinkClick('/#booking')}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full btn-glow-orange font-bold text-base mt-3 cursor-pointer min-h-[48px] touch-manipulation"
-            >
-              <span>Book Now</span>
-              <svg className="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </a>
-          </div>
+            {/* Last Item: "Book your reel" using next/link */}
+            <div className="pt-3 border-none">
+              <Link
+                href="/#booking"
+                onClick={() => handleLinkClick('/#booking')}
+                className="w-full h-12 min-h-[48px] rounded-2xl bg-gradient-to-r from-[#EA5A2B] to-[#F0A04B] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(234,90,43,0.35)] active:scale-[0.98] transition-all touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F0A04B] cursor-pointer"
+              >
+                <span>Book your reel</span>
+                <svg className="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+            </div>
+          </nav>
         </div>
       </div>
     </>
