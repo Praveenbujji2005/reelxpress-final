@@ -47,16 +47,78 @@ export default function Hero({ onShowToast }) {
       </h1>
 
       {/* Sub-line */}
-      <p className="reveal-on-scroll text-sm sm:text-lg md:text-xl font-normal text-text-muted/90 max-w-2xl mx-auto mb-10 sm:mb-14 leading-relaxed delay-100">
+      <p className="reveal-on-scroll text-sm sm:text-lg md:text-xl font-normal text-text-muted/90 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed delay-100">
         You live the moment. ReelXpress captures it — instantly. Shot on latest iPhone gear with on-spot live editing.
       </p>
+
+      {/* =========================================================================
+          PRIMARY CTAs (BOOK NOW & BECOME A CREATOR)
+          - Moved to top of carousel as requested
+          - Desktop: Side-by-side in one row (sm:flex-row)
+          - Mobile: Stacked vertically with "Become a Creator" below "Book Now" (flex-col)
+         ========================================================================= */}
+      <div className="reveal-on-scroll relative z-30 w-full max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-6 mb-8 sm:mb-10 px-4">
+        {/* Book Now Button */}
+        <a
+          href="#booking"
+          onClick={(e) => {
+            if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+              e.preventDefault();
+              window.location.href = '/contact';
+              return;
+            }
+            e.preventDefault();
+            const bookingEl = document.getElementById('booking') || document.getElementById('booking-form');
+            if (bookingEl) {
+              if (typeof window !== 'undefined' && window.lenis) {
+                window.lenis.scrollTo(bookingEl, { offset: -60, duration: 1.2 });
+              } else {
+                bookingEl.scrollIntoView({ behavior: 'smooth' });
+              }
+            } else {
+              window.location.href = '/contact';
+            }
+          }}
+          className="btn-glow-orange btn-shine-sweep group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-extrabold text-sm sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[50px] shadow-lg"
+          aria-label="Book reelXpress Now"
+        >
+          <span>BOOK NOW</span>
+          <span className="material-symbols-outlined text-lg sm:text-xl transition-transform duration-200 group-hover:translate-x-1">
+            arrow_forward
+          </span>
+        </a>
+
+        {/* Become a Creator Button */}
+        <Link
+          href="/creators"
+          className="btn-glow-dark group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-extrabold text-sm sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[50px] shadow-lg"
+          aria-label="Become a Creator"
+        >
+          <span>BECOME A CREATOR</span>
+          <span className="material-symbols-outlined text-lg sm:text-xl text-primary transition-transform duration-200 group-hover:translate-x-1">
+            north_east
+          </span>
+        </Link>
+      </div>
+
+      {/* =========================================================================
+          STATS ROW (45,000+ Reels / 5,000+ Bookings / 4.8 Rating)
+          Moved to top of carousel as social proof bridge
+         ========================================================================= */}
+      <div className="reveal-on-scroll relative z-30 w-full max-w-4xl mx-auto mb-10 sm:mb-14 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+          <StatCard value="45,000+" label="Reels delivered" />
+          <StatCard value="5,000+" label="Bookings done" />
+          <StatCard value="4.8" label="Average Rating" hasStar={true} />
+        </div>
+      </div>
 
       {/* =========================================================================
           KEY CREATIVE SHOWCASE ("THE REAL WORK")
           - Video carousel sits openly and seamlessly on the hero section background
           - Preserves #showcase anchor for navbar navigation
          ========================================================================= */}
-      <div id="showcase" className="reveal-scale-on-scroll relative w-full max-w-7xl mx-auto mb-10 sm:mb-14 overflow-visible scroll-mt-20 md:scroll-mt-28">
+      <div id="showcase" className="reveal-scale-on-scroll relative w-full max-w-7xl mx-auto mb-8 sm:mb-12 overflow-visible scroll-mt-20 md:scroll-mt-28">
         {/* Ambient Warm Radial Glow Behind Showcase */}
         <div
           className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[620px] md:w-[920px] h-[340px] sm:h-[480px] rounded-full bg-gradient-to-br from-[#FF5E1E]/12 via-[#5c1d00]/05 to-transparent blur-3xl pointer-events-none -z-10"
@@ -79,69 +141,6 @@ export default function Hero({ onShowToast }) {
 
         {/* Fanned-Out Reel Portfolio Carousel */}
         <PortfolioCarousel onShowToast={onShowToast} />
-      </div>
-
-      {/* =========================================================================
-          STATS ROW (45,000+ Reels / 5,000+ Bookings / 4.8 Rating)
-          Clean social proof foundation directly beneath the showcase deck
-         ========================================================================= */}
-      <div className="reveal-on-scroll relative z-30 w-full max-w-4xl mx-auto mb-6 sm:mb-8 px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          <StatCard value="45,000+" label="Reels delivered" />
-          <StatCard value="5,000+" label="Bookings done" />
-          <StatCard value="4.8" label="Average Rating" hasStar={true} />
-        </div>
-      </div>
-
-      {/* =========================================================================
-          REPOSITIONED PRIMARY CTAs (Immediately following the Average Rating section)
-          - Book Now: High-contrast glowing orange gradient with subtle outer glow
-          - Become a Creator: Sleek dark luxury button with glowing orange border
-          - Responsive: Stacked on mobile with full-touch targets, side-by-side on desktop
-          - Smooth scroll to #booking and link to /creators
-         ========================================================================= */}
-      <div className="reveal-on-scroll relative z-30 w-full max-w-xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-6 mt-2 sm:mt-4 mb-4 sm:mb-8 px-4">
-        {/* Book Now Button */}
-        <a
-          href="#booking"
-          onClick={(e) => {
-            if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-              e.preventDefault();
-              window.location.href = '/contact';
-              return;
-            }
-            e.preventDefault();
-            const bookingEl = document.getElementById('booking') || document.getElementById('booking-form');
-            if (bookingEl) {
-              if (typeof window !== 'undefined' && window.lenis) {
-                window.lenis.scrollTo(bookingEl, { offset: -60, duration: 1.2 });
-              } else {
-                bookingEl.scrollIntoView({ behavior: 'smooth' });
-              }
-            } else {
-              window.location.href = '/contact';
-            }
-          }}
-          className="btn-glow-orange btn-shine-sweep group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-extrabold text-sm sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[50px]"
-          aria-label="Book reelXpress Now"
-        >
-          <span>BOOK NOW</span>
-          <span className="material-symbols-outlined text-lg sm:text-xl transition-transform duration-200 group-hover:translate-x-1">
-            arrow_forward
-          </span>
-        </a>
-
-        {/* Become a Creator Button */}
-        <Link
-          href="/creators"
-          className="btn-glow-dark group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-extrabold text-sm sm:text-base tracking-wider uppercase cursor-pointer select-none touch-manipulation min-h-[50px]"
-          aria-label="Become a Creator"
-        >
-          <span>BECOME A CREATOR</span>
-          <span className="material-symbols-outlined text-lg sm:text-xl text-primary transition-transform duration-200 group-hover:translate-x-1">
-            north_east
-          </span>
-        </Link>
       </div>
     </section>
   );
