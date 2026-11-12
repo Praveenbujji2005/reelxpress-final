@@ -6,6 +6,7 @@ import {
   saveHeroSlide,
   deleteHeroSlide,
   uploadImageFile,
+  uploadVideoFile,
 } from '@/lib/cmsServices';
 import { useAdminAuth } from '@/context/AdminAuthContext';
 
@@ -16,6 +17,7 @@ export default function AdminHeroPage() {
   const [editingSlide, setEditingSlide] = useState(null);
   const [slideToDelete, setSlideToDelete] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isVideoUploading, setIsVideoUploading] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
   const fetchSlides = async () => {
@@ -46,6 +48,8 @@ export default function AdminHeroPage() {
       category: 'Celebrations',
       views: '150K views',
       poster: '/thumbnails/reel-frame-1.jpg',
+      videoUrl: '',
+      videoSrc: '',
       instagramUrl: 'https://www.instagram.com/reelxpress___',
       enabled: true,
       order: slides.length + 1,
@@ -67,6 +71,21 @@ export default function AdminHeroPage() {
     }
   };
 
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsVideoUploading(true);
+    try {
+      const url = await uploadVideoFile(file, 'hero');
+      setEditingSlide((prev) => ({ ...prev, videoUrl: url, videoSrc: url }));
+      showToast('Video uploaded to Firebase Storage successfully!');
+    } catch (err) {
+      alert('Video upload failed: ' + err.message);
+    } finally {
+      setIsVideoUploading(false);
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     if (!editingSlide.title || !editingSlide.creator) {
@@ -74,7 +93,12 @@ export default function AdminHeroPage() {
       return;
     }
     try {
-      await saveHeroSlide(editingSlide, user?.email);
+      const payload = {
+        ...editingSlide,
+        videoUrl: editingSlide.videoUrl || editingSlide.videoSrc || '',
+        videoSrc: editingSlide.videoUrl || editingSlide.videoSrc || '',
+      };
+      await saveHeroSlide(payload, user?.email);
       showToast('Hero slide saved successfully!');
       setEditingSlide(null);
       await fetchSlides();
@@ -209,16 +233,23 @@ export default function AdminHeroPage() {
                   <span className="px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white font-bold text-[11px]">
                     #{idx + 1} · {slide.category}
                   </span>
-                  <span className="px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-text-muted text-[11px]">
-                    {slide.views}
-                  </span>
+                  {slide.videoUrl || slide.videoSrc ? (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-[10px] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <span>Video</span>
+                    </span>
+                  ) : (
+                    <span className="px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-text-muted text-[11px]">
+                      {slide.views}
+                    </span>
+                  )}
                 </div>
 
-                {/* Center Instagram Action Icon */}
+                {/* Center Video Play Action Icon */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#f09433] to-[#bc1888] flex items-center justify-center text-white shadow-lg">
-                    <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                  <div className="w-12 h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform">
+                    <svg className="w-6 h-6 fill-[#ff6d29] translate-x-0.5" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
                     </svg>
                   </div>
                 </div>
@@ -380,6 +411,73 @@ export default function AdminHeroPage() {
                     onChange={(e) => setEditingSlide({ ...editingSlide, instagramUrl: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
                   />
+                </div>
+              </div>
+
+              {/* Video URL & Video File Upload */}
+              <div>
+                <label className="block text-xs uppercase tracking-wider font-bold text-text-muted mb-1.5 flex items-center justify-between">
+                  <span>Reel Video (Firebase Storage MP4)</span>
+                  {(editingSlide.videoUrl || editingSlide.videoSrc) && (
+                    <span className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                      <span className="material-symbols-outlined text-xs">check_circle</span>
+                      <span>Video Configured</span>
+                    </span>
+                  )}
+                </label>
+                <div className="space-y-3 p-4 rounded-2xl bg-[#0c0a0c] border border-white/15">
+                  <div className="flex items-center gap-4">
+                    {editingSlide.videoUrl || editingSlide.videoSrc ? (
+                      <div className="w-16 h-28 aspect-[9/16] rounded-xl overflow-hidden bg-black shrink-0 border border-white/20 relative">
+                        <video
+                          src={editingSlide.videoUrl || editingSlide.videoSrc}
+                          playsInline
+                          muted
+                          controls
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-16 h-28 aspect-[9/16] rounded-xl bg-white/5 border border-dashed border-white/20 shrink-0 flex flex-col items-center justify-center text-text-muted">
+                        <span className="material-symbols-outlined text-xl">videocam_off</span>
+                        <span className="text-[9px] mt-1">No video</span>
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs cursor-pointer transition-colors">
+                        <span className="material-symbols-outlined text-sm">video_file</span>
+                        <span>{isVideoUploading ? 'Uploading Video...' : 'Upload Video File'}</span>
+                        <input
+                          type="file"
+                          accept="video/mp4,video/webm,video/quicktime"
+                          disabled={isVideoUploading}
+                          onChange={handleVideoUpload}
+                          className="hidden"
+                        />
+                      </label>
+                      <p className="text-[11px] text-text-muted mt-1.5">
+                        Upload 9:16 vertical MP4 video directly to Firebase Storage bucket.
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">
+                      Or Direct Firebase Video Download URL
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://firebasestorage.googleapis.com/... or /assets/video.mp4"
+                      value={editingSlide.videoUrl || editingSlide.videoSrc || ''}
+                      onChange={(e) =>
+                        setEditingSlide({
+                          ...editingSlide,
+                          videoUrl: e.target.value,
+                          videoSrc: e.target.value,
+                        })
+                      }
+                      className="w-full px-3 py-2 rounded-xl bg-[#070507] border border-white/10 text-white text-xs focus:border-[#ff6d29] focus:outline-none font-mono"
+                    />
+                  </div>
                 </div>
               </div>
 

@@ -1,14 +1,18 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { REEL_PORTFOLIO, INSTAGRAM_PAGE_URL } from '@/lib/data';
+import { REEL_PORTFOLIO } from '@/lib/data';
 import { getHeroSlides, getCachedHeroSlides } from '@/lib/cmsServices';
 
-// Overlapping fanned-out 3D reel portfolio carousel displaying clean photo stills with Instagram redirection
-export default function PortfolioCarousel({ onShowToast }) {
+// Overlapping fanned-out 3D reel portfolio carousel with interactive video playback
+export default function PortfolioCarousel({ onShowToast: _onShowToast } = {}) {
   const [reels, setReels] = useState(REEL_PORTFOLIO);
-  const [activeReelIndex, setActiveReelIndex] = useState(3); // Center card active by default
+  const [activeReelIndex, setActiveReelIndex] = useState(2); // Center card active by default
+  const [playingIndex, setPlayingIndex] = useState(null); // Track currently playing video
   const [windowWidth, setWindowWidth] = useState(1200);
+
+  // Video element references for playback coordination
+  const videoRefs = useRef({});
 
   // Per-card media failure state for fallback handling
   const [failedImages, setFailedImages] = useState({});
@@ -18,6 +22,21 @@ export default function PortfolioCarousel({ onShowToast }) {
   const hasDragged = useRef(false);
 
   const totalCards = reels.length;
+
+  // Pause all playing videos when switching slides
+  const pauseAllVideos = useCallback(() => {
+    Object.values(videoRefs.current).forEach((vid) => {
+      if (vid && !vid.paused) {
+        vid.pause();
+      }
+    });
+    setPlayingIndex(null);
+  }, []);
+
+  // Pause previous video whenever activeReelIndex changes (switching slides)
+  useEffect(() => {
+    pauseAllVideos();
+  }, [activeReelIndex, pauseAllVideos]);
 
   // Load dynamic hero slides from CMS / Firestore with instantaneous cache fast-path
   useEffect(() => {
@@ -179,34 +198,53 @@ export default function PortfolioCarousel({ onShowToast }) {
     [totalCards]
   );
 
-  // Redirect to Instagram page
-  const openInstagram = useCallback(
-    (reel) => {
-      const url = reel?.instagramUrl || INSTAGRAM_PAGE_URL;
-      if (typeof window !== 'undefined') {
-        window.open(url, '_blank', 'noopener,noreferrer');
-        onShowToast?.({
-          title: 'Opening Instagram',
-          message: 'Redirecting to @reelxpress___ on Instagram',
-          icon: 'open_in_new',
-          visible: true,
-        });
+  // Handle Play/Pause for individual reel video
+  const handlePlayVideo = useCallback(
+    (index, e) => {
+      if (e) e.stopPropagation();
+
+      // If card is not centered, center it first
+      if (index !== activeReelIndex) {
+        selectCard(index);
+      }
+
+      // Pause all other videos
+      Object.entries(videoRefs.current).forEach(([k, vid]) => {
+        if (Number(k) !== index && vid && !vid.paused) {
+          vid.pause();
+        }
+      });
+
+      const currentVid = videoRefs.current[index];
+      if (currentVid) {
+        if (currentVid.paused) {
+          currentVid.play().then(() => {
+            setPlayingIndex(index);
+          }).catch((err) => {
+            console.warn('[PortfolioCarousel] Video play notice:', err);
+          });
+        } else {
+          currentVid.pause();
+          setPlayingIndex(null);
+        }
       }
     },
-    [onShowToast]
+    [activeReelIndex, selectCard]
   );
 
-  // Handle card click: clicking center card redirects to Instagram; clicking side card centers it
+  // Handle card click:
+  // - Clicking a side card brings it to center (and pauses any playing video)
+  // - Clicking the active center card toggles video playback
   const handleCardClick = useCallback(
     (index) => {
       if (hasDragged.current) return;
-      if (index === activeReelIndex) {
-        openInstagram(reels[index]);
-      } else {
+      if (index !== activeReelIndex) {
         selectCard(index);
+      } else {
+        handlePlayVideo(index);
       }
     },
-    [activeReelIndex, openInstagram, selectCard, reels]
+    [activeReelIndex, handlePlayVideo, selectCard]
   );
 
   // Touch and swipe gestures
@@ -243,10 +281,12 @@ export default function PortfolioCarousel({ onShowToast }) {
       >
         {reels.map((reel, index) => {
           const isCenter = index === activeReelIndex;
+          const isPlaying = playingIndex === index;
           const cardStyle = getCardStyle(index);
 
           const reelIdKey = String(reel.id !== undefined && reel.id !== null ? reel.id : index);
           const hasFailed = Boolean(failedImages[reelIdKey]);
+          const videoSrc = reel.videoUrl || reel.videoSrc || '';
 
           // Image source resolution with complete fallback chain
           const posterSrc =
@@ -275,7 +315,7 @@ export default function PortfolioCarousel({ onShowToast }) {
               data-reel={index}
               role="button"
               tabIndex={0}
-              aria-label={reel.title ? `${reel.title} - View reel on Instagram` : 'View reel on Instagram'}
+              aria-label={reel.title ? `${reel.title} - ${isPlaying ? 'Pause video' : 'Play video'}` : 'Play video'}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -290,7 +330,7 @@ export default function PortfolioCarousel({ onShowToast }) {
                     <span className="material-symbols-outlined text-xl">videocam</span>
                   </div>
                   <p className="text-xs font-bold text-white mb-1">{reel.title || 'ReelXpress Visual'}</p>
-                  <p className="text-[11px] text-text-muted">Tap to view on Instagram</p>
+                  <p className="text-[11px] text-text-muted">Tap to view video</p>
                 </div>
               )}
 
@@ -302,8 +342,38 @@ export default function PortfolioCarousel({ onShowToast }) {
                 <span>reel</span><span className="text-[#ff6d29] font-black">X</span><span>press</span>
               </div>
 
-              {/* Single Frame / Reel Photo Still */}
-              <picture className="w-full h-full block">
+              {/* Video Element: Plays on click with native video controls */}
+              {videoSrc && (
+                <video
+                  ref={(el) => {
+                    if (el) videoRefs.current[index] = el;
+                  }}
+                  src={videoSrc}
+                  poster={posterSrc}
+                  playsInline
+                  preload="metadata"
+                  controls={isPlaying}
+                  controlsList="nodownload"
+                  onPlay={() => {
+                    setPlayingIndex(index);
+                    Object.entries(videoRefs.current).forEach(([k, vid]) => {
+                      if (Number(k) !== index && vid && !vid.paused) vid.pause();
+                    });
+                  }}
+                  onPause={() => {
+                    if (playingIndex === index) setPlayingIndex(null);
+                  }}
+                  onEnded={() => {
+                    if (playingIndex === index) setPlayingIndex(null);
+                  }}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+                    isPlaying ? 'opacity-100 z-30' : 'opacity-0 z-0 pointer-events-none'
+                  }`}
+                />
+              )}
+
+              {/* Poster / Thumbnail Image (Visible when video is not playing) */}
+              <picture className={`w-full h-full block transition-opacity duration-300 ${isPlaying ? 'opacity-0' : 'opacity-100'}`}>
                 {posterWebp && <source srcSet={posterWebp} type="image/webp" />}
                 <img
                   src={posterSrc}
@@ -316,6 +386,36 @@ export default function PortfolioCarousel({ onShowToast }) {
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-10"
                 />
               </picture>
+
+              {/* Play Button Overlay (Visible when video is not playing) */}
+              {!isPlaying && (
+                <div
+                  className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
+                  aria-hidden="true"
+                >
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-black/60 backdrop-blur-md border border-white/25 text-white flex items-center justify-center shadow-[0_4px_25px_rgba(0,0,0,0.85)] group-hover:scale-110 group-hover:border-[#ff6d29] group-hover:bg-[#ff6d29]/25 transition-all duration-300">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 fill-[#ff6d29] translate-x-0.5 drop-shadow-[0_0_8px_rgba(255,109,41,0.6)]" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+
+              {/* Card Meta / Caption Overlay at Bottom (Visible when video is not playing) */}
+              {!isPlaying && (
+                <div className="absolute inset-x-0 bottom-0 p-3.5 sm:p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-20 pointer-events-none">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#ff6d29] block mb-0.5">
+                    {reel.category || 'Featured Reel'}
+                  </span>
+                  <h4 className="text-xs sm:text-sm font-extrabold text-white leading-snug line-clamp-1">
+                    {reel.title}
+                  </h4>
+                  <div className="flex items-center justify-between text-[10px] sm:text-[11px] text-white/70 mt-1">
+                    <span>{reel.creator}</span>
+                    {reel.views && <span className="text-white/50">{reel.views}</span>}
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}

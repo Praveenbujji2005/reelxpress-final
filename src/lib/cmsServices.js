@@ -383,9 +383,11 @@ export const INITIAL_HERO_SLIDES = (REEL_PORTFOLIO || []).map((reel, idx) => ({
   category: reel.category || 'Celebrations',
   views: reel.views || '150K views',
   poster: reel.poster || '/thumbnails/reel-frame-1.jpg',
+  videoUrl: reel.videoUrl || reel.videoSrc || '',
+  videoSrc: reel.videoSrc || reel.videoUrl || '',
   instagramUrl: reel.instagramUrl || 'https://www.instagram.com/reelxpress___',
   enabled: true,
-  order: idx + 1,
+  order: reel.order || idx + 1,
 }));
 
 // =============================================================================
@@ -790,6 +792,13 @@ function mergeCloudWithDefaults(defaults, cloudDocs, options = {}) {
           merged.image ||
           merged.thumbnail ||
           '/thumbnails/reel-frame-1.jpg';
+        merged.videoUrl =
+          merged.videoUrl ||
+          merged.videoSrc ||
+          existing.videoUrl ||
+          existing.videoSrc ||
+          '';
+        merged.videoSrc = merged.videoUrl;
       }
 
       map.set(targetId, merged);
@@ -1455,4 +1464,30 @@ export async function uploadImageFile(file, folder = 'uploads') {
     reader.onerror = (error) => reject(error);
     reader.readAsDataURL(targetFile);
   });
+}
+
+/**
+ * Upload Video File directly to Firebase Storage bucket under "hero" folder
+ */
+export async function uploadVideoFile(file, folder = 'hero') {
+  if (!file) throw new Error('No video file provided for upload.');
+
+  if (isFirebaseConfigured && storage) {
+    try {
+      const sanitizedName = (file.name || 'video.mp4').replace(/[^a-zA-Z0-9.]/g, '_');
+      const storageRef = ref(storage, `${folder}/${Date.now()}_${sanitizedName}`);
+      const snapshot = await Promise.race([
+        uploadBytes(storageRef, file),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Firebase Storage Video upload timed out after 30s. Please verify connection or use direct URL.')), 30000)
+        ),
+      ]);
+      const downloadUrl = await getDownloadURL(snapshot.ref);
+      return downloadUrl;
+    } catch (err) {
+      console.warn('[uploadVideoFile] Firebase Storage upload notice:', err?.message || err);
+      throw err;
+    }
+  }
+  throw new Error('Firebase Storage is not configured for video upload.');
 }
