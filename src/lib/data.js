@@ -10,7 +10,7 @@ export const SITE_METADATA = {
 
 // Main navigation links used across header and mobile menu (Home removed)
 export const NAV_LINKS = [
-  { label: "ReelXpress", href: "/reelxpress" },
+  { label: "Why us", href: "/reelxpress" },
   { label: "Pricing", href: "/#pricing" },
   { label: "Real work", href: "/#showcase" },
   { label: "Contact", href: "/contact" },
@@ -22,7 +22,7 @@ export const NAV_LINKS = [
 // Footer navigation & legal links
 export const FOOTER_NAV_LINKS = [
   { label: "Home page", href: "/" },
-  { label: "ReelXpress", href: "/reelxpress" },
+  { label: "Why us", href: "/reelxpress" },
   { label: "Real work", href: "/#showcase" },
   { label: "Pricing", href: "/#pricing" },
   { label: "Testimonials", href: "/#testimonials" },

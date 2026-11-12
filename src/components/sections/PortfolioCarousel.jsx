@@ -294,6 +294,14 @@ export default function PortfolioCarousel({ onShowToast }) {
                 </div>
               )}
 
+              {/* Small reelXpress watermark on top corner */}
+              <div
+                className="absolute top-2.5 left-2.5 z-20 px-2 py-0.5 rounded-full bg-black/55 backdrop-blur-md border border-white/10 text-[9px] sm:text-[10px] font-bold text-white/90 tracking-wide pointer-events-none select-none flex items-center gap-0.5 shadow-sm"
+                aria-hidden="true"
+              >
+                <span>reel</span><span className="text-[#ff6d29] font-black">X</span><span>press</span>
+              </div>
+
               {/* Single Frame / Reel Photo Still */}
               <picture className="w-full h-full block">
                 {posterWebp && <source srcSet={posterWebp} type="image/webp" />}

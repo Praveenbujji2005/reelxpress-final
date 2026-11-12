@@ -102,7 +102,7 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
                 href="/reelxpress"
                 className="hover:text-white transition-colors py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-primary-container hover:after:w-full after:transition-all after:duration-200"
               >
-                Why ReelXpress
+                Why us
               </Link>
             </nav>
 

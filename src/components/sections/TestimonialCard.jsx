@@ -22,12 +22,12 @@ export default function TestimonialCard({ name, role, quote, review, rating = 5 
 
   return (
     <article
-      className="w-full max-w-[380px] md:w-[323px] min-h-[200px] shrink-0 rounded-2xl bg-[#110e13] border border-white/10 p-4 sm:p-5 md:p-6 flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1.5 hover:border-border-amber hover:shadow-[0_12px_35px_rgba(255,94,30,0.22)] cursor-default select-none mx-auto"
+      className="w-full max-w-[380px] md:w-[323px] min-h-[200px] shrink-0 rounded-2xl bg-[#110e13] border border-white/10 p-4 sm:p-5 md:p-6 flex flex-col justify-between cursor-default select-none mx-auto"
     >
       <div>
         {/* 5-Star Rating in Brand Accent Color */}
         <div
-          className="flex items-center gap-1 text-primary-container mb-3.5 group-hover:scale-105 transition-transform duration-200 origin-left"
+          className="flex items-center gap-1 text-primary-container mb-3.5 origin-left"
           aria-label={`${rating} out of 5 stars`}
         >
           {[...Array(Math.max(1, Math.min(5, Number(rating) || 5)))].map((_, i) => (

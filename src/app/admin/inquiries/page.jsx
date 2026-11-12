@@ -20,6 +20,7 @@ export default function AdminInquiriesPage() {
   // Search & Filters
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [dateFilter, setDateFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -185,6 +186,49 @@ export default function AdminInquiriesPage() {
     }
   };
 
+  const exportToCSV = () => {
+    if (!filteredInquiries.length) {
+      showToast('No enquiries available to export.');
+      return;
+    }
+    const headers = [
+      'Ref ID',
+      'Customer Name',
+      'Email',
+      'Phone',
+      'Selected Package / Service',
+      'Event Date',
+      'City',
+      'Status',
+      'Submitted Date',
+      'Message / Notes',
+    ];
+
+    const rows = filteredInquiries.map((inq) => [
+      `"${(inq.id || '').replace(/"/g, '""')}"`,
+      `"${(inq.customerName || inq.fullName || '').replace(/"/g, '""')}"`,
+      `"${(inq.email || '').replace(/"/g, '""')}"`,
+      `"${(inq.phone || '').replace(/"/g, '""')}"`,
+      `"${(inq.selectedService || inq.package || inq.companyName || '').replace(/"/g, '""')}"`,
+      `"${(inq.eventDate || inq.date || '').replace(/"/g, '""')}"`,
+      `"${(inq.city || 'Bengaluru').replace(/"/g, '""')}"`,
+      `"${(inq.status || 'New').replace(/"/g, '""')}"`,
+      `"${(inq.createdAt || inq.formattedDate || '').replace(/"/g, '""')}"`,
+      `"${(inq.enquiryMessage || inq.message || '').replace(/"/g, '""')}"`,
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `reelxpress-inquiries-${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(`Exported ${filteredInquiries.length} enquiry(ies) to CSV!`);
+  };
+
   // Filtered and sorted enquiries
   const filteredInquiries = useMemo(() => {
     let result = [...inquiries];
@@ -200,6 +244,7 @@ export default function AdminInquiriesPage() {
           (inq.phone && inq.phone.toLowerCase().includes(term)) ||
           (inq.companyName && inq.companyName.toLowerCase().includes(term)) ||
           (inq.selectedService && inq.selectedService.toLowerCase().includes(term)) ||
+          (inq.eventDate && inq.eventDate.toLowerCase().includes(term)) ||
           (inq.city && inq.city.toLowerCase().includes(term)) ||
           (inq.enquiryMessage && inq.enquiryMessage.toLowerCase().includes(term))
       );
@@ -211,6 +256,30 @@ export default function AdminInquiriesPage() {
       result = result.filter((inq) => (inq.status || '').toLowerCase() === target);
     }
 
+    // Date filter
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      result = result.filter((inq) => {
+        const itemDateStr = inq.eventDate || inq.createdAt || inq.timestampDate;
+        if (!itemDateStr) return false;
+        const itemDate = new Date(itemDateStr);
+        if (isNaN(itemDate.getTime())) return false;
+
+        if (dateFilter === 'today') {
+          return itemDate.toDateString() === now.toDateString();
+        } else if (dateFilter === 'this_week') {
+          const diffDays = (now - itemDate) / (1000 * 60 * 60 * 24);
+          return diffDays >= -1 && diffDays <= 7;
+        } else if (dateFilter === 'this_month') {
+          return (
+            itemDate.getMonth() === now.getMonth() &&
+            itemDate.getFullYear() === now.getFullYear()
+          );
+        }
+        return true;
+      });
+    }
+
     // Sort
     result.sort((a, b) => {
       const timeA = new Date(a.createdAt || a.timestampDate || 0).getTime();
@@ -219,12 +288,12 @@ export default function AdminInquiriesPage() {
     });
 
     return result;
-  }, [inquiries, search, statusFilter, sortBy]);
+  }, [inquiries, search, statusFilter, dateFilter, sortBy]);
 
   // Reset page when filter changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, statusFilter, sortBy]);
+  }, [search, statusFilter, dateFilter, sortBy]);
 
   // Pagination calculation
   const totalItems = filteredInquiries.length;
@@ -269,6 +338,15 @@ export default function AdminInquiriesPage() {
         </div>
 
         <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
+          <button
+            onClick={exportToCSV}
+            className="px-4 py-2.5 rounded-xl bg-emerald-600/90 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all active:scale-95 shadow-md"
+            title="Download inquiries as a CSV spreadsheet"
+          >
+            <span className="material-symbols-outlined text-sm">download</span>
+            <span>Export CSV</span>
+          </button>
+
           <button
             onClick={syncToCloud}
             disabled={syncing}
@@ -320,10 +398,10 @@ export default function AdminInquiriesPage() {
       {/* Search & Filter Toolbar */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-3 p-4 rounded-2xl bg-[#151215] border border-white/10 shadow-lg">
         {/* Search */}
-        <div className="md:col-span-5 relative">
+        <div className="md:col-span-4 relative">
           <input
             type="text"
-            placeholder="Search by name, email, phone, company, service..."
+            placeholder="Search by name, email, phone, service, date..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white placeholder:text-text-muted/40 focus:border-[#ff6d29] focus:outline-none text-sm transition-all"
@@ -334,12 +412,12 @@ export default function AdminInquiriesPage() {
         </div>
 
         {/* Status Filter Tabs */}
-        <div className="md:col-span-4 flex items-center gap-1.5 p-1 rounded-xl bg-[#0c0a0c] border border-white/10 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          {['all', 'New', 'Contacted', 'Completed'].map((st) => (
+        <div className="md:col-span-4 flex items-center gap-1 p-1 rounded-xl bg-[#0c0a0c] border border-white/10 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          {['all', 'New', 'Contacted', 'Booked', 'Lost'].map((st) => (
             <button
               key={st}
               onClick={() => setStatusFilter(st.toLowerCase())}
-              className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap text-center ${
                 statusFilter === st.toLowerCase()
                   ? 'bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white shadow-sm'
                   : 'text-white/60 hover:text-white'
@@ -350,15 +428,29 @@ export default function AdminInquiriesPage() {
           ))}
         </div>
 
+        {/* Date Filter Dropdown */}
+        <div className="md:col-span-2">
+          <select
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="w-full px-3 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-xs font-semibold focus:border-[#ff6d29] focus:outline-none cursor-pointer"
+          >
+            <option value="all">Dates: All Time</option>
+            <option value="today">Dates: Today</option>
+            <option value="this_week">Dates: Last 7 Days</option>
+            <option value="this_month">Dates: This Month</option>
+          </select>
+        </div>
+
         {/* Sort Dropdown */}
-        <div className="md:col-span-3">
+        <div className="md:col-span-2">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="w-full px-3 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-xs font-semibold focus:border-[#ff6d29] focus:outline-none cursor-pointer"
           >
-            <option value="newest">Sort: Newest First</option>
-            <option value="oldest">Sort: Oldest First</option>
+            <option value="newest">Sort: Newest</option>
+            <option value="oldest">Sort: Oldest</option>
           </select>
         </div>
       </div>
@@ -472,7 +564,17 @@ export default function AdminInquiriesPage() {
                       {/* Status Dropdown */}
                       <td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
                         <select
-                          value={currentStatus === 'completed' || currentStatus === 'resolved' ? 'Completed' : currentStatus === 'contacted' ? 'Contacted' : 'New'}
+                          value={
+                            currentStatus === 'completed' || currentStatus === 'resolved'
+                              ? 'Completed'
+                              : currentStatus === 'contacted'
+                              ? 'Contacted'
+                              : currentStatus === 'booked'
+                              ? 'Booked'
+                              : currentStatus === 'lost'
+                              ? 'Lost'
+                              : 'New'
+                          }
                           disabled={actionLoading}
                           onChange={(e) => handleStatusChange(inq.id, e.target.value)}
                           className={`text-xs font-bold px-2.5 py-1 rounded-full border cursor-pointer focus:outline-none uppercase tracking-wider ${
@@ -480,11 +582,17 @@ export default function AdminInquiriesPage() {
                               ? 'bg-[#ff6d29]/20 text-[#ff6d29] border-[#ff6d29]/40'
                               : currentStatus === 'contacted'
                               ? 'bg-blue-500/20 text-blue-300 border-blue-500/40'
+                              : currentStatus === 'booked'
+                              ? 'bg-purple-500/20 text-purple-300 border-purple-500/40'
+                              : currentStatus === 'lost'
+                              ? 'bg-zinc-600/30 text-zinc-300 border-zinc-500/40'
                               : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
                           }`}
                         >
                           <option value="New" className="bg-[#151215] text-[#ff6d29]">NEW</option>
                           <option value="Contacted" className="bg-[#151215] text-blue-300">CONTACTED</option>
+                          <option value="Booked" className="bg-[#151215] text-purple-300">BOOKED</option>
+                          <option value="Lost" className="bg-[#151215] text-zinc-400">LOST</option>
                           <option value="Completed" className="bg-[#151215] text-emerald-300">COMPLETED</option>
                         </select>
                       </td>
@@ -683,14 +791,14 @@ export default function AdminInquiriesPage() {
                 <span className="text-[11px] uppercase tracking-wider text-text-muted font-bold block mb-2">
                   Update Enquiry Status
                 </span>
-                <div className="flex gap-2">
-                  {['New', 'Contacted', 'Completed'].map((st) => {
+                <div className="grid grid-cols-5 gap-2">
+                  {['New', 'Contacted', 'Booked', 'Lost', 'Completed'].map((st) => {
                     const isSelected = (selectedInquiry.status || '').toLowerCase() === st.toLowerCase();
                     return (
                       <button
                         key={st}
                         onClick={() => handleStatusChange(selectedInquiry.id, st)}
-                        className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                        className={`py-2 px-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer text-center ${
                           isSelected
                             ? 'bg-[#ff6d29] text-white shadow-md'
                             : 'bg-white/10 text-white/70 hover:bg-white/20'

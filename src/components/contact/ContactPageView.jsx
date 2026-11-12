@@ -8,13 +8,15 @@ import Footer from '@/components/layout/Footer';
 
 export default function ContactPageView() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const todayDate = new Date().toISOString().split('T')[0];
 
   // Form State
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     phone: '',
-    subject: 'General Inquiry',
+    subject: 'Hourly Plan (₹2,200) - Single Event',
+    eventDate: '',
     message: '',
     website_trap: '', // Anti-spam honeypot
   });
@@ -62,11 +64,13 @@ export default function ContactPageView() {
     }
 
     if (!formData.subject.trim()) {
-      errors.subject = 'Please select or provide a subject.';
+      errors.subject = 'Please select or provide a package / shoot type.';
     }
 
-    if (!formData.message.trim() || formData.message.trim().length < 10) {
-      errors.message = 'Please provide a message with at least 10 characters.';
+    if (!formData.eventDate) {
+      errors.eventDate = 'Please select your event / shoot date.';
+    } else if (formData.eventDate < todayDate) {
+      errors.eventDate = 'Shoot date cannot be in the past.';
     }
 
     setFormErrors(errors);
@@ -92,10 +96,13 @@ export default function ContactPageView() {
       email: formData.email.trim(),
       phone: formData.phone.trim(),
       companyName: formData.subject.trim(),
-      selectedService: formData.subject.trim() || 'General Inquiry',
-      serviceType: formData.subject.trim() || 'General Inquiry',
-      enquiryMessage: formData.message.trim(),
-      message: formData.message.trim(),
+      selectedService: formData.subject.trim() || 'Hourly Plan',
+      serviceType: formData.subject.trim() || 'Hourly Plan',
+      package: formData.subject.trim(),
+      eventDate: formData.eventDate,
+      date: formData.eventDate,
+      enquiryMessage: formData.message.trim() || 'No additional notes provided.',
+      message: formData.message.trim() || 'No additional notes provided.',
       city: 'Bengaluru',
       sourcePage: 'Contact Us Dedicated Page',
       source: 'contact_page',
@@ -131,7 +138,8 @@ export default function ContactPageView() {
       fullName: '',
       email: '',
       phone: '',
-      subject: 'General Inquiry',
+      subject: 'Hourly Plan (₹2,200) - Single Event',
+      eventDate: '',
       message: '',
       website_trap: '',
     });
@@ -418,39 +426,66 @@ export default function ContactPageView() {
                     </div>
                   </div>
 
-                  {/* Subject */}
-                  <div>
-                    <label htmlFor="subject" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
-                      Subject / Shoot Type <span className="text-primary-container">*</span>
-                    </label>
-                    <select
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 sm:py-3.5 rounded-xl bg-[#09080b] border border-white/15 text-white text-sm focus:outline-none focus:border-primary-container transition-colors cursor-pointer"
-                    >
-                      <option value="General Inquiry">General Inquiry</option>
-                      <option value="Wedding / Reception Shoot">Wedding / Reception Reel Shoot</option>
-                      <option value="Brand Launch / Corporate Event">Brand Launch / Corporate Event</option>
-                      <option value="Influencer / Creator Collab">Creator Partnership / Collaboration</option>
-                      <option value="Custom Instant Package">Custom Instant Video Package</option>
-                      {formData.subject && ![
-                        'General Inquiry',
-                        'Wedding / Reception Shoot',
-                        'Brand Launch / Corporate Event',
-                        'Influencer / Creator Collab',
-                        'Custom Instant Package'
-                      ].includes(formData.subject) && (
-                        <option value={formData.subject}>{formData.subject}</option>
+                  {/* Subject / Selected Package & Event Date Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="subject" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
+                        Selected Package <span className="text-primary-container">*</span>
+                      </label>
+                      <select
+                        id="subject"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 sm:py-3.5 rounded-xl bg-[#09080b] border border-white/15 text-white text-sm focus:outline-none focus:border-primary-container transition-colors cursor-pointer"
+                      >
+                        <option value="Hourly Plan (₹2,200) - Single Event">Hourly Plan (₹2,200) - Single Event</option>
+                        <option value="Vehicle Shoot (₹3,999 onwards) - Automotive">Vehicle Shoot (₹3,999 onwards) - Automotive</option>
+                        <option value="Half Day (₹8,500) - Four Hours">Half Day (₹8,500) - Four Hours</option>
+                        <option value="Full Day (₹15,000) - Eight Hours">Full Day (₹15,000) - Eight Hours</option>
+                        <option value="Wedding / Reception Reel Shoot">Wedding / Reception Reel Shoot</option>
+                        <option value="Brand Launch / Corporate Event">Brand Launch / Corporate Event</option>
+                        <option value="Custom / Other">Custom / Other</option>
+                        {formData.subject && ![
+                          'Hourly Plan (₹2,200) - Single Event',
+                          'Vehicle Shoot (₹3,999 onwards) - Automotive',
+                          'Half Day (₹8,500) - Four Hours',
+                          'Full Day (₹15,000) - Eight Hours',
+                          'Wedding / Reception Reel Shoot',
+                          'Brand Launch / Corporate Event',
+                          'Custom / Other',
+                        ].includes(formData.subject) && (
+                          <option value={formData.subject}>{formData.subject}</option>
+                        )}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="eventDate" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
+                        Event Date <span className="text-primary-container">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        id="eventDate"
+                        name="eventDate"
+                        min={todayDate}
+                        value={formData.eventDate}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 sm:py-3.5 rounded-xl bg-[#09080b] border ${
+                          formErrors.eventDate ? 'border-red-500 ring-1 ring-red-500' : 'border-white/15 focus:border-primary-container'
+                        } text-white placeholder-text-muted/40 text-sm focus:outline-none transition-colors [color-scheme:dark]`}
+                        required
+                      />
+                      {formErrors.eventDate && (
+                        <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.eventDate}</p>
                       )}
-                    </select>
+                    </div>
                   </div>
 
-                  {/* Message */}
+                  {/* Message / Notes (Optional) */}
                   <div>
                     <label htmlFor="message" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
-                      Your Message <span className="text-primary-container">*</span>
+                      Message / Notes <span className="text-text-muted/60 lowercase font-normal">(optional)</span>
                     </label>
                     <textarea
                       id="message"
@@ -458,15 +493,9 @@ export default function ContactPageView() {
                       rows={4}
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder="Tell us about your event, location, date, and specific requirements..."
-                      className={`w-full px-4 py-3 rounded-xl bg-[#09080b] border ${
-                        formErrors.message ? 'border-red-500 ring-1 ring-red-500' : 'border-white/15 focus:border-primary-container'
-                      } text-white placeholder-text-muted/40 text-sm focus:outline-none transition-colors resize-y`}
-                      required
+                      placeholder="Tell us about your event, location, shoot timings, or specific requirements..."
+                      className="w-full px-4 py-3 rounded-xl bg-[#09080b] border border-white/15 focus:border-primary-container text-white placeholder-text-muted/40 text-sm focus:outline-none transition-colors resize-y"
                     />
-                    {formErrors.message && (
-                      <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.message}</p>
-                    )}
                   </div>
 
                   {/* Submit Button */}

@@ -3,22 +3,26 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-// Subject / Shoot Type Dropdown Options
+// Subject / Shoot Type Dropdown Options matching pricing packages + custom
 const SUBJECT_OPTIONS = [
-  'General Inquiry',
+  'Hourly Plan (₹2,200) - Single Event',
+  'Vehicle Shoot (₹3,999 onwards) - Automotive',
+  'Half Day (₹8,500) - Four Hours',
+  'Full Day (₹15,000) - Eight Hours',
   'Wedding / Reception Reel Shoot',
   'Brand Launch / Corporate Event',
-  'Creator Partnership / Collaboration',
-  'Custom Instant Video Package',
-  'Quick Shoot (1 Hour - Single Reel)',
+  'Custom / Other',
 ];
 
 export default function BookingSection({ onBookingSuccess }) {
+  const todayDate = new Date().toISOString().split('T')[0];
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     phone: '',
     subject: SUBJECT_OPTIONS[0],
+    eventDate: '',
     message: '',
     website_trap: '', // Anti-spam honeypot
   });
@@ -79,12 +83,13 @@ export default function BookingSection({ onBookingSuccess }) {
     }
 
     if (!formData.subject.trim()) {
-      errors.subject = 'Please select a shoot type / subject.';
+      errors.subject = 'Please select a package / shoot type.';
     }
 
-    const msgTrimmed = formData.message.trim();
-    if (!msgTrimmed || msgTrimmed.length < 10) {
-      errors.message = 'Please provide a message with at least 10 characters.';
+    if (!formData.eventDate) {
+      errors.eventDate = 'Please select your event / shoot date.';
+    } else if (formData.eventDate < todayDate) {
+      errors.eventDate = 'Shoot date cannot be in the past.';
     }
 
     setFormErrors(errors);
@@ -113,8 +118,11 @@ export default function BookingSection({ onBookingSuccess }) {
       companyName: formData.subject.trim(),
       selectedService: formData.subject.trim(),
       serviceType: formData.subject.trim(),
-      enquiryMessage: formData.message.trim(),
-      message: formData.message.trim(),
+      package: formData.subject.trim(),
+      eventDate: formData.eventDate,
+      date: formData.eventDate,
+      enquiryMessage: formData.message.trim() || 'No additional notes provided.',
+      message: formData.message.trim() || 'No additional notes provided.',
       city: 'Bengaluru',
       website_trap: formData.website_trap,
       sourcePage: 'Website Contact Section',
@@ -149,6 +157,7 @@ export default function BookingSection({ onBookingSuccess }) {
         email: '',
         phone: '',
         subject: SUBJECT_OPTIONS[0],
+        eventDate: '',
         message: '',
         website_trap: '',
       });
@@ -363,49 +372,66 @@ export default function BookingSection({ onBookingSuccess }) {
                       </div>
                     </div>
 
-                    {/* Field 4: Subject / Shoot Type (Dropdown) */}
-                    <div>
-                      <label htmlFor="booking-subject" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
-                        Subject / Shoot Type <span className="text-primary-container">*</span>
-                      </label>
-                      <select
-                        id="booking-subject"
-                        name="subject"
-                        value={formData.subject}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl bg-[#09080b] border border-white/15 text-white text-sm focus:outline-none focus:border-primary-container transition-colors cursor-pointer"
-                      >
-                        {SUBJECT_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#110e13] text-white py-1">
-                            {opt}
-                          </option>
-                        ))}
-                      </select>
-                      {formErrors.subject && (
-                        <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.subject}</p>
-                      )}
+                    {/* Fields 4 & 5: Selected Package & Event Date */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="booking-subject" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
+                          Selected Package <span className="text-primary-container">*</span>
+                        </label>
+                        <select
+                          id="booking-subject"
+                          name="subject"
+                          value={formData.subject}
+                          onChange={handleChange}
+                          className="w-full px-4 py-3 rounded-xl bg-[#09080b] border border-white/15 text-white text-sm focus:outline-none focus:border-primary-container transition-colors cursor-pointer"
+                        >
+                          {SUBJECT_OPTIONS.map((opt) => (
+                            <option key={opt} value={opt} className="bg-[#110e13] text-white py-1">
+                              {opt}
+                            </option>
+                          ))}
+                        </select>
+                        {formErrors.subject && (
+                          <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.subject}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label htmlFor="booking-eventDate" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
+                          Event Date <span className="text-primary-container">*</span>
+                        </label>
+                        <input
+                          id="booking-eventDate"
+                          type="date"
+                          name="eventDate"
+                          min={todayDate}
+                          required
+                          value={formData.eventDate}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 rounded-xl bg-[#09080b] border ${
+                            formErrors.eventDate ? 'border-red-500 ring-1 ring-red-500' : 'border-white/15 focus:border-primary-container'
+                          } text-white placeholder:text-text-muted/40 text-sm focus:outline-none transition-colors [color-scheme:dark]`}
+                        />
+                        {formErrors.eventDate && (
+                          <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.eventDate}</p>
+                        )}
+                      </div>
                     </div>
 
-                    {/* Field 5: Your Message */}
+                    {/* Field 6: Message / Notes (Optional) */}
                     <div>
                       <label htmlFor="booking-message" className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1.5">
-                        Your Message <span className="text-primary-container">*</span>
+                        Message / Notes <span className="text-text-muted/60 lowercase font-normal">(optional)</span>
                       </label>
                       <textarea
                         id="booking-message"
                         name="message"
-                        rows={4}
-                        required
-                        placeholder="Tell us about your event, location, date, and specific requirements..."
+                        rows={3}
+                        placeholder="Tell us about your event, location, shoot timings, or specific requirements..."
                         value={formData.message}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 rounded-xl bg-[#09080b] border ${
-                          formErrors.message ? 'border-red-500 ring-1 ring-red-500' : 'border-white/15 focus:border-primary-container'
-                        } text-white placeholder:text-text-muted/40 text-sm focus:outline-none transition-colors resize-y`}
+                        className="w-full px-4 py-3 rounded-xl bg-[#09080b] border border-white/15 focus:border-primary-container text-white placeholder:text-text-muted/40 text-sm focus:outline-none transition-colors resize-y"
                       />
-                      {formErrors.message && (
-                        <p className="text-red-400 text-xs mt-1 font-medium">{formErrors.message}</p>
-                      )}
                     </div>
 
                     {/* Submit Button */}

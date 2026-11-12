@@ -5,7 +5,7 @@ import ReelXpressWordmark from '@/components/ui/ReelXpressWordmark';
 // Shared website footer with branding, internal navigation, legal links, and copyright
 export default function Footer() {
   return (
-    <footer className="bg-[#080808] text-primary full-width border-t border-white/10 relative z-20">
+    <footer className="bg-[#080808] text-primary full-width border-t border-white/10 relative z-20 overflow-hidden">
       <div className="w-full px-4 sm:px-6 md:px-margin max-w-[1440px] mx-auto py-12 sm:py-16 md:py-space-2xl flex flex-col justify-between gap-10 sm:gap-14">
         
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
@@ -107,6 +107,16 @@ export default function Footer() {
           </Link>
         </div>
 
+      </div>
+
+      {/* Large Subtle Watermark Background Signature */}
+      <div
+        className="w-full overflow-hidden flex justify-center items-center pointer-events-none select-none -mb-6 sm:-mb-10 md:-mb-14 pt-2 relative z-0"
+        aria-hidden="true"
+      >
+        <span className="text-[14vw] font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-b from-white/[0.06] via-white/[0.02] to-transparent whitespace-nowrap">
+          reelXpress
+        </span>
       </div>
     </footer>
   );

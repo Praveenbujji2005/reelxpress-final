@@ -262,13 +262,147 @@ function PricingCardSkeleton({ count = 4, colsClass = 'grid-cols-1 sm:grid-cols-
   );
 }
 
+// Reusable Glassmorphism Pricing Card Component
+function PricingCard({ pkg, isCenter = false, isCarousel = false, onBooking }) {
+  return (
+    <div
+      className={`relative rounded-2xl bg-[#110e13]/90 backdrop-blur-md p-5 sm:p-6 min-h-[530px] flex flex-col justify-between transition-all duration-500 ${
+        pkg.isPopular
+          ? 'border border-[#ff6d29]/80 shadow-[0_12px_45px_rgba(255,109,41,0.25)]'
+          : 'border border-white/10 hover:border-white/20 shadow-[0_10px_35px_rgba(0,0,0,0.6)]'
+      } ${
+        isCarousel
+          ? isCenter
+            ? 'scale-[1.01] opacity-100 ring-1 ring-[#ff6d29]/50'
+            : 'scale-[0.96] opacity-65'
+          : 'hover:-translate-y-1'
+      }`}
+    >
+      {pkg.badge && (
+        <div className="absolute -top-3.5 right-6 sm:right-7 px-3.5 py-1 rounded-full bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white text-[10px] font-extrabold uppercase tracking-wider shadow-[0_4px_12px_rgba(255,109,41,0.45)]">
+          {pkg.badge}
+        </div>
+      )}
+
+      <div>
+        <span className="text-[10px] font-bold uppercase tracking-widest text-[#ff6d29] mb-1.5 block">
+          {pkg.tag}
+        </span>
+
+        <h3 className="text-xl sm:text-[24px] font-extrabold text-white tracking-tight mb-1.5">
+          {pkg.name}
+        </h3>
+
+        <p className="text-xs sm:text-[12.5px] text-[#a8a1a8] leading-relaxed mb-5 font-normal min-h-[40px]">
+          {pkg.description}
+        </p>
+
+        <div className="flex items-baseline gap-1.5 pb-5 border-b border-white/10 mb-5">
+          <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            {pkg.price}
+          </span>
+          <span className="text-xs font-normal text-white/50 tracking-normal">
+            {pkg.priceSuffix}
+          </span>
+        </div>
+
+        <div>
+          <span className="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-3.5 block">
+            WHAT&apos;S INCLUDED
+          </span>
+          <ul className="space-y-3">
+            {pkg.inclusions.map((item, i) => (
+              <li key={i} className="flex items-start gap-2.5 text-xs sm:text-[13px] text-white/80 leading-normal">
+                <svg
+                  className={`w-4 h-4 shrink-0 mt-0.5 ${pkg.isPopular ? 'text-[#ff6d29]' : 'text-white/60'}`}
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <a
+        href="#booking"
+        onClick={(e) => onBooking(e, pkg.shootType)}
+        className={`group w-full mt-8 py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-none ${
+          pkg.isPopular
+            ? 'btn-glow-orange btn-shine-sweep text-white'
+            : 'btn-glow-dark text-white'
+        }`}
+      >
+        <span>{pkg.ctaText}</span>
+        <svg
+          className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M7 17L17 7M17 7H9M17 7V15" />
+        </svg>
+      </a>
+    </div>
+  );
+}
+
 export default function PricingSection() {
   const [activeTab, setActiveTab] = useState('instant');
   const [instantPlans, setInstantPlans] = useState(INSTANT_PACKAGES);
   const [businessPlans, setBusinessPlans] = useState(BUSINESS_PACKAGES);
   const [weddingPlans, setWeddingPlans] = useState(WEDDING_PACKAGES);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Instant Packages Carousel State (for mobile/tablet)
+  const [pricingIndex, setPricingIndex] = useState(0);
+  const [isPricingHovered, setIsPricingHovered] = useState(false);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
   const tabRefs = useRef([]);
+
+  const totalPricing = instantPlans.length || 4;
+
+  // Autoplay carousel: pauses on hover or touch
+  useEffect(() => {
+    if (activeTab !== 'instant' || isPricingHovered || totalPricing <= 1) return;
+    const timer = setInterval(() => {
+      setPricingIndex((prev) => (prev + 1) % totalPricing);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [activeTab, isPricingHovered, totalPricing]);
+
+  // Touch handlers for mobile swipe
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].clientX;
+    touchStartY.current = e.changedTouches[0].clientY;
+    setIsPricingHovered(true);
+  };
+
+  const handleTouchEnd = (e) => {
+    const diffX = e.changedTouches[0].clientX - touchStartX.current;
+    const diffY = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX < 0) {
+        setPricingIndex((prev) => (prev + 1) % totalPricing);
+      } else {
+        setPricingIndex((prev) => (prev - 1 + totalPricing) % totalPricing);
+      }
+    }
+    setTimeout(() => setIsPricingHovered(false), 2000);
+  };
 
   useEffect(() => {
     // 1. Instant check from cache for 0ms initial render
@@ -466,104 +600,99 @@ export default function PricingSection() {
         />
       ) : (
         <>
-          {/* ---------------- INSTANT PACKAGES (4 Cards) ---------------- */}
+          {/* ---------------- INSTANT PACKAGES (4 Cards Responsive Carousel & Grid) ---------------- */}
           {activeTab === 'instant' && (
             <div
               role="tabpanel"
               id="tabpanel-instant"
               aria-labelledby="tab-instant"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5 mb-14 fade-in-content"
+              className="mb-14 fade-in-content"
             >
-          {instantPlans.map((pkg, idx) => (
-            <div
-              key={`instant-plan-${pkg.id || idx}-${idx}`}
-              className={`relative rounded-[24px] sm:rounded-[28px] bg-[#110e13] p-5 sm:p-6 min-h-[530px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
-                pkg.isPopular
-                  ? 'border border-[#ff6d29]/70 shadow-[0_12px_40px_rgba(255,109,41,0.22)]'
-                  : 'border border-white/10 hover:border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
-              }`}
-            >
-              {pkg.badge && (
-                <div className="absolute -top-3.5 right-6 sm:right-7 px-3.5 py-1 rounded-full bg-[#ff6d29] text-white text-[10px] font-extrabold uppercase tracking-wider shadow-[0_4px_12px_rgba(255,109,41,0.45)]">
-                  {pkg.badge}
-                </div>
-              )}
-
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#ff6d29] mb-1.5 block">
-                  {pkg.tag}
-                </span>
-
-                <h3 className="text-xl sm:text-[24px] font-extrabold text-white tracking-tight mb-1.5">
-                  {pkg.name}
-                </h3>
-
-                <p className="text-xs sm:text-[12.5px] text-[#a8a1a8] leading-relaxed mb-5 font-normal min-h-[40px]">
-                  {pkg.description}
-                </p>
-
-                <div className="flex items-baseline gap-1.5 pb-5 border-b border-white/10 mb-5">
-                  <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                    {pkg.price}
-                  </span>
-                  <span className="text-xs font-normal text-white/50 tracking-normal">
-                    {pkg.priceSuffix}
-                  </span>
+              {/* MOBILE & TABLET CAROUSEL (< 1024px) */}
+              <div
+                className="lg:hidden relative w-full overflow-hidden"
+                onMouseEnter={() => setIsPricingHovered(true)}
+                onMouseLeave={() => setIsPricingHovered(false)}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                <div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{
+                    transform: `translateX(-${pricingIndex * 100}%)`,
+                  }}
+                >
+                  {instantPlans.map((pkg, idx) => (
+                    <div
+                      key={`carousel-plan-${pkg.id || idx}-${idx}`}
+                      className="w-full shrink-0 px-2 transition-all duration-500 ease-in-out"
+                    >
+                      <PricingCard
+                        pkg={pkg}
+                        isCenter={idx === pricingIndex}
+                        isCarousel={true}
+                        onBooking={handleBooking}
+                      />
+                    </div>
+                  ))}
                 </div>
 
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-3.5 block">
-                    WHAT&apos;S INCLUDED
-                  </span>
-                  <ul className="space-y-3">
-                    {pkg.inclusions.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs sm:text-[13px] text-white/80 leading-normal">
-                        <svg
-                          className={`w-4 h-4 shrink-0 mt-0.5 ${pkg.isPopular ? 'text-[#ff6d29]' : 'text-white/60'}`}
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          aria-hidden="true"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <span>{item}</span>
-                      </li>
+                {/* Carousel Controls: Arrows + Dots */}
+                <div className="flex items-center justify-center gap-4 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => setPricingIndex((prev) => (prev - 1 + totalPricing) % totalPricing)}
+                    aria-label="Previous Package"
+                    className="w-10 h-10 rounded-full bg-[#181216] border border-white/15 text-white flex items-center justify-center hover:bg-primary-container hover:border-primary-container active:scale-95 transition-all shadow-md cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-lg">arrow_back</span>
+                  </button>
+
+                  <div className="flex items-center gap-1.5 py-1">
+                    {instantPlans.map((_, dotIdx) => (
+                      <button
+                        key={`pricing-dot-${dotIdx}`}
+                        type="button"
+                        onClick={() => setPricingIndex(dotIdx)}
+                        aria-label={`Go to package ${dotIdx + 1}`}
+                        className="p-1 cursor-pointer"
+                      >
+                        <span
+                          className={`block rounded-full transition-all duration-300 ${
+                            dotIdx === pricingIndex
+                              ? 'w-6 h-2 bg-[#ff6d29] shadow-[0_0_8px_rgba(255,109,41,0.7)]'
+                              : 'w-2 h-2 bg-white/30 hover:bg-white/60'
+                          }`}
+                        />
+                      </button>
                     ))}
-                  </ul>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setPricingIndex((prev) => (prev + 1) % totalPricing)}
+                    aria-label="Next Package"
+                    className="w-10 h-10 rounded-full bg-[#181216] border border-white/15 text-white flex items-center justify-center hover:bg-primary-container hover:border-primary-container active:scale-95 transition-all shadow-md cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                  </button>
                 </div>
               </div>
 
-              <a
-                href="#booking"
-                onClick={(e) => handleBooking(e, pkg.shootType)}
-                className={`group w-full mt-8 py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-none ${
-                  pkg.isPopular
-                    ? 'btn-glow-orange btn-shine-sweep text-white'
-                    : 'btn-glow-dark text-white'
-                }`}
-              >
-                <span>{pkg.ctaText}</span>
-                <svg
-                  className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M7 17L17 7M17 7H9M17 7V15" />
-                </svg>
-              </a>
+              {/* DESKTOP 4-CARD GRID (>= 1024px) */}
+              <div className="hidden lg:grid lg:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5">
+                {instantPlans.map((pkg, idx) => (
+                  <PricingCard
+                    key={`desktop-plan-${pkg.id || idx}-${idx}`}
+                    pkg={pkg}
+                    isCenter={idx === pricingIndex}
+                    isCarousel={false}
+                    onBooking={handleBooking}
+                  />
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      )}
+          )}
 
       {/* ---------------- BUSINESS PACKAGES (2 Cards Centered) ---------------- */}
       {activeTab === 'business' && (
