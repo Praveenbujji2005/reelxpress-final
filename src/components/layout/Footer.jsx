@@ -8,45 +8,6 @@ export default function Footer() {
     <footer className="bg-[#080808] text-primary full-width border-t border-white/10 relative z-20">
       <div className="w-full px-4 sm:px-6 md:px-margin max-w-[1440px] mx-auto py-12 sm:py-16 md:py-space-2xl flex flex-col justify-between gap-10 sm:gap-14">
         
-        {/* =====================================================================
-            DEDICATED CONTACT US CTA BANNER
-            - Visible on desktop/tablet (hidden on mobile orientation as requested)
-            - Glowing orange gradient button
-            - Navigates directly to /contact
-           ===================================================================== */}
-        <div className="hidden md:flex w-full rounded-3xl bg-[#110e13] border border-white/10 p-6 sm:p-8 md:p-10 flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
-          {/* Subtle Orange Glow Ambient Corner */}
-          <div
-            className="absolute -top-10 -right-10 w-72 h-72 rounded-full bg-gradient-to-br from-[#FF5E1E]/20 via-transparent to-transparent blur-3xl pointer-events-none"
-            aria-hidden="true"
-          />
-
-          <div className="text-center md:text-left max-w-xl z-10">
-            <span className="text-primary font-bold text-xs uppercase tracking-widest block mb-2">
-              HAVE QUESTIONS OR A CUSTOM EVENT?
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
-              Let&apos;s Connect with Our Team
-            </h3>
-            <p className="text-sm sm:text-base text-text-muted leading-relaxed">
-              From wedding coverage to high-velocity brand reels, our Bengaluru production desk is ready to assist you.
-            </p>
-          </div>
-
-          <div className="z-10 shrink-0 w-full sm:w-auto flex justify-center">
-            <Link
-              href="/contact"
-              className="btn-glow-orange btn-shine-sweep group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-bold text-white text-base tracking-wide uppercase transition-all min-h-[48px] w-full sm:w-auto"
-              aria-label="Contact Us Page"
-            >
-              <span>CONTACT US</span>
-              <span className="material-symbols-outlined text-lg sm:text-xl transition-transform duration-200 group-hover:translate-x-1">
-                arrow_forward
-              </span>
-            </Link>
-          </div>
-        </div>
-
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
           <div className="max-w-md">
             <Link href="/reelxpress" className="inline-flex items-center gap-3 mb-4 group" aria-label="reelXpress">
