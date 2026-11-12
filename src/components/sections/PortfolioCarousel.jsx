@@ -8,9 +8,7 @@ import { getHeroSlides, getCachedHeroSlides } from '@/lib/cmsServices';
 export default function PortfolioCarousel({ onShowToast }) {
   const [reels, setReels] = useState(REEL_PORTFOLIO);
   const [activeReelIndex, setActiveReelIndex] = useState(3); // Center card active by default
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 390
-  );
+  const [windowWidth, setWindowWidth] = useState(1200);
 
   // Per-card media failure state for fallback handling
   const [failedImages, setFailedImages] = useState({});
@@ -235,10 +233,11 @@ export default function PortfolioCarousel({ onShowToast }) {
   };
 
   return (
-    <div id="fanned-carousel-container" className="my-6 md:my-10 relative w-full overflow-hidden sm:overflow-visible">
+    <div id="fanned-carousel-container" suppressHydrationWarning className="my-6 md:my-10 relative w-full overflow-hidden sm:overflow-visible">
       {/* 3D Perspective Stage Track */}
       <div
         id="fanned-carousel-track"
+        suppressHydrationWarning
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -267,6 +266,7 @@ export default function PortfolioCarousel({ onShowToast }) {
           return (
             <div
               key={`portfolio-reel-${reelIdKey}-${index}`}
+              suppressHydrationWarning
               onClick={() => handleCardClick(index)}
               style={cardStyle}
               className={`fanned-card group cursor-pointer overflow-hidden ${
