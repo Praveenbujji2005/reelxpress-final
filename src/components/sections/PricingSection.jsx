@@ -581,9 +581,6 @@ export default function PricingSection() {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               Minutes to Delivery. <span className="font-serif italic font-normal text-white/70">Zero Hassle.</span>
             </h2>
-            <p className="text-xs sm:text-sm md:text-base text-[#a8a1a8] mt-2.5 max-w-2xl mx-auto leading-relaxed">
-              High-speed vertical video packages shot on flagship iPhone gear with on-spot professional editing. Your finished, color-graded reels are delivered directly to your device via AirDrop or instant cloud link within 15–30 minutes before your shoot concludes.
-            </p>
           </>
         )}
       </div>

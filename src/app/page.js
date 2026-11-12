@@ -18,7 +18,6 @@ import FaqSection from '@/components/sections/FaqSection';
 import BookingSection from '@/components/sections/BookingSection';
 
 // Modal & UI Feedback Components
-import ReelModal from '@/components/ui/ReelModal';
 import BookingModal from '@/components/ui/BookingModal';
 import ToastNotification from '@/components/ui/ToastNotification';
 
@@ -28,7 +27,6 @@ export default function HomePage() {
 
   // Navigation and Modal States
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeModalReel, setActiveModalReel] = useState(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [confirmedBooking, setConfirmedBooking] = useState(null);
 
@@ -77,7 +75,6 @@ export default function HomePage() {
       {/* Main Page Content Flow */}
       <main className="relative z-10 flex-1">
         <HeroSection
-          onOpenModal={(reel) => setActiveModalReel(reel)}
           onShowToast={showToast}
         />
         <PricingSection />
@@ -90,14 +87,6 @@ export default function HomePage() {
 
       {/* Footer */}
       <Footer />
-
-      {/* Full Cinematic Video Lightbox Modal */}
-      <ReelModal
-        isOpen={Boolean(activeModalReel)}
-        reel={activeModalReel}
-        onClose={() => setActiveModalReel(null)}
-        onShowToast={showToast}
-      />
 
       {/* Booking Confirmation Celebration Modal */}
       <BookingModal

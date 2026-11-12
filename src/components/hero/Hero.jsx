@@ -16,7 +16,7 @@ import PortfolioCarousel from '../sections/PortfolioCarousel';
  * - Stats cards row (45,000+ Reels / 5,000+ Bookings / 4.8 Rating) as social proof foundation
  * - Responsive: clean scaling on mobile with zero horizontal scroll
  */
-export default function Hero({ onOpenModal, onShowToast }) {
+export default function Hero({ onShowToast }) {
   return (
     <section
       id="hero"
@@ -78,7 +78,7 @@ export default function Hero({ onOpenModal, onShowToast }) {
         </div>
 
         {/* Fanned-Out Reel Portfolio Carousel */}
-        <PortfolioCarousel onOpenModal={onOpenModal} onShowToast={onShowToast} />
+        <PortfolioCarousel onShowToast={onShowToast} />
       </div>
 
       {/* =========================================================================

@@ -382,7 +382,7 @@ export const INITIAL_HERO_SLIDES = (REEL_PORTFOLIO || []).map((reel, idx) => ({
   creator: reel.creator || 'reelXpress Creator',
   category: reel.category || 'Celebrations',
   views: reel.views || '150K views',
-  poster: reel.poster || '/thumbnails/reel-frame-1.jpg',
+  poster: reel.poster || '/thumbnails/hero-video-1.jpg',
   videoUrl: reel.videoUrl || reel.videoSrc || '',
   videoSrc: reel.videoSrc || reel.videoUrl || '',
   instagramUrl: reel.instagramUrl || 'https://www.instagram.com/reelxpress___',
@@ -791,7 +791,7 @@ function mergeCloudWithDefaults(defaults, cloudDocs, options = {}) {
           merged.imageUrl ||
           merged.image ||
           merged.thumbnail ||
-          '/thumbnails/reel-frame-1.jpg';
+          '/thumbnails/hero-video-1.jpg';
         merged.videoUrl =
           merged.videoUrl ||
           merged.videoSrc ||

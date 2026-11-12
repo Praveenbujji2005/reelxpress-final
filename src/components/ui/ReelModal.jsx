@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { formatTime } from '@/lib/utils';
 
 // Cinematic full-screen video lightbox modal for portrait reels
-export default function ReelModal({ isOpen, reel, onClose, onShowToast }) {
+export default function ReelModal({ isOpen, reel, onClose, onShowToast: _onShowToast }) {
   const videoRef = useRef(null);
   const progressContainerRef = useRef(null);
 
@@ -15,7 +15,6 @@ export default function ReelModal({ isOpen, reel, onClose, onShowToast }) {
   const [duration, setDuration] = useState(0);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const [isSpeedMenuOpen, setIsSpeedMenuOpen] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -126,33 +125,6 @@ export default function ReelModal({ isOpen, reel, onClose, onShowToast }) {
     setIsSpeedMenuOpen(false);
   }, []);
 
-  const toggleFullscreen = useCallback(() => {
-    const surface = document.getElementById('modal-video-surface');
-    if (!surface) return;
-    if (!document.fullscreenElement) {
-      surface.requestFullscreen?.().catch(() => {});
-    } else {
-      document.exitFullscreen?.().catch(() => {});
-    }
-  }, []);
-
-  const handleShare = useCallback(() => {
-    if (navigator.share) {
-      navigator.share({
-        title: reel?.title || 'reelXpress Reel',
-        url: window.location.href,
-      }).catch(() => {});
-    } else {
-      navigator.clipboard?.writeText(window.location.href);
-      onShowToast?.({
-        title: 'Link Copied',
-        message: 'Reel portfolio URL copied to clipboard!',
-        icon: 'share',
-        visible: true,
-      });
-    }
-  }, [reel, onShowToast]);
-
   if (!isOpen || !reel) return null;
 
   const progressPercent = duration ? (currentTime / duration) * 100 : 0;
@@ -174,25 +146,16 @@ export default function ReelModal({ isOpen, reel, onClose, onShowToast }) {
       >
         {/* Top Modal Header */}
         <div className="flex items-center justify-between px-3 sm:px-5 py-3 border-b border-white/10 bg-[#161316]/80 backdrop-blur-md z-30 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={onClose}
-              aria-label="Back to carousel"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white font-bold text-xs backdrop-blur-md border border-white/20 transition-all cursor-pointer shadow-md group mr-1"
-            >
-              <span className="material-symbols-outlined text-base group-hover:-translate-x-0.5 transition-transform">
-                arrow_back
-              </span>
-              <span>Back</span>
-            </button>
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container/20 border border-primary-container/40 text-xs font-semibold text-primary">
-              <span className="w-2 h-2 rounded-full bg-primary-container rec-indicator shadow-[0_0_6px_#ff6d29]" />
-              <span>{reel.category}</span>
-            </div>
-            <span className="hidden sm:inline px-2.5 py-0.5 rounded-full bg-white/10 border border-white/10 text-[11px] font-semibold text-text-muted">
-              {reel.views} views
+          <button
+            onClick={onClose}
+            aria-label="Back to carousel"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white font-bold text-xs backdrop-blur-md border border-white/20 transition-all cursor-pointer shadow-md group"
+          >
+            <span className="material-symbols-outlined text-base group-hover:-translate-x-0.5 transition-transform">
+              arrow_back
             </span>
-          </div>
+            <span>Back</span>
+          </button>
           <button
             onClick={onClose}
             aria-label="Close Modal (Escape)"
@@ -274,39 +237,6 @@ export default function ReelModal({ isOpen, reel, onClose, onShowToast }) {
 
         {/* Bottom Control Deck */}
         <div id="player-controls-deck" className="px-4 py-3 border-t border-white/10 bg-[#161316]/95 backdrop-blur-md flex-shrink-0 z-30">
-          {/* Metadata Row */}
-          <div className="flex items-center justify-between gap-3 mb-2.5">
-            <div className="min-w-0 flex-1">
-              <h3 className="text-sm sm:text-base font-bold text-white truncate">{reel.title}</h3>
-              <p className="text-xs text-primary font-medium truncate">Shot by {reel.creator} • Certified Creator</p>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={() => {
-                  setIsLiked(!isLiked);
-                  onShowToast?.({
-                    title: isLiked ? 'Removed from Likes' : 'Liked Reel ❤️',
-                    message: isLiked ? '' : 'Saved to your favorite reels',
-                    icon: 'favorite',
-                    visible: true,
-                  });
-                }}
-                aria-label="Like Reel"
-                className={`w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center transition-all active:scale-90 cursor-pointer touch-manipulation ${
-                  isLiked ? 'text-[#ff4757] border-[#ff4757]/40' : 'text-white hover:text-[#ff4757]'
-                }`}
-              >
-                <span className="material-symbols-outlined text-lg">favorite</span>
-              </button>
-              <button
-                onClick={handleShare}
-                aria-label="Share Reel"
-                className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white hover:text-primary hover:border-primary-container transition-all active:scale-90 cursor-pointer touch-manipulation"
-              >
-                <span className="material-symbols-outlined text-lg">share</span>
-              </button>
-            </div>
-          </div>
 
           {/* Scrubber Progress Bar */}
           <div
@@ -394,15 +324,6 @@ export default function ReelModal({ isOpen, reel, onClose, onShowToast }) {
                   </div>
                 )}
               </div>
-
-              {/* Fullscreen */}
-              <button
-                onClick={toggleFullscreen}
-                aria-label="Toggle Fullscreen"
-                className="w-9 h-9 min-w-[36px] min-h-[36px] text-white/80 hover:text-white flex items-center justify-center transition-colors cursor-pointer touch-manipulation active:scale-90"
-              >
-                <span className="material-symbols-outlined text-lg">fullscreen</span>
-              </button>
             </div>
           </div>
         </div>
