@@ -37,7 +37,8 @@ export default function ReelModal({ isOpen, reel, onClose, onShowToast }) {
       setIsLoading(true);
       videoRef.current.currentTime = 0;
       videoRef.current.playbackRate = playbackSpeed;
-      videoRef.current.muted = false;
+      videoRef.current.muted = true;
+      setIsMuted(true);
 
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
@@ -47,13 +48,8 @@ export default function ReelModal({ isOpen, reel, onClose, onShowToast }) {
             setIsLoading(false);
           })
           .catch((err) => {
-            console.warn('Autoplay with sound prevented by browser policy:', err);
-            // Fallback: start muted
-            if (videoRef.current) {
-              videoRef.current.muted = true;
-              setIsMuted(true);
-              videoRef.current.play().then(() => setIsPlaying(true)).catch(() => setHasError(true));
-            }
+            console.warn('Video play notice:', err);
+            setIsLoading(false);
           });
       }
 
@@ -177,20 +173,30 @@ export default function ReelModal({ isOpen, reel, onClose, onShowToast }) {
         className="relative w-full max-w-[390px] sm:max-w-[430px] max-h-[96vh] max-h-[96dvh] rounded-[28px] sm:rounded-[32px] overflow-hidden bg-[#120f13]/95 border border-white/15 flex flex-col shadow-[0_25px_80px_rgba(0,0,0,0.95)]"
       >
         {/* Top Modal Header */}
-        <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-white/10 bg-[#161316]/80 backdrop-blur-md z-30 flex-shrink-0">
+        <div className="flex items-center justify-between px-3 sm:px-5 py-3 border-b border-white/10 bg-[#161316]/80 backdrop-blur-md z-30 flex-shrink-0">
           <div className="flex items-center gap-2">
+            <button
+              onClick={onClose}
+              aria-label="Back to carousel"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white font-bold text-xs backdrop-blur-md border border-white/20 transition-all cursor-pointer shadow-md group mr-1"
+            >
+              <span className="material-symbols-outlined text-base group-hover:-translate-x-0.5 transition-transform">
+                arrow_back
+              </span>
+              <span>Back</span>
+            </button>
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container/20 border border-primary-container/40 text-xs font-semibold text-primary">
               <span className="w-2 h-2 rounded-full bg-primary-container rec-indicator shadow-[0_0_6px_#ff6d29]" />
               <span>{reel.category}</span>
             </div>
-            <span className="px-2.5 py-0.5 rounded-full bg-white/10 border border-white/10 text-[11px] font-semibold text-text-muted">
+            <span className="hidden sm:inline px-2.5 py-0.5 rounded-full bg-white/10 border border-white/10 text-[11px] font-semibold text-text-muted">
               {reel.views} views
             </span>
           </div>
           <button
             onClick={onClose}
             aria-label="Close Modal (Escape)"
-            className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white flex items-center justify-center hover:bg-primary-container hover:text-white hover:border-primary-container transition-all active:scale-90 cursor-pointer touch-manipulation"
+            className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white flex items-center justify-center hover:bg-primary-container hover:text-white hover:border-primary-container transition-all active:scale-90 cursor-pointer touch-manipulation"
           >
             <span className="material-symbols-outlined text-xl">close</span>
           </button>
