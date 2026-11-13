@@ -356,7 +356,10 @@
       "aspectRatio": "9/16",
       "instagramUrl": "https://www.instagram.com/reelxpress___",
       "order": 1,
-      "enabled": true
+      "enabled": true,
+      "updatedAt": "2026-11-13T09:27:26.677Z",
+      "updatedBy": "admin@reelxpress.com",
+      "_deleted": false
     },
     {
       "id": "1",
@@ -410,7 +413,7 @@
       "id": "4",
       "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/%40r07qxo%20%20-%20R⤓Download%202.MP4?alt=media&token=5989075f-65d6-4368-8212-83f5e0481cca",
       "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/%40r07qxo%20%20-%20R⤓Download%202.MP4?alt=media&token=5989075f-65d6-4368-8212-83f5e0481cca",
-      "poster": "/uploads/images/1794561127138_WhatsApp_Image_2026-10-28_at_12_00_05_PM.jpeg",
+      "poster": "/uploads/images/1794561334556__r07qxo__-_R_Download_still.HEIC",
       "category": "Vehicle Shoots",
       "title": "Automotive Track Shoot",
       "subtitle": "Captured & Edited in Minutes",
@@ -421,14 +424,14 @@
       "instagramUrl": "https://www.instagram.com/reelxpress___",
       "order": 5,
       "enabled": true,
-      "updatedAt": "2026-11-13T09:12:12.297Z",
+      "updatedAt": "2026-11-13T09:15:37.747Z",
       "updatedBy": "admin@reelxpress.com",
       "_deleted": false
     },
     {
       "id": "5",
-      "videoUrl": "",
-      "videoSrc": "",
+      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-05.MP4?alt=media&token=747fa875-8e56-4b07-8211-744d74777c34",
+      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-05.MP4?alt=media&token=747fa875-8e56-4b07-8211-744d74777c34",
       "poster": "/thumbnails/hero-video-6.jpg",
       "category": "Party & Nightlife",
       "title": "Club Event Aftermovie",
@@ -440,15 +443,15 @@
       "instagramUrl": "https://www.instagram.com/reelxpress___",
       "order": 6,
       "enabled": true,
-      "updatedAt": "2026-11-13T09:04:25.477Z",
+      "updatedAt": "2026-11-13T09:20:22.369Z",
       "updatedBy": "admin@reelxpress.com",
       "_deleted": false
     },
     {
       "id": "6",
-      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-02.MP4?alt=media&token=aadbd1e6-3858-4924-804f-28e8f23ff915",
-      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-02.MP4?alt=media&token=aadbd1e6-3858-4924-804f-28e8f23ff915",
-      "poster": "/thumbnails/hero-video-7.jpg",
+      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/%40r07qxo%20%20-%20R⤓Download.MP4?alt=media&token=391db966-9ebf-415b-8587-2453cf2fe2fa",
+      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/%40r07qxo%20%20-%20R⤓Download.MP4?alt=media&token=391db966-9ebf-415b-8587-2453cf2fe2fa",
+      "poster": "/uploads/images/1794561389108__r07qxo__-_R_Download_still_2.HEIC",
       "category": "Corporate & Launch",
       "title": "Tech Summit Keynote Reel",
       "subtitle": "Captured & Edited in Minutes",
@@ -458,7 +461,10 @@
       "aspectRatio": "9/16",
       "instagramUrl": "https://www.instagram.com/reelxpress___",
       "order": 7,
-      "enabled": true
+      "enabled": true,
+      "updatedAt": "2026-11-13T09:17:11.512Z",
+      "updatedBy": "admin@reelxpress.com",
+      "_deleted": false
     },
     {
       "title": "Demo Showcase Reel",
@@ -513,6 +519,48 @@
     }
   ],
   "activity": [
+    {
+      "id": "act_1794562046678",
+      "action": "Updated hero item",
+      "details": "Bridal & Wedding Shoot",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T09:27:26.678Z"
+    },
+    {
+      "id": "act_1794562019969",
+      "action": "Updated hero item",
+      "details": "Bridal & Wedding Shoot",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T09:26:59.969Z"
+    },
+    {
+      "id": "act_1794561993135",
+      "action": "Updated hero item",
+      "details": "Bridal & Wedding Shoot",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T09:26:33.136Z"
+    },
+    {
+      "id": "act_1794561622370",
+      "action": "Updated hero item",
+      "details": "Club Event Aftermovie",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T09:20:22.370Z"
+    },
+    {
+      "id": "act_1794561431512",
+      "action": "Updated hero item",
+      "details": "Tech Summit Keynote Reel",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T09:17:11.512Z"
+    },
+    {
+      "id": "act_1794561337747",
+      "action": "Updated hero item",
+      "details": "Automotive Track Shoot",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T09:15:37.747Z"
+    },
     {
       "id": "act_1794561132297",
       "action": "Updated hero item",

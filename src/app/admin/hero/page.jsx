@@ -112,7 +112,8 @@ export default function AdminHeroPage() {
 
   const handleSave = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
-    if (!editingSlide.title || !editingSlide.creator) {
+    if (isSaving) return;
+    if (!editingSlide?.title || !editingSlide?.creator) {
       alert('Title and creator are required.');
       return;
     }
@@ -131,7 +132,11 @@ export default function AdminHeroPage() {
       await saveHeroSlide(payload, user?.email);
       showToast('Hero slide saved successfully!');
       setEditingSlide(null);
-      await fetchSlides();
+      try {
+        await fetchSlides();
+      } catch (fetchErr) {
+        console.warn('Post-save refresh notice:', fetchErr);
+      }
     } catch (err) {
       alert('Failed to save slide: ' + err.message);
     } finally {
@@ -399,7 +404,7 @@ export default function AdminHeroPage() {
               {editingSlide.id.startsWith('new_') ? 'Add New Reel Slide' : 'Edit Reel Slide'}
             </h3>
 
-            <form onSubmit={handleSave} className="space-y-4">
+            <form onSubmit={handleSave} noValidate className="space-y-4">
               {/* Title */}
               <div>
                 <label className="block text-xs uppercase tracking-wider font-bold text-text-muted mb-1.5">
@@ -464,7 +469,7 @@ export default function AdminHeroPage() {
                     Instagram Redirect URL
                   </label>
                   <input
-                    type="url"
+                    type="text"
                     placeholder="https://www.instagram.com/reelxpress___"
                     value={editingSlide.instagramUrl}
                     onChange={(e) => setEditingSlide({ ...editingSlide, instagramUrl: e.target.value })}
@@ -521,11 +526,11 @@ export default function AdminHeroPage() {
                   </div>
                   <div>
                     <label className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">
-                      Or Direct Video URL
+                      Or Direct Video URL / File Path
                     </label>
                     <input
-                      type="url"
-                      placeholder="https://... or /uploads/videos/... or /assets/video.mp4"
+                      type="text"
+                      placeholder="e.g. /uploads/videos/... or https://... or /assets/video.mp4"
                       value={editingSlide.videoUrl || editingSlide.videoSrc || ''}
                       onChange={(e) =>
                         setEditingSlide({
@@ -613,10 +618,14 @@ export default function AdminHeroPage() {
                   disabled={isSaving || isUploading || isVideoUploading}
                   className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm tracking-wide shadow-lg hover:opacity-95 active:scale-95 transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  {isSaving && (
-                    <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  {isSaving ? (
+                    <>
+                      <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin shrink-0" />
+                      <span>Saving Reel Slide...</span>
+                    </>
+                  ) : (
+                    <span>Save Reel Slide</span>
                   )}
-                  <span>{isSaving ? 'Saving Reel Slide...' : 'Save Reel Slide'}</span>
                 </button>
               </div>
             </form>
