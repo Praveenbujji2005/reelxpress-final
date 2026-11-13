@@ -23,11 +23,12 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except:
+     * - api routes (bypasses edge middleware buffering to allow large multipart video/image uploads)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public brand/assets
      */
-    '/((?!_next/static|_next/image|brand/|thumbnails/|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|brand/|thumbnails/|favicon.ico).*)',
   ],
 };

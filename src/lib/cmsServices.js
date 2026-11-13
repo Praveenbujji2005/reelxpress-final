@@ -1574,7 +1574,8 @@ export async function uploadVideoFile(file, folder = 'hero') {
       throw new Error(data.error || 'Server did not return a valid video URL.');
     } catch (serverErr) {
       console.error('[uploadVideoFile] Server upload error:', serverErr);
-      throw new Error(`Video upload failed: ${serverErr.message || 'Server error'}`);
+      const cleanMsg = (serverErr.message || 'Server error').replace(/^Video upload failed:\s*/i, '');
+      throw new Error(`Video upload failed: ${cleanMsg}`);
     }
   }
 

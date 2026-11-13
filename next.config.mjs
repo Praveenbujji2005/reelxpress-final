@@ -3,31 +3,10 @@ const nextConfig = {
   reactStrictMode: true,
   devIndicators: false,
   allowedDevOrigins: ['192.168.31.151', '192.168.*', 'localhost:3000', 'localhost:3001'],
-  async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'reel-xpress.vercel.app',
-          },
-        ],
-        destination: 'https://www.reelxpress.com/:path*',
-        permanent: true,
-      },
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'reelxpress-final.vercel.app',
-          },
-        ],
-        destination: 'https://www.reelxpress.com/:path*',
-        permanent: true,
-      },
-    ];
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '100mb',
+    },
   },
   async headers() {
     const isPreview = process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production';

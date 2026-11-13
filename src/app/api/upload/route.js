@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 // Max file sizes
 const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
 const MAX_IMAGE_SIZE = 25 * 1024 * 1024;  // 25MB
