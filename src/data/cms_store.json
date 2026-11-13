@@ -408,9 +408,9 @@
     },
     {
       "id": "4",
-      "videoUrl": "",
-      "videoSrc": "",
-      "poster": "/thumbnails/hero-video-5.jpg",
+      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/%40r07qxo%20%20-%20R⤓Download%202.MP4?alt=media&token=5989075f-65d6-4368-8212-83f5e0481cca",
+      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/%40r07qxo%20%20-%20R⤓Download%202.MP4?alt=media&token=5989075f-65d6-4368-8212-83f5e0481cca",
+      "poster": "/uploads/images/1794561127138_WhatsApp_Image_2026-10-28_at_12_00_05_PM.jpeg",
       "category": "Vehicle Shoots",
       "title": "Automotive Track Shoot",
       "subtitle": "Captured & Edited in Minutes",
@@ -421,14 +421,14 @@
       "instagramUrl": "https://www.instagram.com/reelxpress___",
       "order": 5,
       "enabled": true,
-      "updatedAt": "2026-11-13T08:48:57.537Z",
+      "updatedAt": "2026-11-13T09:12:12.297Z",
       "updatedBy": "admin@reelxpress.com",
-      "_deleted": true
+      "_deleted": false
     },
     {
       "id": "5",
-      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-01.MP4?alt=media&token=1c2e4127-b79b-45e1-89ec-621fe9c55847",
-      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-01.MP4?alt=media&token=1c2e4127-b79b-45e1-89ec-621fe9c55847",
+      "videoUrl": "",
+      "videoSrc": "",
       "poster": "/thumbnails/hero-video-6.jpg",
       "category": "Party & Nightlife",
       "title": "Club Event Aftermovie",
@@ -439,7 +439,10 @@
       "aspectRatio": "9/16",
       "instagramUrl": "https://www.instagram.com/reelxpress___",
       "order": 6,
-      "enabled": true
+      "enabled": true,
+      "updatedAt": "2026-11-13T09:04:25.477Z",
+      "updatedBy": "admin@reelxpress.com",
+      "_deleted": false
     },
     {
       "id": "6",
@@ -510,6 +513,27 @@
     }
   ],
   "activity": [
+    {
+      "id": "act_1794561132297",
+      "action": "Updated hero item",
+      "details": "Automotive Track Shoot",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T09:12:12.297Z"
+    },
+    {
+      "id": "act_1794561009187",
+      "action": "Updated hero item",
+      "details": "Automotive Track Shoot",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T09:10:09.187Z"
+    },
+    {
+      "id": "act_1794560665477",
+      "action": "Updated hero item",
+      "details": "Club Event Aftermovie",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T09:04:25.477Z"
+    },
     {
       "id": "act_1794559926723",
       "action": "Updated pricing item",

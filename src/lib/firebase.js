@@ -5,8 +5,36 @@ import {
   initializeFirestore,
   persistentLocalCache,
   persistentMultipleTabManager,
+  setLogLevel,
+  getPersistentCacheIndexManager,
+  disablePersistentCacheIndexAutoCreation,
 } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+
+// Silence internal Firestore multi-tab lease election and index backfill notices
+try {
+  setLogLevel('silent');
+} catch {
+  // Ignore in environments where setLogLevel is not permitted
+}
+
+// Suppress benign Firestore multi-tab internal lease election errors in the browser console
+// so that Next.js / Turbopack dev error overlays are not triggered when non-primary tabs retry
+if (typeof window !== 'undefined' && typeof console !== 'undefined' && console.error) {
+  const originalConsoleError = console.error.bind(console);
+  console.error = (...args) => {
+    const raw = args
+      .map((arg) => (typeof arg === 'string' ? arg : arg?.message || ''))
+      .join(' ');
+    if (
+      raw.includes("Failed to obtain primary lease for action 'Backfill Indexes'") ||
+      raw.includes('Failed to obtain primary lease')
+    ) {
+      return;
+    }
+    originalConsoleError(...args);
+  };
+}
 
 /**
  * Firebase Configuration for ReelXpress
@@ -56,6 +84,16 @@ if (typeof window !== 'undefined' || process.env.NODE_ENV !== 'test') {
         } catch {
           // If initializeFirestore was already called or persistence not available
           db = getFirestore(app);
+        }
+
+        // Disable automatic persistent cache index creation to prevent background lease contention
+        try {
+          const indexManager = getPersistentCacheIndexManager(db);
+          if (indexManager) {
+            disablePersistentCacheIndexAutoCreation(indexManager);
+          }
+        } catch {
+          // Ignore if indexManager is unsupported
         }
       } else {
         db = getFirestore(app);
