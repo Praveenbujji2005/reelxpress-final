@@ -16,17 +16,6 @@ export default function Footer() {
             <p className="text-body-sm font-body-sm text-text-muted leading-relaxed mb-6">
               The intersection of speed and cinema. On-demand video production for the modern era.
             </p>
-
-            {/* Quick Action CTA Button */}
-            <div className="flex flex-wrap items-center gap-3">
-              <Link
-                href="/#booking"
-                className="btn-glow-orange btn-shine-sweep inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-white font-bold text-xs sm:text-sm transition-all cursor-pointer shadow-md"
-              >
-                <span>Book a Creator</span>
-                <span className="material-symbols-outlined text-sm">bolt</span>
-              </Link>
-            </div>
           </div>
 
           {/* Navigation & Legal Links Columns (side-by-side on all screens) */}
