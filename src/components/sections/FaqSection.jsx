@@ -22,7 +22,7 @@ export default function FaqSection() {
   const [faqs, setFaqs] = useState(FAQ_DATA);
   const [openIndex, setOpenIndex] = useState(0);
   const [showAll, setShowAll] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let isMounted = true;

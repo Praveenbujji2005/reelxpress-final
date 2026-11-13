@@ -11,7 +11,25 @@ export default function AdminFaqsPage() {
   const [editingFaq, setEditingFaq] = useState(null);
   const [faqToDelete, setFaqToDelete] = useState(null);
   const [search, setSearch] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Prevent background scrolling while modal is open
+  useEffect(() => {
+    if (editingFaq || faqToDelete) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.stop === 'function') {
+        window.lenis.stop();
+      }
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.start === 'function') {
+          window.lenis.start();
+        }
+      };
+    }
+  }, [editingFaq, faqToDelete]);
 
   const fetchFaqs = async () => {
     try {
@@ -45,13 +63,14 @@ export default function AdminFaqsPage() {
   };
 
   const handleSave = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     const questionText = (editingFaq.question || editingFaq.q || '').trim();
     const answerText = (editingFaq.answer || editingFaq.a || '').trim();
     if (!questionText || !answerText) {
       alert('Question and answer are required.');
       return;
     }
+    setIsSaving(true);
     try {
       await saveFaq(
         {
@@ -68,6 +87,8 @@ export default function AdminFaqsPage() {
       await fetchFaqs();
     } catch (err) {
       alert('Failed to save FAQ: ' + err.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -133,7 +154,7 @@ export default function AdminFaqsPage() {
 
         <button
           onClick={handleCreateNew}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer self-start sm:self-auto"
+          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm tracking-wide shadow-lg hover:opacity-95 active:scale-95 transition-all flex items-center gap-2 cursor-pointer self-start sm:self-auto"
         >
           <span className="material-symbols-outlined text-sm">add</span>
           <span>Add New FAQ</span>
@@ -147,7 +168,7 @@ export default function AdminFaqsPage() {
           placeholder="Search FAQs by question or answer keywords..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-sm focus:border-[#ff6d29] focus:outline-none"
+          className="w-full px-4 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-sm focus:border-[#F28C3C] focus:outline-none"
         />
       </div>
 
@@ -173,9 +194,9 @@ export default function AdminFaqsPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filteredFaqs.map((faq, idx) => (
+          {(filteredFaqs ?? []).map((faq, idx) => (
             <div
-              key={`admin-faq-${faq.id ?? idx}-${idx}`}
+              key={faq.id ?? `admin-faq-${idx}`}
               className={`rounded-2xl p-5 bg-[#151215] border transition-all ${
                 faq.enabled ? 'border-white/10 hover:border-white/20' : 'border-white/5 opacity-60'
               }`}
@@ -183,7 +204,7 @@ export default function AdminFaqsPage() {
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1.5">
-                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-[#ff6d29]/20 text-[#ff6d29]">
+                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-[#F28C3C]/20 text-[#F28C3C]">
                       #{idx + 1} · {faq.category || 'General'}
                     </span>
                     {!faq.enabled && (
@@ -235,8 +256,16 @@ export default function AdminFaqsPage() {
 
       {/* Edit / Create FAQ Modal */}
       {editingFaq && (
-        <div className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-xl rounded-3xl bg-[#151215] border border-white/15 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-xl rounded-3xl bg-[#161318] border border-white/15 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+          >
             <button
               onClick={() => setEditingFaq(null)}
               className="absolute top-5 right-5 p-2 rounded-full text-white/60 hover:text-white cursor-pointer"
@@ -258,7 +287,7 @@ export default function AdminFaqsPage() {
                   placeholder="e.g. Booking & Delivery, Technical"
                   value={editingFaq.category}
                   onChange={(e) => setEditingFaq({ ...editingFaq, category: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                 />
               </div>
 
@@ -278,7 +307,7 @@ export default function AdminFaqsPage() {
                       q: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                 />
               </div>
 
@@ -298,7 +327,7 @@ export default function AdminFaqsPage() {
                       a: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm resize-none"
                 />
               </div>
 
@@ -308,7 +337,7 @@ export default function AdminFaqsPage() {
                   id="faq-en"
                   checked={editingFaq.enabled}
                   onChange={(e) => setEditingFaq({ ...editingFaq, enabled: e.target.checked })}
-                  className="w-4 h-4 rounded text-[#ff6d29] bg-[#0c0a0c]"
+                  className="w-4 h-4 rounded text-[#F28C3C] accent-[#F28C3C] bg-[#0c0a0c]"
                 />
                 <label htmlFor="faq-en" className="text-sm font-semibold text-white">
                   Publish to live website FAQ accordion
@@ -325,9 +354,13 @@ export default function AdminFaqsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#eb5b1f] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-lg cursor-pointer"
+                  disabled={isSaving}
+                  className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm tracking-wide shadow-lg hover:opacity-95 active:scale-95 transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  Save FAQ
+                  {isSaving && (
+                    <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  )}
+                  <span>{isSaving ? 'Saving FAQ...' : 'Save FAQ'}</span>
                 </button>
               </div>
             </form>
@@ -337,8 +370,16 @@ export default function AdminFaqsPage() {
 
       {/* Delete Confirmation */}
       {faqToDelete && (
-        <div className="fixed inset-0 z-[100050] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-md rounded-3xl bg-[#181318] border border-red-500/30 p-6 sm:p-7 shadow-2xl text-center">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100050] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-3xl bg-[#181318] border border-red-500/30 p-6 sm:p-7 shadow-2xl text-center"
+          >
             <h3 className="text-xl font-extrabold text-white mb-2">Delete FAQ?</h3>
             <p className="text-xs text-text-muted leading-relaxed mb-6">
               Are you sure you want to delete <strong className="text-white">&quot;{faqToDelete.question}&quot;</strong>?

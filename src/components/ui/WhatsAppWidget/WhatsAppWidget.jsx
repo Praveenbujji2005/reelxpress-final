@@ -140,7 +140,7 @@ export default function WhatsAppWidget() {
           aria-label="ReelXpress WhatsApp Chat"
           aria-hidden={!isOpen}
           data-lenis-prevent
-          className={`fixed bottom-20 sm:bottom-24 right-3 sm:right-6 z-[100000] w-[350px] sm:w-[380px] max-w-[calc(100vw-24px)] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5),0_8px_24px_rgba(37,211,102,0.18)] border border-white/10 transition-all duration-250 ease-out origin-bottom-right flex flex-col ${
+          className={`fixed bottom-[152px] sm:bottom-24 right-4 sm:right-6 z-[100000] w-[350px] sm:w-[380px] max-w-[calc(100vw-24px)] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5),0_8px_24px_rgba(37,211,102,0.18)] border border-white/10 transition-all duration-250 ease-out origin-bottom-right flex flex-col ${
             isOpen
               ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
               : 'opacity-0 translate-y-3 scale-95 pointer-events-none'
@@ -284,7 +284,7 @@ export default function WhatsAppWidget() {
         aria-label={!isMobile && isOpen ? 'Close WhatsApp chat' : 'Chat with ReelXpress on WhatsApp'}
         aria-expanded={!isMobile && isOpen}
         aria-haspopup={!isMobile ? 'dialog' : undefined}
-        className="fixed bottom-4 sm:bottom-6 right-3 sm:right-6 z-[99995] w-14 h-14 min-w-[56px] min-h-[56px] rounded-full bg-gradient-to-tr from-[#20ba5a] to-[#25D366] text-white flex items-center justify-center shadow-[0_8px_24px_rgba(37,211,102,0.45)] hover:shadow-[0_12px_32px_rgba(37,211,102,0.65)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366] group"
+        className="fixed bottom-[88px] sm:bottom-6 right-4 sm:right-6 z-[99995] w-14 h-14 min-w-[56px] min-h-[56px] rounded-full bg-gradient-to-tr from-[#20ba5a] to-[#25D366] text-white flex items-center justify-center shadow-[0_8px_24px_rgba(37,211,102,0.45)] hover:shadow-[0_12px_32px_rgba(37,211,102,0.65)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366] group"
       >
         {/* Soft pulse glow ring behind button */}
         <span

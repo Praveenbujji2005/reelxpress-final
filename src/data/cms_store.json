@@ -1,0 +1,640 @@
+{
+  "testimonials": [
+    {
+      "id": "testi_1",
+      "name": "Krishna D.",
+      "role": "Groom's Brother",
+      "quote": "Booked them just a day before the wedding. They showed up with iPhones and edited the video before the baraat ended. Unreal.",
+      "review": "Booked them just a day before the wedding. They showed up with iPhones and edited the video before the baraat ended. Unreal.",
+      "rating": 5,
+      "avatar": "/brand/icon-gold.png",
+      "enabled": true,
+      "order": 1
+    },
+    {
+      "id": "testi_2",
+      "name": "Padma M.",
+      "role": "Brand Manager, Skincare Brand",
+      "quote": "We used reelXpress for our store launch - got high-quality reels before the event wrapped up. Perfect for social!",
+      "review": "We used reelXpress for our store launch - got high-quality reels before the event wrapped up. Perfect for social!",
+      "rating": 5,
+      "avatar": "/brand/icon-gold.png",
+      "enabled": true,
+      "order": 2
+    },
+    {
+      "id": "testi_3",
+      "name": "Radhika P.",
+      "role": "Small Business Owner",
+      "quote": "As a new business, getting professional-looking content quickly helped us gain traction online. reelXpress is now our go-to team.",
+      "review": "As a new business, getting professional-looking content quickly helped us gain traction online. reelXpress is now our go-to team.",
+      "rating": 5,
+      "avatar": "/brand/icon-gold.png",
+      "enabled": true,
+      "order": 3
+    },
+    {
+      "id": "testi_4",
+      "name": "Harish G.",
+      "role": "Event Planner",
+      "quote": "reelXpress has changed the way we capture events for our clients. No delays, no chasing, just pure magic delivered instantly.",
+      "review": "reelXpress has changed the way we capture events for our clients. No delays, no chasing, just pure magic delivered instantly.",
+      "rating": 5,
+      "avatar": "/brand/icon-gold.png",
+      "enabled": true,
+      "order": 4
+    },
+    {
+      "id": "testi_5",
+      "name": "Arjun S.",
+      "role": "Influencer",
+      "quote": "I didn't have to do anything except show up. They shot, added trending music, and gave me perfect reels within the hour.",
+      "review": "I didn't have to do anything except show up. They shot, added trending music, and gave me perfect reels within the hour.",
+      "rating": 5,
+      "avatar": "/brand/icon-gold.png",
+      "enabled": true,
+      "order": 5
+    },
+    {
+      "id": "testi_6",
+      "name": "Sravanthi R.",
+      "role": "Bride",
+      "quote": "I was literally watching our wedding reel before the reception dinner even started. These guys are insanely fast and so good!",
+      "review": "I was literally watching our wedding reel before the reception dinner even started. These guys are insanely fast and so good!",
+      "rating": 5,
+      "avatar": "/brand/icon-gold.png",
+      "enabled": true,
+      "order": 6
+    },
+    {
+      "name": "Demo Tester",
+      "role": "QA Verified",
+      "quote": "CMS demo verification test quote - live site synchronization confirmed!",
+      "rating": 5,
+      "enabled": true,
+      "order": 1,
+      "id": "test_1794556652286",
+      "_deleted": true,
+      "updatedAt": "2026-11-13T07:58:45.680Z",
+      "updatedBy": "admin@reelxpress.com"
+    }
+  ],
+  "pricing": [
+    {
+      "id": "instant-hourly",
+      "category": "instant",
+      "tag": "SINGLE EVENT",
+      "name": "Hourly Plan",
+      "description": "Perfect for anyone who wants a single, fast, high-quality reel delivered in minutes.",
+      "price": "₹ 2,499",
+      "priceSuffix": "+ GST",
+      "badge": "BEST SELLER",
+      "isPopular": true,
+      "enabled": true,
+      "order": 1,
+      "shootType": "Hourly Plan (₹2,200 - 1 Hour Shoot, 1 Reel)",
+      "inclusions": [
+        "1 Hour Professional Shoot",
+        "1 High-Quality Edited Reel",
+        "Shot on Latest iPhone",
+        "reelXpress Branding Included",
+        "Up to 2 Free Revisions"
+      ],
+      "ctaText": "Book Hourly",
+      "updatedAt": "2026-11-13T08:52:06.723Z",
+      "updatedBy": "admin@reelxpress.com",
+      "_deleted": false
+    },
+    {
+      "id": "instant-vehicle",
+      "category": "instant",
+      "tag": "AUTOMOTIVE",
+      "name": "Vehicle Shoot",
+      "description": "Specialized dynamic reels for car & superbike deliveries, unboxings, and rallies.",
+      "price": "₹3,999",
+      "priceSuffix": "onwards + 18% GST",
+      "badge": "",
+      "isPopular": false,
+      "enabled": true,
+      "order": 2,
+      "shootType": "Vehicle Shoot (From ₹3,999 - Regular / Premium / Drone)",
+      "inclusions": [
+        "Regular ₹3,999 · Premium ₹4,999 · Drone ₹8,999",
+        "Dynamic rolling & tracking shots",
+        "Shot on Latest iPhone with gimbal gear",
+        "Instant reel delivery",
+        "Sound design & exhaust note capture",
+        "RAW content on request",
+        "reelXpress Logo Mandatory"
+      ],
+      "ctaText": "Book Vehicle Shoot"
+    },
+    {
+      "id": "instant-half-day",
+      "category": "instant",
+      "tag": "FOUR HOURS",
+      "name": "Half Day",
+      "description": "Ideal for parties, pop-up events, store launches, or multi-content creator shoots.",
+      "price": "₹8,500",
+      "priceSuffix": "+ 18% GST",
+      "badge": "",
+      "isPopular": false,
+      "enabled": true,
+      "order": 3,
+      "shootType": "Half Day Plan (₹8,500 - Up to 4 Hours, 3 Reels)",
+      "inclusions": [
+        "Covers up to 4 hours event",
+        "Includes 3 High-Impact Edited Reels",
+        "Shot on Latest iPhone",
+        "Instant reel delivery",
+        "Dedicated Creator on site",
+        "Complimentary mobile portraits",
+        "reelXpress Logo Mandatory"
+      ],
+      "ctaText": "Book Half Day"
+    },
+    {
+      "id": "instant-full-day",
+      "category": "instant",
+      "tag": "EIGHT HOURS",
+      "name": "Full Day",
+      "description": "Complete day-long coverage for exhibitions, major festivals, and marathon events.",
+      "price": "₹15,000",
+      "priceSuffix": "+ 18% GST",
+      "badge": "",
+      "isPopular": false,
+      "enabled": true,
+      "order": 4,
+      "shootType": "Full Day Plan (₹15,000 - Up to 8 Hours, 7 Reels)",
+      "inclusions": [
+        "Covers up to 8 hours event",
+        "Includes 7 High-Impact Edited Reels",
+        "Shot on Latest iPhone",
+        "Priority on-site delivery",
+        "Full event storytelling & coverage",
+        "All RAW footage provided on request",
+        "reelXpress Logo Mandatory"
+      ],
+      "ctaText": "Book Full Day"
+    },
+    {
+      "id": "business-brand",
+      "category": "business",
+      "tag": "COMPREHENSIVE",
+      "name": "Brand shoot",
+      "description": "Professional coverage tailored to campaign, launch, and showcase moments, scoped around your calendar and deliverables.",
+      "price": "Customised",
+      "priceSuffix": "+ GST",
+      "badge": "MOST FLEXIBLE",
+      "isPopular": true,
+      "enabled": true,
+      "order": 5,
+      "shootType": "Brand Shoot (Customised Pricing - Campaign & Showcase)",
+      "inclusions": [
+        "Cinematic visuals for premium brands & events",
+        "Refined, brand-aligned storytelling",
+        "Professional production with expert direction",
+        "Hassle-free booking & coordination",
+        "Quick turnaround: Cut. Polish. Launch.",
+        "Ideal for campaigns, launches & brand showcases",
+        "Dedicated creative director for every campaign",
+        "reelXpress Logo Mandatory"
+      ],
+      "ctaText": "Book Now"
+    },
+    {
+      "id": "business-product",
+      "category": "business",
+      "tag": "PER REEL",
+      "name": "Product Shoot",
+      "description": "High-converting product and catalog reels for e-commerce, D2C, and brand launches, shot and edited to make your product the hero.",
+      "price": "₹ 7,000",
+      "priceSuffix": "onwards / per reel + GST",
+      "badge": "",
+      "isPopular": false,
+      "enabled": true,
+      "order": 6,
+      "shootType": "Product Shoot (₹7,000 / reel - E-commerce & Catalog)",
+      "inclusions": [
+        "Product, catalog & e-commerce reels",
+        "Studio or on-location shoots",
+        "Cinematic reel delivery",
+        "Shot on the latest iPhone",
+        "RAW content on request",
+        "reelXpress Logo Mandatory"
+      ],
+      "ctaText": "Enquire now"
+    },
+    {
+      "id": "wedding-basic",
+      "category": "wedding",
+      "tag": "SINGLE EVENT",
+      "name": "Basic",
+      "description": "Perfect for couples looking for a stunning, professionally crafted wedding shoot that won't break the bank.",
+      "price": "₹ 14,999",
+      "priceSuffix": "+ 18% GST",
+      "badge": "",
+      "isPopular": false,
+      "enabled": true,
+      "order": 7,
+      "shootType": "Wedding Basic (₹14,999 - Single Event, 3 Reels)",
+      "inclusions": [
+        "Covers up to one event",
+        "Includes 3 Reels",
+        "Shot on iPhone",
+        "Instant reel delivery",
+        "Complimentary pictures",
+        "Please provide an SD card to receive all raw content if needed",
+        "reelXpress Logo Mandatory"
+      ],
+      "ctaText": "Book Basic"
+    },
+    {
+      "id": "wedding-silver",
+      "category": "wedding",
+      "tag": "THREE EVENTS",
+      "name": "Silver",
+      "description": "Perfect for those who want comprehensive coverage with an extra touch of elegance.",
+      "price": "₹ 44,999",
+      "priceSuffix": "+ 18% GST",
+      "badge": "",
+      "isPopular": false,
+      "enabled": true,
+      "order": 8,
+      "shootType": "Wedding Silver (₹44,999 - Three Events, 10 Reels)",
+      "inclusions": [
+        "Covers up to three event",
+        "Includes 10 Reels",
+        "Shot on iPhone",
+        "Instant reel delivery",
+        "Complimentary pictures",
+        "Please provide an SD card to receive all raw content if needed",
+        "reelXpress Logo Mandatory"
+      ],
+      "ctaText": "Book Silver"
+    },
+    {
+      "id": "wedding-gold",
+      "category": "wedding",
+      "tag": "FOUR EVENTS",
+      "name": "Gold",
+      "description": "Perfect for couples who want an exclusive, comprehensive experience across four events.",
+      "price": "₹ 59,999",
+      "priceSuffix": "+ 18% GST",
+      "badge": "MOST POPULAR",
+      "isPopular": true,
+      "enabled": true,
+      "order": 9,
+      "shootType": "Wedding Gold (₹59,999 - Four Events, 15 Reels)",
+      "inclusions": [
+        "Covers up to four event",
+        "Includes 15 Reels",
+        "Shot on iPhone",
+        "Instant reel delivery",
+        "Complimentary pictures",
+        "Please provide an SD card to receive all raw content if needed",
+        "reelXpress Logo Mandatory"
+      ],
+      "ctaText": "Book Gold"
+    },
+    {
+      "id": "wedding-platinum",
+      "category": "wedding",
+      "tag": "COMPLETE WEDDING",
+      "name": "Platinum",
+      "description": "For couples who want it all: every moment captured with unmatched attention to detail.",
+      "price": "₹ 99,999",
+      "priceSuffix": "+ 18% GST",
+      "badge": "",
+      "isPopular": false,
+      "enabled": true,
+      "order": 10,
+      "shootType": "Wedding Platinum (₹99,999 - Complete Wedding, 25 Reels)",
+      "inclusions": [
+        "Covers whole wedding events",
+        "Includes 25 Reels",
+        "Shot on iPhone",
+        "Instant reel delivery",
+        "Interaction videos with complimentary mobile portraits",
+        "Please provide an SD card to receive all raw content if needed",
+        "reelXpress Logo Mandatory"
+      ],
+      "ctaText": "Book Platinum"
+    },
+    {
+      "category": "instant",
+      "tag": "DEMO EVENT",
+      "name": "Demo Plan Express",
+      "description": "Demo plan created via CMS for testing.",
+      "price": "₹ 2,499",
+      "priceSuffix": "+ GST",
+      "badge": "SPECIAL",
+      "enabled": true,
+      "order": 1,
+      "inclusions": [
+        "Demo inclusion 1",
+        "Demo inclusion 2"
+      ],
+      "id": "pric_1794556683686",
+      "_deleted": true,
+      "updatedAt": "2026-11-13T07:58:50.038Z",
+      "updatedBy": "admin@reelxpress.com"
+    }
+  ],
+  "hero": [
+    {
+      "id": "0",
+      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-01.MP4?alt=media&token=1c2e4127-b79b-45e1-89ec-621fe9c55847",
+      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-01.MP4?alt=media&token=1c2e4127-b79b-45e1-89ec-621fe9c55847",
+      "poster": "/thumbnails/hero-video-1.jpg",
+      "category": "Weddings & Luxe",
+      "title": "Bridal & Wedding Shoot",
+      "subtitle": "Captured & Edited in Minutes",
+      "creator": "Aditya S.",
+      "views": "240K",
+      "likes": "18.5K",
+      "aspectRatio": "9/16",
+      "instagramUrl": "https://www.instagram.com/reelxpress___",
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "1",
+      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-02.MP4?alt=media&token=aadbd1e6-3858-4924-804f-28e8f23ff915",
+      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-02.MP4?alt=media&token=aadbd1e6-3858-4924-804f-28e8f23ff915",
+      "poster": "/thumbnails/hero-video-2.jpg",
+      "category": "Fashion & Events",
+      "title": "Model Shoot on iPhone",
+      "subtitle": "Captured & Edited in Minutes",
+      "creator": "Priya M.",
+      "views": "420K",
+      "likes": "32.8K",
+      "aspectRatio": "9/16",
+      "instagramUrl": "https://www.instagram.com/reelxpress___",
+      "order": 2,
+      "enabled": true
+    },
+    {
+      "id": "2",
+      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-03.MP4?alt=media&token=65b2ef89-e6b2-4393-a7ba-02ea1d0979e4",
+      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-03.MP4?alt=media&token=65b2ef89-e6b2-4393-a7ba-02ea1d0979e4",
+      "poster": "/thumbnails/hero-video-3.jpg",
+      "category": "Luxe Celebrity",
+      "title": "Red Carpet Event Reel",
+      "subtitle": "Captured & Edited in Minutes",
+      "creator": "Arvind K.",
+      "views": "890K",
+      "likes": "74.1K",
+      "aspectRatio": "9/16",
+      "instagramUrl": "https://www.instagram.com/reelxpress___",
+      "order": 3,
+      "enabled": true
+    },
+    {
+      "id": "3",
+      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-04.MP4?alt=media&token=57243f0f-8cc2-4b2c-89cd-97cfd27321b6",
+      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-04.MP4?alt=media&token=57243f0f-8cc2-4b2c-89cd-97cfd27321b6",
+      "poster": "/thumbnails/hero-video-4.jpg",
+      "category": "Event Coverage",
+      "title": "Awards Night Coverage",
+      "subtitle": "Captured & Edited in Minutes",
+      "creator": "Sneha D.",
+      "views": "310K",
+      "likes": "21.5K",
+      "aspectRatio": "9/16",
+      "instagramUrl": "https://www.instagram.com/reelxpress___",
+      "order": 4,
+      "enabled": true
+    },
+    {
+      "id": "4",
+      "videoUrl": "",
+      "videoSrc": "",
+      "poster": "/thumbnails/hero-video-5.jpg",
+      "category": "Vehicle Shoots",
+      "title": "Automotive Track Shoot",
+      "subtitle": "Captured & Edited in Minutes",
+      "creator": "Vikram S.",
+      "views": "640K",
+      "likes": "58.3K",
+      "aspectRatio": "9/16",
+      "instagramUrl": "https://www.instagram.com/reelxpress___",
+      "order": 5,
+      "enabled": true,
+      "updatedAt": "2026-11-13T08:48:57.537Z",
+      "updatedBy": "admin@reelxpress.com",
+      "_deleted": true
+    },
+    {
+      "id": "5",
+      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-01.MP4?alt=media&token=1c2e4127-b79b-45e1-89ec-621fe9c55847",
+      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-01.MP4?alt=media&token=1c2e4127-b79b-45e1-89ec-621fe9c55847",
+      "poster": "/thumbnails/hero-video-6.jpg",
+      "category": "Party & Nightlife",
+      "title": "Club Event Aftermovie",
+      "subtitle": "Captured & Edited in Minutes",
+      "creator": "Rahul V.",
+      "views": "510K",
+      "likes": "44.2K",
+      "aspectRatio": "9/16",
+      "instagramUrl": "https://www.instagram.com/reelxpress___",
+      "order": 6,
+      "enabled": true
+    },
+    {
+      "id": "6",
+      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-02.MP4?alt=media&token=aadbd1e6-3858-4924-804f-28e8f23ff915",
+      "videoSrc": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-02.MP4?alt=media&token=aadbd1e6-3858-4924-804f-28e8f23ff915",
+      "poster": "/thumbnails/hero-video-7.jpg",
+      "category": "Corporate & Launch",
+      "title": "Tech Summit Keynote Reel",
+      "subtitle": "Captured & Edited in Minutes",
+      "creator": "Ananya R.",
+      "views": "380K",
+      "likes": "29.4K",
+      "aspectRatio": "9/16",
+      "instagramUrl": "https://www.instagram.com/reelxpress___",
+      "order": 7,
+      "enabled": true
+    },
+    {
+      "title": "Demo Showcase Reel",
+      "creator": "Demo Creator",
+      "category": "Weddings & Luxe",
+      "views": "999K",
+      "poster": "/thumbnails/hero-video-1.jpg",
+      "videoUrl": "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-01.MP4?alt=media&token=1c2e4127-b79b-45e1-89ec-621fe9c55847",
+      "enabled": true,
+      "order": 1,
+      "id": "hero_1794556671416",
+      "_deleted": true,
+      "updatedAt": "2026-11-13T07:58:47.942Z",
+      "updatedBy": "admin@reelxpress.com"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What is reelXpress and how does it work?",
+      "answer": "reelXpress is an on-demand content creation service that connects you with skilled mobile photographers and videographers. We specialize in capturing high-quality, social-media-ready moments using professional mobile gear, ensuring you get authentic content instantly."
+    },
+    {
+      "question": "What gear do your Reel Makers shoot on?",
+      "answer": "All our creators shoot exclusively on the latest flagship iPhone gear paired with professional handheld gimbals, specialized lenses, and high-fidelity wireless microphones for pristine 4K 60fps vertical footage."
+    },
+    {
+      "question": "How fast is 'Delivery in Minutes'?",
+      "answer": "Our creators perform on-spot live editing and color grading directly at your shoot venue. You receive high-definition, post-ready reels before your event concludes or within minutes post-shoot via cloud link."
+    },
+    {
+      "question": "Can I book for weddings, vehicle deliveries, and brand launches?",
+      "answer": "Yes! We offer dedicated formats for Quick Hourly Shoots, Vehicle Delivery & Rollouts, Wedding & Ceremony packages, and Commercial Brand & Store Launches."
+    },
+    {
+      "question": "Can I book last minute? Like, the day before?",
+      "answer": "Yes — clients do this regularly! As long as a verified creator is available in your city zone, we can lock down your slot within minutes. We have successfully arranged same-day shoots multiple times across Hyderabad, Bengaluru, Chennai, Vizag, and Vijayawada."
+    },
+    {
+      "question": "Can I see my Reel Maker's portfolio before the shoot?",
+      "answer": "Absolutely. We happily share creator profiles and sample reels upon request when booking, ensuring their specific aesthetic, camera movement, and pacing align seamlessly with your vision."
+    },
+    {
+      "question": "How does the CMS live test work?",
+      "answer": "Every change saved in the CMS persists to the persistent server store and immediately synchronizes to the live site.",
+      "category": "General",
+      "enabled": true,
+      "order": 1,
+      "id": "faqs_1794556695791",
+      "_deleted": true,
+      "updatedAt": "2026-11-13T07:58:31.614Z",
+      "updatedBy": "admin@reelxpress.com"
+    }
+  ],
+  "activity": [
+    {
+      "id": "act_1794559926723",
+      "action": "Updated pricing item",
+      "details": "Hourly Plan",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T08:52:06.723Z"
+    },
+    {
+      "id": "act_1794559737537",
+      "action": "Deleted hero item",
+      "details": "Item ID: 4",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T08:48:57.537Z"
+    },
+    {
+      "id": "act_1794559717657",
+      "action": "Updated hero item",
+      "details": "Automotive Track Shoot",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T08:48:37.657Z"
+    },
+    {
+      "id": "act_1794557292667",
+      "action": "Updated pricing item",
+      "details": "Hourly Plan",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T08:08:12.667Z"
+    },
+    {
+      "id": "act_1794557291423",
+      "action": "Updated pricing item",
+      "details": "Hourly Plan",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T08:08:11.423Z"
+    },
+    {
+      "id": "act_1794557290179",
+      "action": "Updated pricing item",
+      "details": "Hourly Plan",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T08:08:10.179Z"
+    },
+    {
+      "id": "act_1794557289046",
+      "action": "Updated pricing item",
+      "details": "Hourly Plan",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T08:08:09.046Z"
+    },
+    {
+      "id": "act_1794557259490",
+      "action": "Updated pricing item",
+      "details": "Hourly Plan",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T08:07:39.490Z"
+    },
+    {
+      "id": "act_1794557043707",
+      "action": "Updated pricing item",
+      "details": "Hourly Plan",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T08:04:03.707Z"
+    },
+    {
+      "id": "act_1794556730038",
+      "action": "Deleted pricing item",
+      "details": "Item ID: pric_1794556683686",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T07:58:50.038Z"
+    },
+    {
+      "id": "act_1794556727942",
+      "action": "Deleted hero item",
+      "details": "Item ID: hero_1794556671416",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T07:58:47.942Z"
+    },
+    {
+      "id": "act_1794556725680",
+      "action": "Deleted testimonials item",
+      "details": "Item ID: test_1794556652286",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T07:58:45.680Z"
+    },
+    {
+      "id": "act_1794556711614",
+      "action": "Deleted faqs item",
+      "details": "Item ID: faqs_1794556695791",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T07:58:31.614Z"
+    },
+    {
+      "id": "act_1794556695791",
+      "action": "Created faqs item",
+      "details": "How does the CMS live test work?",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T07:58:15.791Z"
+    },
+    {
+      "id": "act_1794556683686",
+      "action": "Created pricing item",
+      "details": "Demo Plan Express",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T07:58:03.686Z"
+    },
+    {
+      "id": "act_1794556671416",
+      "action": "Created hero item",
+      "details": "Demo Showcase Reel",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T07:57:51.416Z"
+    },
+    {
+      "id": "act_1794556652286",
+      "action": "Created testimonials item",
+      "details": "Demo Tester",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T07:57:32.286Z"
+    },
+    {
+      "id": "act_init",
+      "action": "System Initialized",
+      "details": "reelXpress CMS Server Store initialized successfully.",
+      "adminEmail": "admin@reelxpress.com",
+      "timestamp": "2026-11-13T07:57:32.285Z"
+    }
+  ]
+}

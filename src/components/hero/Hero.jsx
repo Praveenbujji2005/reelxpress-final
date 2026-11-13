@@ -4,6 +4,7 @@ import React, { useCallback } from 'react';
 import Link from 'next/link';
 import StatCard from './StatCard';
 import PortfolioCarousel from '../sections/PortfolioCarousel';
+import Icon from '@/components/ui/Icon';
 
 /**
  * Hero Component
@@ -63,14 +64,14 @@ export default function Hero({ onShowToast }) {
           />
           <span className="whitespace-nowrap">Own The Spotlight</span>
         </span>
-        <span className="block mt-2 sm:mt-3 text-[clamp(20px,5.4vw,62px)] font-black tracking-tight leading-[1.15] text-shimmer text-primary-container">
+        <span className="block mt-2 sm:mt-3 text-[clamp(20px,5.4vw,62px)] font-black tracking-tight leading-[1.15] bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] bg-clip-text text-transparent">
           We Deliver The Reel.
         </span>
       </h1>
 
       {/* Sub-line */}
-      <p className="reveal-on-scroll text-sm sm:text-lg md:text-xl font-normal text-text-muted/90 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed delay-100">
-        You live the moment. ReelXpress captures it — instantly. Shot on latest iPhone gear with on-spot live editing.
+      <p className="reveal-on-scroll text-sm sm:text-lg md:text-xl font-normal text-white/70 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed delay-100">
+        You live the moment. reelXpress captures it — instantly. Shot on latest iPhone gear with on-spot live editing.
       </p>
 
       {/* =========================================================================
@@ -85,9 +86,7 @@ export default function Hero({ onShowToast }) {
           aria-label="Book reelXpress Now"
         >
           <span>BOOK NOW</span>
-          <span className="material-symbols-outlined text-xl transition-transform duration-200 group-hover:translate-x-1">
-            arrow_forward
-          </span>
+          <Icon name="arrow_forward" size={20} className="transition-transform duration-200 group-hover:translate-x-1" />
         </a>
 
         {/* Become a Creator Button */}
@@ -97,9 +96,7 @@ export default function Hero({ onShowToast }) {
           aria-label="Become a Creator"
         >
           <span>BECOME A CREATOR</span>
-          <span className="material-symbols-outlined text-xl text-primary transition-transform duration-200 group-hover:translate-x-1">
-            north_east
-          </span>
+          <Icon name="north_east" size={20} className="text-[#F28C3C] transition-transform duration-200 group-hover:translate-x-1" />
         </Link>
       </div>
 
@@ -114,51 +111,52 @@ export default function Hero({ onShowToast }) {
 
       {/* =========================================================================
           MOBILE ONLY (< 768px): REDESIGNED HERO BOTTOM SECTION
-          - 1. Trust Chips (1 on first row, 2 per row)
-          - 2. Centered CTA Buttons (BOOK NOW & BECOME A PARTNER, ~70-75% screen width)
-          - 3. Service Tiles (3 in a row: Quick Shoot, Wedding Shoot, Vehicle Shoot)
-          - 4. Stats Row (3 columns: 45,000+, 4.8 /5 with 5 stars, 200+)
-          - Soft orange radial glow behind CTA area
-          - 90px bottom padding to prevent overlap with floating WhatsApp widget
+          - 1. Trust Chips (Consistent surface-2, border, radius, brand orange icons)
+          - 2. Centered CTA Buttons (BOOK NOW & BECOME A CREATOR)
+          - 3. Service Tiles (Quick Shoot, Wedding Shoot, Vehicle Shoot)
+          - 4. Stats Row (45,000+, 4.8★ Average Rating, 200+ Creators)
+          - Subtle clean brand-orange radial glow
          ========================================================================= */}
       <div className="md:hidden relative z-30 w-full max-w-lg mx-auto flex flex-col items-center pb-[90px] px-2 select-none">
-        {/* Soft Orange Radial Glow behind CTA area */}
+        {/* Subtle Brand Orange Radial Glow behind CTA area */}
         <div
           className="absolute top-24 left-1/2 -translate-x-1/2 w-[320px] h-[320px] rounded-full pointer-events-none -z-10"
           style={{
-            background: 'radial-gradient(circle at 50% 30%, rgba(255,122,26,0.12), transparent 60%)',
+            background: 'radial-gradient(circle at 50% 30%, rgba(242,140,60,0.08), transparent 60%)',
           }}
           aria-hidden="true"
         />
 
-        {/* 1. TRUST CHIPS (1 on first row, 2 per row) */}
+        {/* 1. TRUST CHIPS (Uniform surface, border, and radius) */}
         <div className="flex flex-col items-center gap-2.5 mb-7 w-full">
           {/* Row 1: 1 chip */}
           <div className="flex justify-center">
-            <div className="inline-flex items-center gap-2 bg-white/[0.05] border border-white/10 rounded-full py-2.5 px-4 text-[13px] sm:text-[14px] font-medium text-white shadow-sm">
-              <span className="material-symbols-outlined text-[18px] text-[#FF7A1A]">star</span>
-              <span>5-Star Rated (100+ Reviews)</span>
+            {/* TODO: [Confirm real review count and source] */}
+            <div className="inline-flex items-center gap-2 bg-[#1E1B1F] border border-white/10 rounded-full py-2.5 px-4 text-[13px] sm:text-[14px] font-medium text-white shadow-sm">
+              <Icon name="star" size={17} className="text-[#F28C3C]" />
+              <span>4.8★ Average Rating</span>
             </div>
           </div>
           {/* Row 2: 2 chips */}
           <div className="flex items-center justify-center gap-2.5 w-full">
-            <div className="inline-flex items-center gap-2 bg-white/[0.05] border border-white/10 rounded-full py-2.5 px-3.5 text-[13px] sm:text-[14px] font-medium text-white shadow-sm">
-              <span className="material-symbols-outlined text-[18px] text-[#FF7A1A]">military_tech</span>
-              <span>5000+ Bookings Done</span>
+            {/* TODO: [Confirm 5,000+ bookings done metric] */}
+            <div className="inline-flex items-center gap-2 bg-[#1E1B1F] border border-white/10 rounded-full py-2.5 px-3.5 text-[13px] sm:text-[14px] font-medium text-white shadow-sm">
+              <Icon name="military_tech" size={17} className="text-[#F28C3C]" />
+              <span>5,000+ Bookings Done</span>
             </div>
-            <div className="inline-flex items-center gap-2 bg-white/[0.05] border border-white/10 rounded-full py-2.5 px-3.5 text-[13px] sm:text-[14px] font-medium text-white shadow-sm">
-              <span className="material-symbols-outlined text-[18px] text-[#FF7A1A]">bolt</span>
+            <div className="inline-flex items-center gap-2 bg-[#1E1B1F] border border-white/10 rounded-full py-2.5 px-3.5 text-[13px] sm:text-[14px] font-medium text-white shadow-sm">
+              <Icon name="bolt" size={17} className="text-[#F28C3C]" />
               <span>Delivery in Minutes</span>
             </div>
           </div>
           {/* Row 3: 2 chips */}
           <div className="flex items-center justify-center gap-2.5 w-full">
-            <div className="inline-flex items-center gap-2 bg-white/[0.05] border border-white/10 rounded-full py-2.5 px-3.5 text-[13px] sm:text-[14px] font-medium text-white shadow-sm">
-              <span className="material-symbols-outlined text-[18px] text-[#FF7A1A]">phone_iphone</span>
+            <div className="inline-flex items-center gap-2 bg-[#1E1B1F] border border-white/10 rounded-full py-2.5 px-3.5 text-[13px] sm:text-[14px] font-medium text-white shadow-sm">
+              <Icon name="phone_iphone" size={17} className="text-[#F28C3C]" />
               <span>Shot on Latest iPhone</span>
             </div>
-            <div className="inline-flex items-center gap-2 bg-white/[0.05] border border-white/10 rounded-full py-2.5 px-3.5 text-[13px] sm:text-[14px] font-medium text-white shadow-sm">
-              <span className="material-symbols-outlined text-[18px] text-[#FF7A1A]">currency_rupee</span>
+            <div className="inline-flex items-center gap-2 bg-[#1E1B1F] border border-white/10 rounded-full py-2.5 px-3.5 text-[13px] sm:text-[14px] font-medium text-white shadow-sm">
+              <Icon name="currency_rupee" size={17} className="text-[#F28C3C]" />
               <span>Starting at ₹1,999</span>
             </div>
           </div>
@@ -166,38 +164,38 @@ export default function Hero({ onShowToast }) {
 
         {/* 2. CTA BUTTONS (centered, ~70-75% screen width, 14px gap) */}
         <div className="flex flex-col items-center gap-[14px] w-[74%] max-w-[310px] mb-8">
-          {/* BOOK NOW: Solid orange gradient, white bold uppercase, radius 20px, height 60px, soft glow */}
+          {/* BOOK NOW: Solid brand orange gradient, radius 20px, height 60px */}
           <a
             href="#booking"
             onClick={handleBookNow}
-            className="w-full h-[60px] rounded-[20px] flex items-center justify-center text-white font-extrabold text-[15px] tracking-[0.04em] uppercase cursor-pointer select-none touch-manipulation active:scale-[0.97] transition-transform shadow-[0_8px_24px_rgba(255,122,26,0.35)]"
+            className="w-full h-[60px] rounded-[20px] flex items-center justify-center text-white font-extrabold text-[15px] tracking-[0.04em] uppercase cursor-pointer select-none touch-manipulation active:scale-[0.97] transition-transform shadow-[0_8px_24px_rgba(242,140,60,0.35)]"
             style={{
-              background: 'linear-gradient(135deg, #FF8A2B 0%, #FF7A1A 50%, #E8590C 100%)',
+              background: 'linear-gradient(135deg, #F28C3C 0%, #DC6A2C 100%)',
             }}
             aria-label="Book Now"
           >
             <span>BOOK NOW</span>
           </a>
 
-          {/* BECOME A PARTNER: background #0D0D12, 1.5px orange border, orange bold uppercase text */}
+          {/* BECOME A CREATOR: background #1E1B1F, 1.5px orange border, orange bold text */}
           <Link
             href="/creators"
-            className="w-full h-[60px] rounded-[20px] bg-[#0D0D12] border-[1.5px] border-[#FF7A1A] flex items-center justify-center text-[#FF7A1A] font-extrabold text-[15px] tracking-[0.04em] uppercase cursor-pointer select-none touch-manipulation active:scale-[0.97] transition-transform shadow-none"
-            aria-label="Become a Partner"
+            className="w-full h-[60px] rounded-[20px] bg-[#1E1B1F] border-[1.5px] border-[#F28C3C] flex items-center justify-center text-[#F28C3C] font-extrabold text-[15px] tracking-[0.04em] uppercase cursor-pointer select-none touch-manipulation active:scale-[0.97] transition-transform shadow-none"
+            aria-label="Become a Creator"
           >
-            <span>BECOME A PARTNER</span>
+            <span>BECOME A CREATOR</span>
           </Link>
         </div>
 
-        {/* 3. SERVICE TILES (3 in a row, equal width cards, 12px gap, 16px side margin) */}
+        {/* 3. SERVICE TILES (3 in a row, equal width cards, 12px gap) */}
         <div className="grid grid-cols-3 gap-3 w-full px-2 mb-8">
           {/* Quick Shoot */}
           <Link
             href="/contact?service=Quick%20Shoot"
-            className="flex flex-col items-center text-center p-3.5 py-4 rounded-[24px] bg-white/[0.04] border border-white/[0.08] active:scale-95 transition-transform cursor-pointer"
+            className="flex flex-col items-center text-center p-3.5 py-4 rounded-[24px] bg-[#1E1B1F] border border-white/10 active:scale-95 transition-transform cursor-pointer"
           >
-            <div className="w-14 h-14 rounded-2xl bg-[#FF7A1A]/15 flex items-center justify-center mb-2.5">
-              <span className="material-symbols-outlined text-[26px] text-[#FF7A1A]">bolt</span>
+            <div className="w-14 h-14 rounded-2xl bg-[rgba(242,140,60,0.15)] flex items-center justify-center mb-2.5">
+              <Icon name="bolt" size={26} className="text-[#F28C3C]" />
             </div>
             <span className="text-[13.5px] sm:text-[15px] font-semibold text-white tracking-tight leading-tight">
               Quick Shoot
@@ -207,10 +205,10 @@ export default function Hero({ onShowToast }) {
           {/* Wedding Shoot */}
           <Link
             href="/contact?service=Wedding%20Shoot"
-            className="flex flex-col items-center text-center p-3.5 py-4 rounded-[24px] bg-white/[0.04] border border-white/[0.08] active:scale-95 transition-transform cursor-pointer"
+            className="flex flex-col items-center text-center p-3.5 py-4 rounded-[24px] bg-[#1E1B1F] border border-white/10 active:scale-95 transition-transform cursor-pointer"
           >
-            <div className="w-14 h-14 rounded-2xl bg-[#FF7A1A]/15 flex items-center justify-center mb-2.5">
-              <span className="material-symbols-outlined text-[26px] text-[#FF7A1A]">favorite</span>
+            <div className="w-14 h-14 rounded-2xl bg-[rgba(242,140,60,0.15)] flex items-center justify-center mb-2.5">
+              <Icon name="favorite" size={26} className="text-[#F28C3C]" />
             </div>
             <span className="text-[13.5px] sm:text-[15px] font-semibold text-white tracking-tight leading-tight">
               Wedding Shoot
@@ -220,10 +218,10 @@ export default function Hero({ onShowToast }) {
           {/* Vehicle Shoot */}
           <Link
             href="/contact?service=Vehicle%20Shoot"
-            className="flex flex-col items-center text-center p-3.5 py-4 rounded-[24px] bg-white/[0.04] border border-white/[0.08] active:scale-95 transition-transform cursor-pointer"
+            className="flex flex-col items-center text-center p-3.5 py-4 rounded-[24px] bg-[#1E1B1F] border border-white/10 active:scale-95 transition-transform cursor-pointer"
           >
-            <div className="w-14 h-14 rounded-2xl bg-[#FF7A1A]/15 flex items-center justify-center mb-2.5">
-              <span className="material-symbols-outlined text-[26px] text-[#FF7A1A]">directions_car</span>
+            <div className="w-14 h-14 rounded-2xl bg-[rgba(242,140,60,0.15)] flex items-center justify-center mb-2.5">
+              <Icon name="directions_car" size={26} className="text-[#F28C3C]" />
             </div>
             <span className="text-[13.5px] sm:text-[15px] font-semibold text-white tracking-tight leading-tight">
               Vehicle Shoot
@@ -231,11 +229,12 @@ export default function Hero({ onShowToast }) {
           </Link>
         </div>
 
-        {/* 4. STATS ROW (Thin divider above 1px rgba(255,255,255,0.10), 3 columns, padding-top 32px) */}
+        {/* 4. STATS ROW (3 columns, thin divider, padding-top 32px) */}
         <div className="w-full border-t border-white/10 pt-8">
           <div className="grid grid-cols-3 gap-2 text-center">
             {/* Column 1: 45,000+ / Reels Delivered */}
             <div className="flex flex-col items-center">
+              {/* TODO: [Confirm 45,000+ reels delivered metric] */}
               <span className="text-[30px] sm:text-[36px] font-black tracking-tight text-white leading-none">
                 45,000+
               </span>
@@ -244,28 +243,20 @@ export default function Hero({ onShowToast }) {
               </span>
             </div>
 
-            {/* Column 2: 4.8 /5 with 5 small orange stars below */}
+            {/* Column 2: 4.8★ Average Rating */}
             <div className="flex flex-col items-center">
-              <div className="flex items-baseline justify-center text-[30px] sm:text-[36px] font-black tracking-tight text-white leading-none">
-                <span>4.8</span>
-                <span className="text-base sm:text-lg font-normal text-white/40 ml-0.5">/5</span>
-              </div>
-              <div className="flex items-center justify-center gap-0.5 mt-2.5 text-[#FF7A1A]">
-                {[...Array(5)].map((_, i) => (
-                  <span
-                    key={i}
-                    className="material-symbols-outlined text-[14px]"
-                    data-weight="fill"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    star
-                  </span>
-                ))}
-              </div>
+              {/* TODO: [Confirm real review count and source] */}
+              <span className="text-[30px] sm:text-[36px] font-black tracking-tight text-white leading-none">
+                4.8★
+              </span>
+              <span className="text-white/60 text-[12px] sm:text-[14px] mt-2 font-medium">
+                Average Rating
+              </span>
             </div>
 
             {/* Column 3: 200+ / Creators */}
             <div className="flex flex-col items-center">
+              {/* TODO: [Confirm 200+ creators metric] */}
               <span className="text-[30px] sm:text-[36px] font-black tracking-tight text-white leading-none">
                 200+
               </span>

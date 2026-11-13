@@ -5,17 +5,20 @@
  * are centralized here to maintain 100% consistency across the entire application.
  */
 
+// Single centralized site URL constant
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reelxpress.com';
+
 export const SITE_CONFIG = {
   name: 'reelXpress',
   legalName: 'QUANTELLOVENTURES PRIVATE LIMITED',
-  tagline: "Bengaluru's First Quick Content Service",
+  // TODO: [Confirm 'First' claim if provable] Provable tagline used across SEO & branding
+  tagline: 'Quick Reel Service in Bengaluru',
   description:
     'We Shoot • Edit • Deliver Reels in Minutes. You live the moment. reelXpress captures it — instantly. Shot on latest iPhone gear with on-spot live editing and fast cloud delivery.',
-  canonicalUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://reel-xpress.vercel.app',
+  canonicalUrl: SITE_URL,
   
   // Contact details
   contact: {
-    // NOTE FOR USER DECISION: Direct calling line vs WhatsApp line
     directLine: '+91 9988338180',
     directLineTel: '+919988338180',
     whatsappNumber: '+91 84319 12122',

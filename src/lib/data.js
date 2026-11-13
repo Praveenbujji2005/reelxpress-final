@@ -10,25 +10,23 @@ export const SITE_METADATA = {
 
 // Main navigation links used across header and mobile menu (Home removed)
 export const NAV_LINKS = [
-  { label: "Why us", href: "/reelxpress" },
+  { label: "Why us", href: "/#why-us" },
   { label: "Pricing", href: "/#pricing" },
   { label: "Real work", href: "/#showcase" },
   { label: "Contact", href: "/contact" },
   { label: "Testimonials", href: "/#testimonials" },
-  { label: "Partner", href: "/creators" },
+  { label: "Become a Creator", href: "/creators" },
   { label: "Blog", href: "/#blog" },
 ];
 
 // Footer navigation & legal links
 export const FOOTER_NAV_LINKS = [
   { label: "Home page", href: "/" },
-  { label: "Why us", href: "/reelxpress" },
+  { label: "Why us", href: "/#why-us" },
   { label: "Real work", href: "/#showcase" },
   { label: "Pricing", href: "/#pricing" },
   { label: "Testimonials", href: "/#testimonials" },
   { label: "Blog", href: "/#blog" },
-  { label: "Partner", href: "/creators" },
-  { label: "Contact Us", href: "/contact" },
 ];
 
 export const FOOTER_LEGAL_LINKS = [
@@ -74,7 +72,7 @@ export const REEL_PORTFOLIO = [
     title: "Bridal & Wedding Shoot",
     subtitle: "Captured & Edited in Minutes",
     creator: "Aditya S.",
-    views: "240K",
+    views: "240K", // TODO: [Confirm follower/view metric source]
     likes: "18.5K",
     aspectRatio: "9/16",
     instagramUrl: "https://www.instagram.com/reelxpress___",
@@ -90,7 +88,7 @@ export const REEL_PORTFOLIO = [
     title: "Model Shoot on iPhone",
     subtitle: "Captured & Edited in Minutes",
     creator: "Priya M.",
-    views: "420K",
+    views: "420K", // TODO: [Confirm follower/view metric source]
     likes: "32.8K",
     aspectRatio: "9/16",
     instagramUrl: "https://www.instagram.com/reelxpress___",
@@ -103,10 +101,11 @@ export const REEL_PORTFOLIO = [
     videoSrc: "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-03.MP4?alt=media&token=65b2ef89-e6b2-4393-a7ba-02ea1d0979e4",
     poster: "/thumbnails/hero-video-3.jpg",
     category: "Luxe Celebrity",
-    title: "SIIMA Red Carpet Entry",
+    // TODO: [Confirm SIIMA written permission]
+    title: "Red Carpet Event Reel",
     subtitle: "Captured & Edited in Minutes",
     creator: "Arvind K.",
-    views: "890K",
+    views: "890K", // TODO: [Confirm follower/view metric source]
     likes: "74.1K",
     aspectRatio: "9/16",
     instagramUrl: "https://www.instagram.com/reelxpress___",
@@ -118,8 +117,10 @@ export const REEL_PORTFOLIO = [
     videoUrl: "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-04.MP4?alt=media&token=57243f0f-8cc2-4b2c-89cd-97cfd27321b6",
     videoSrc: "https://firebasestorage.googleapis.com/v0/b/reelxpress-a862c.firebasestorage.app/o/hero-04.MP4?alt=media&token=57243f0f-8cc2-4b2c-89cd-97cfd27321b6",
     poster: "/thumbnails/hero-video-4.jpg",
-    category: "Official Creator",
-    title: "SIIMA Awards - ReelXpress",
+    // TODO: [Confirm official creator credentials]
+    category: "Event Coverage",
+    // TODO: [Confirm SIIMA written permission]
+    title: "Awards Night Coverage",
     subtitle: "Captured & Edited in Minutes",
     creator: "Sneha D.",
     views: "310K",

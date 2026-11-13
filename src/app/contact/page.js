@@ -4,6 +4,9 @@ export const metadata = {
   title: 'Contact Us | reelXpress - Quick Content Video Production',
   description:
     'Get in touch with the reelXpress team for instant event video coverage, creator partnerships, brand shoots, or general enquiries.',
+  alternates: {
+    canonical: '/contact',
+  },
   keywords: [
     'reelXpress contact',
     'Contact reelXpress',
@@ -15,7 +18,7 @@ export const metadata = {
     title: 'Contact Us | reelXpress',
     description:
       'Connect with our Bengaluru production desk for instant vertical video shoots and same-day delivery.',
-    url: 'https://www.reelxpress.com/contact',
+    url: '/contact',
     siteName: 'reelXpress',
     locale: 'en_IN',
     type: 'website',

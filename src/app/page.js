@@ -10,6 +10,7 @@ import Footer from '@/components/layout/Footer';
 
 // Section Components
 import HeroSection from '@/components/sections/HeroSection';
+import WhyUsSection from '@/components/sections/WhyUsSection';
 import PricingSection from '@/components/sections/PricingSection';
 import BrandTicker from '@/components/sections/BrandTicker';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
@@ -77,6 +78,7 @@ export default function HomePage() {
         <HeroSection
           onShowToast={showToast}
         />
+        <WhyUsSection />
         <PricingSection />
         <BrandTicker />
         <TestimonialsSection />

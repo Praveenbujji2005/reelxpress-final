@@ -727,26 +727,30 @@ async function safeQueryDocs(colName, sortField, sortDir = 'asc', options = {}) 
 function mergeCloudWithDefaults(defaults, cloudDocs, options = {}) {
   const map = new Map();
 
-  // Populate default baseline items
-  defaults.forEach((item) => {
-    map.set(item.id, { ...item });
+  // Populate default baseline items with stringified IDs
+  (defaults || []).forEach((item) => {
+    if (!item) return;
+    const key = String(item.id !== undefined && item.id !== null ? item.id : '').trim();
+    if (key) {
+      map.set(key, { ...item, id: key });
+    }
   });
 
   if (Array.isArray(cloudDocs)) {
     cloudDocs.forEach((cloudItem) => {
-      if (!cloudItem || !cloudItem.id) return;
+      if (!cloudItem || cloudItem.id === undefined || cloudItem.id === null) return;
 
+      const rawId = String(cloudItem.id).trim();
       // Handle legacy aliases (e.g. plan_business_brand -> business-brand)
-      const targetId =
-        cloudItem.id === 'plan_business_brand' ? 'business-brand' : cloudItem.id;
+      const targetId = rawId === 'plan_business_brand' ? 'business-brand' : rawId;
 
       if (cloudItem._deleted === true) {
         map.delete(targetId);
-        map.delete(cloudItem.id);
+        map.delete(rawId);
         return;
       }
 
-      const existing = map.get(targetId) || map.get(cloudItem.id) || {};
+      const existing = map.get(targetId) || map.get(rawId) || {};
 
       // Testimonial specific: Keep quote and review strictly synchronized
       const text =
@@ -901,19 +905,22 @@ export async function saveTestimonial(testimonial, adminEmail) {
   };
 
   // Single Defined Persistence Strategy:
-  // 1. Direct Firestore write
+  // 1. Direct Firestore write (with fast 2500ms race timeout)
   let persisted = false;
   if (isFirebaseConfigured && db) {
     try {
-      await setDoc(doc(db, 'cms_testimonials', tId), payload, { merge: true });
+      await Promise.race([
+        setDoc(doc(db, 'cms_testimonials', tId), payload, { merge: true }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore write timeout')), 2500)),
+      ]);
       persisted = true;
     } catch (err) {
       console.warn('[saveTestimonial] Direct Firestore write notice:', err?.message || err);
     }
   }
 
-  // 2. Server API fallback ONLY if client direct write failed or is not configured
-  if (!persisted && typeof window !== 'undefined') {
+  // 2. Server API sync: ALWAYS sync to server store to guarantee cross-client persistence
+  if (typeof window !== 'undefined') {
     try {
       const res = await fetch('/api/cms', {
         method: 'POST',
@@ -922,7 +929,7 @@ export async function saveTestimonial(testimonial, adminEmail) {
       });
       if (res.ok) persisted = true;
     } catch (apiErr) {
-      console.warn('[saveTestimonial] Server API fallback notice:', apiErr?.message || apiErr);
+      console.warn('[saveTestimonial] Server API sync notice:', apiErr?.message || apiErr);
     }
   }
 
@@ -949,16 +956,21 @@ export async function deleteTestimonial(testimonialId, adminEmail) {
   let persisted = false;
   if (isFirebaseConfigured && db) {
     try {
-      // Soft-delete so default seed item does not resurrect
-      await setDoc(
-        doc(db, 'cms_testimonials', testimonialId),
-        { id: testimonialId, _deleted: true, updatedAt: new Date().toISOString() },
-        { merge: true }
-      );
+      await Promise.race([
+        setDoc(
+          doc(db, 'cms_testimonials', testimonialId),
+          { id: testimonialId, _deleted: true, updatedAt: new Date().toISOString() },
+          { merge: true }
+        ),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+      ]);
       persisted = true;
     } catch {
       try {
-        await deleteDoc(doc(db, 'cms_testimonials', testimonialId));
+        await Promise.race([
+          deleteDoc(doc(db, 'cms_testimonials', testimonialId)),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+        ]);
         persisted = true;
       } catch (err) {
         console.warn('[deleteTestimonial] Direct Firestore delete notice:', err?.message || err);
@@ -966,8 +978,8 @@ export async function deleteTestimonial(testimonialId, adminEmail) {
     }
   }
 
-  // Fallback to server API only if client direct write failed
-  if (!persisted && typeof window !== 'undefined') {
+  // Always sync deletion to server store
+  if (typeof window !== 'undefined') {
     try {
       const res = await fetch(
         `/api/cms?type=testimonials&id=${encodeURIComponent(testimonialId)}&adminEmail=${encodeURIComponent(adminEmail || '')}`,
@@ -975,7 +987,7 @@ export async function deleteTestimonial(testimonialId, adminEmail) {
       );
       if (res.ok) persisted = true;
     } catch (apiErr) {
-      console.warn('[deleteTestimonial] Server API fallback notice:', apiErr?.message || apiErr);
+      console.warn('[deleteTestimonial] Server API delete notice:', apiErr?.message || apiErr);
     }
   }
 
@@ -1034,15 +1046,18 @@ export async function savePricingPlan(plan, adminEmail) {
   let persisted = false;
   if (isFirebaseConfigured && db) {
     try {
-      await setDoc(doc(db, 'cms_pricing', planId), payload, { merge: true });
+      await Promise.race([
+        setDoc(doc(db, 'cms_pricing', planId), payload, { merge: true }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+      ]);
       persisted = true;
     } catch (err) {
       console.warn('[savePricingPlan] Direct Firestore write notice:', err?.message || err);
     }
   }
 
-  // Fallback to server API only if direct client write failed
-  if (!persisted && typeof window !== 'undefined') {
+  // Always sync to server CMS store to guarantee persistence
+  if (typeof window !== 'undefined') {
     try {
       const res = await fetch('/api/cms', {
         method: 'POST',
@@ -1051,7 +1066,7 @@ export async function savePricingPlan(plan, adminEmail) {
       });
       if (res.ok) persisted = true;
     } catch (apiErr) {
-      console.warn('[savePricingPlan] Server API fallback notice:', apiErr?.message || apiErr);
+      console.warn('[savePricingPlan] Server API sync notice:', apiErr?.message || apiErr);
     }
   }
 
@@ -1077,15 +1092,21 @@ export async function deletePricingPlan(planId, adminEmail) {
   let persisted = false;
   if (isFirebaseConfigured && db) {
     try {
-      await setDoc(
-        doc(db, 'cms_pricing', planId),
-        { id: planId, _deleted: true, updatedAt: new Date().toISOString() },
-        { merge: true }
-      );
+      await Promise.race([
+        setDoc(
+          doc(db, 'cms_pricing', planId),
+          { id: planId, _deleted: true, updatedAt: new Date().toISOString() },
+          { merge: true }
+        ),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+      ]);
       persisted = true;
     } catch {
       try {
-        await deleteDoc(doc(db, 'cms_pricing', planId));
+        await Promise.race([
+          deleteDoc(doc(db, 'cms_pricing', planId)),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+        ]);
         persisted = true;
       } catch (err) {
         console.warn('[deletePricingPlan] Direct Firestore delete notice:', err?.message || err);
@@ -1093,7 +1114,8 @@ export async function deletePricingPlan(planId, adminEmail) {
     }
   }
 
-  if (!persisted && typeof window !== 'undefined') {
+  // Always sync deletion to server store
+  if (typeof window !== 'undefined') {
     try {
       const res = await fetch(
         `/api/cms?type=pricing&id=${encodeURIComponent(planId)}&adminEmail=${encodeURIComponent(adminEmail || '')}`,
@@ -1101,7 +1123,7 @@ export async function deletePricingPlan(planId, adminEmail) {
       );
       if (res.ok) persisted = true;
     } catch (apiErr) {
-      console.warn('[deletePricingPlan] Server API fallback notice:', apiErr?.message || apiErr);
+      console.warn('[deletePricingPlan] Server API delete notice:', apiErr?.message || apiErr);
     }
   }
 
@@ -1168,14 +1190,18 @@ export async function saveFaq(faq, adminEmail) {
   let persisted = false;
   if (isFirebaseConfigured && db) {
     try {
-      await setDoc(doc(db, 'cms_faqs', faqId), payload, { merge: true });
+      await Promise.race([
+        setDoc(doc(db, 'cms_faqs', faqId), payload, { merge: true }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+      ]);
       persisted = true;
     } catch (err) {
       console.warn('[saveFaq] Direct Firestore write notice:', err?.message || err);
     }
   }
 
-  if (!persisted && typeof window !== 'undefined') {
+  // Always sync to server store
+  if (typeof window !== 'undefined') {
     try {
       const res = await fetch('/api/cms', {
         method: 'POST',
@@ -1184,7 +1210,7 @@ export async function saveFaq(faq, adminEmail) {
       });
       if (res.ok) persisted = true;
     } catch (apiErr) {
-      console.warn('[saveFaq] Server API fallback notice:', apiErr?.message || apiErr);
+      console.warn('[saveFaq] Server API sync notice:', apiErr?.message || apiErr);
     }
   }
 
@@ -1210,15 +1236,21 @@ export async function deleteFaq(faqId, adminEmail) {
   let persisted = false;
   if (isFirebaseConfigured && db) {
     try {
-      await setDoc(
-        doc(db, 'cms_faqs', faqId),
-        { id: faqId, _deleted: true, updatedAt: new Date().toISOString() },
-        { merge: true }
-      );
+      await Promise.race([
+        setDoc(
+          doc(db, 'cms_faqs', faqId),
+          { id: faqId, _deleted: true, updatedAt: new Date().toISOString() },
+          { merge: true }
+        ),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+      ]);
       persisted = true;
     } catch {
       try {
-        await deleteDoc(doc(db, 'cms_faqs', faqId));
+        await Promise.race([
+          deleteDoc(doc(db, 'cms_faqs', faqId)),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+        ]);
         persisted = true;
       } catch (err) {
         console.warn('[deleteFaq] Direct Firestore delete notice:', err?.message || err);
@@ -1226,7 +1258,8 @@ export async function deleteFaq(faqId, adminEmail) {
     }
   }
 
-  if (!persisted && typeof window !== 'undefined') {
+  // Always sync deletion to server store
+  if (typeof window !== 'undefined') {
     try {
       const res = await fetch(
         `/api/cms?type=faqs&id=${encodeURIComponent(faqId)}&adminEmail=${encodeURIComponent(adminEmail || '')}`,
@@ -1293,14 +1326,18 @@ export async function saveHeroSlide(slide, adminEmail) {
   let persisted = false;
   if (isFirebaseConfigured && db) {
     try {
-      await setDoc(doc(db, 'cms_hero', slideId), payload, { merge: true });
+      await Promise.race([
+        setDoc(doc(db, 'cms_hero', slideId), payload, { merge: true }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+      ]);
       persisted = true;
     } catch (err) {
       console.warn('[saveHeroSlide] Direct Firestore write notice:', err?.message || err);
     }
   }
 
-  if (!persisted && typeof window !== 'undefined') {
+  // Always sync to server store
+  if (typeof window !== 'undefined') {
     try {
       const res = await fetch('/api/cms', {
         method: 'POST',
@@ -1309,7 +1346,7 @@ export async function saveHeroSlide(slide, adminEmail) {
       });
       if (res.ok) persisted = true;
     } catch (apiErr) {
-      console.warn('[saveHeroSlide] Server API fallback notice:', apiErr?.message || apiErr);
+      console.warn('[saveHeroSlide] Server API sync notice:', apiErr?.message || apiErr);
     }
   }
 
@@ -1335,15 +1372,21 @@ export async function deleteHeroSlide(slideId, adminEmail) {
   let persisted = false;
   if (isFirebaseConfigured && db) {
     try {
-      await setDoc(
-        doc(db, 'cms_hero', slideId),
-        { id: slideId, _deleted: true, updatedAt: new Date().toISOString() },
-        { merge: true }
-      );
+      await Promise.race([
+        setDoc(
+          doc(db, 'cms_hero', slideId),
+          { id: slideId, _deleted: true, updatedAt: new Date().toISOString() },
+          { merge: true }
+        ),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+      ]);
       persisted = true;
     } catch {
       try {
-        await deleteDoc(doc(db, 'cms_hero', slideId));
+        await Promise.race([
+          deleteDoc(doc(db, 'cms_hero', slideId)),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500)),
+        ]);
         persisted = true;
       } catch (err) {
         console.warn('[deleteHeroSlide] Direct Firestore delete notice:', err?.message || err);
@@ -1351,7 +1394,8 @@ export async function deleteHeroSlide(slideId, adminEmail) {
     }
   }
 
-  if (!persisted && typeof window !== 'undefined') {
+  // Always sync deletion to server store
+  if (typeof window !== 'undefined') {
     try {
       const res = await fetch(
         `/api/cms?type=hero&id=${encodeURIComponent(slideId)}&adminEmail=${encodeURIComponent(adminEmail || '')}`,
@@ -1447,17 +1491,36 @@ export async function uploadImageFile(file, folder = 'uploads') {
       const snapshot = await Promise.race([
         uploadBytes(storageRef, targetFile),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Firebase Storage Upload timed out after 6000ms')), 6000)
+          setTimeout(() => reject(new Error('Firebase Storage Upload timed out after 5000ms')), 5000)
         ),
       ]);
       const downloadUrl = await getDownloadURL(snapshot.ref);
       return downloadUrl;
     } catch (err) {
-      console.warn('[uploadImageFile] Firebase Storage upload notice, using Data URL fallback:', err?.message || err);
+      console.warn('[uploadImageFile] Firebase Storage upload notice, falling back:', err?.message || err);
     }
   }
 
-  // Fast reliable fallback: convert compressed file to base64 Data URL so images preview and persist immediately
+  // Server API fallback (persists to /public/uploads/images)
+  if (typeof window !== 'undefined') {
+    try {
+      const formData = new FormData();
+      formData.append('file', targetFile);
+      formData.append('folder', 'images');
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url) return data.url;
+      }
+    } catch (apiErr) {
+      console.warn('[uploadImageFile] Server upload fallback notice:', apiErr?.message || apiErr);
+    }
+  }
+
+  // Fast reliable client fallback: convert compressed file to base64 Data URL so images preview and persist immediately
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
@@ -1467,11 +1530,12 @@ export async function uploadImageFile(file, folder = 'uploads') {
 }
 
 /**
- * Upload Video File directly to Firebase Storage bucket under "hero" folder
+ * Upload Video File directly to Firebase Storage bucket or Server API (/public/uploads/videos)
  */
 export async function uploadVideoFile(file, folder = 'hero') {
   if (!file) throw new Error('No video file provided for upload.');
 
+  // 1. Try Firebase Storage if configured
   if (isFirebaseConfigured && storage) {
     try {
       const sanitizedName = (file.name || 'video.mp4').replace(/[^a-zA-Z0-9.]/g, '_');
@@ -1479,15 +1543,40 @@ export async function uploadVideoFile(file, folder = 'hero') {
       const snapshot = await Promise.race([
         uploadBytes(storageRef, file),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Firebase Storage Video upload timed out after 30s. Please verify connection or use direct URL.')), 30000)
+          setTimeout(() => reject(new Error('Firebase Storage Video upload timed out after 8000ms.')), 8000)
         ),
       ]);
       const downloadUrl = await getDownloadURL(snapshot.ref);
       return downloadUrl;
     } catch (err) {
-      console.warn('[uploadVideoFile] Firebase Storage upload notice:', err?.message || err);
-      throw err;
+      console.warn('[uploadVideoFile] Firebase Storage upload notice, falling back to server API:', err?.message || err);
     }
   }
-  throw new Error('Firebase Storage is not configured for video upload.');
+
+  // 2. Direct Server API upload (/public/uploads/videos)
+  if (typeof window !== 'undefined') {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'videos');
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Upload failed with status ${res.status}`);
+      }
+      const data = await res.json();
+      if (data.url) {
+        return data.url;
+      }
+      throw new Error(data.error || 'Server did not return a valid video URL.');
+    } catch (serverErr) {
+      console.error('[uploadVideoFile] Server upload error:', serverErr);
+      throw new Error(`Video upload failed: ${serverErr.message || 'Server error'}`);
+    }
+  }
+
+  throw new Error('Video upload is not available in current environment.');
 }

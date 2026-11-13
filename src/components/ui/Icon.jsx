@@ -27,6 +27,7 @@ import {
   RefreshCw,
   Download,
   Play,
+  Pause,
   Upload,
   Info,
   AlertTriangle,
@@ -41,6 +42,17 @@ import {
   Send,
   Calendar,
   Lock,
+  Medal,
+  IndianRupee,
+  Heart,
+  Car,
+  BadgeCheck,
+  Video,
+  Smile,
+  CreditCard,
+  PlayCircle,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -59,6 +71,22 @@ const ICON_MAP = {
   shield: Shield,
   shield_lock: ShieldCheck,
 
+  // Fallback icon mappings for zero-font-flash
+  military_tech: Medal,
+  phone_iphone: Smartphone,
+  currency_rupee: IndianRupee,
+  favorite: Heart,
+  directions_car: Car,
+  verified: BadgeCheck,
+  videocam: Video,
+  mood: Smile,
+  payments: CreditCard,
+  play_circle: PlayCircle,
+  volume_up: Volume2,
+  volume_off: VolumeX,
+  pause: Pause,
+  play_arrow: Play,
+
   // Common UI icons
   close: X,
   delete: Trash2,
@@ -67,13 +95,11 @@ const ICON_MAP = {
   visibility: Eye,
   open_in_new: ExternalLink,
   groups: Users,
-  phone_iphone: Smartphone,
   chat: MessageSquare,
   refresh: RefreshCw,
   download: Download,
   cloud_upload: Upload,
   cloud_sync: RefreshCw,
-  play_arrow: Play,
   arrow_downward: ArrowDown,
   arrow_upward: ArrowUp,
   arrow_forward_ios: ChevronRight,
@@ -99,10 +125,17 @@ const ICON_MAP = {
  * Universal Zero-Flash Icon Component
  *
  * Renders an inline SVG icon powered by Lucide with zero reliance on web font loading.
- * Eliminates the Material Icons ligature text flash ("arrow_back", "check_circle", etc.)
+ * Eliminates the Material Icons ligature text flash ("arrow_forward", "phone_iphone", etc.)
  * while maintaining exact sizing, color inheritance, and styling.
  */
-export default function Icon({ name, className = '', size = 20, strokeWidth = 2, 'aria-hidden': ariaHidden = true, ...props }) {
+export default function Icon({
+  name,
+  className = '',
+  size = 20,
+  strokeWidth = 2,
+  'aria-hidden': ariaHidden = true,
+  ...props
+}) {
   const IconComponent = ICON_MAP[name];
 
   if (IconComponent) {
@@ -120,8 +153,8 @@ export default function Icon({ name, className = '', size = 20, strokeWidth = 2,
   // Fallback for icons not in map: render with font-display block and ligature hiding protection
   return (
     <span
-      className={`material-symbols-outlined select-none ${className}`}
-      style={{ fontSize: `${size}px` }}
+      className={`material-symbols-outlined select-none overflow-hidden inline-block align-middle ${className}`}
+      style={{ fontSize: `${size}px`, width: `${size}px`, height: `${size}px`, lineHeight: `${size}px` }}
       aria-hidden={ariaHidden}
       {...props}
     >

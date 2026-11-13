@@ -208,7 +208,7 @@ export default function FullScreenLoader() {
       id="reelxpress-pro-loader"
       role="status"
       aria-live="polite"
-      aria-label="ReelXpress Pro Loading"
+      aria-label="reelXpress Loading"
       className={`fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-[#080808] select-none pointer-events-auto touch-none overflow-hidden transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         isExiting
           ? 'opacity-0 scale-[0.97] pointer-events-none'
@@ -241,7 +241,7 @@ export default function FullScreenLoader() {
       <div className="relative z-10 flex flex-col items-center justify-center px-4 max-w-full">
         {/* React Bits Shuffle Text Animation */}
         <Shuffle
-          text="ReelXpress Pro"
+          text="reelXpress"
           effect="slide"
           shuffleDirection="right"
           duration={0.35}

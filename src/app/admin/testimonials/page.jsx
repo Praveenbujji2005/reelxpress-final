@@ -16,7 +16,25 @@ export default function AdminTestimonialsPage() {
   const [editingTestimonial, setEditingTestimonial] = useState(null);
   const [testimonialToDelete, setTestimonialToDelete] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Prevent background scrolling while modal is open
+  useEffect(() => {
+    if (editingTestimonial || testimonialToDelete) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.stop === 'function') {
+        window.lenis.stop();
+      }
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.start === 'function') {
+          window.lenis.start();
+        }
+      };
+    }
+  }, [editingTestimonial, testimonialToDelete]);
 
   const fetchList = async () => {
     try {
@@ -68,12 +86,13 @@ export default function AdminTestimonialsPage() {
   };
 
   const handleSave = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     const reviewText = (editingTestimonial.review || editingTestimonial.quote || '').trim();
     if (!editingTestimonial.name?.trim() || !reviewText) {
       alert('Client name and review text are required.');
       return;
     }
+    setIsSaving(true);
     try {
       await saveTestimonial(
         {
@@ -88,6 +107,8 @@ export default function AdminTestimonialsPage() {
       await fetchList();
     } catch (err) {
       alert('Failed to save testimonial: ' + err.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -125,7 +146,7 @@ export default function AdminTestimonialsPage() {
 
         <button
           onClick={handleCreateNew}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer self-start sm:self-auto"
+          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm tracking-wide shadow-lg hover:opacity-95 active:scale-95 transition-all flex items-center gap-2 cursor-pointer self-start sm:self-auto"
         >
           <span className="material-symbols-outlined text-sm">add</span>
           <span>Add Testimonial</span>
@@ -167,9 +188,9 @@ export default function AdminTestimonialsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((t, idx) => (
+          {(testimonials ?? []).map((t, idx) => (
             <div
-              key={`admin-testi-${t.id ?? idx}-${idx}`}
+              key={t.id ?? `admin-testi-${idx}`}
               className={`rounded-3xl bg-[#151215] border p-6 flex flex-col justify-between shadow-xl transition-all ${
                 t.enabled ? 'border-white/10 hover:border-white/20' : 'border-white/5 opacity-60'
               }`}
@@ -241,8 +262,16 @@ export default function AdminTestimonialsPage() {
 
       {/* Edit / Create Modal */}
       {editingTestimonial && (
-        <div className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-xl rounded-3xl bg-[#151215] border border-white/15 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-xl rounded-3xl bg-[#161318] border border-white/15 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+          >
             <button
               onClick={() => setEditingTestimonial(null)}
               className="absolute top-5 right-5 p-2 rounded-full text-white/60 hover:text-white cursor-pointer"
@@ -266,7 +295,7 @@ export default function AdminTestimonialsPage() {
                     placeholder="e.g. Ananya & Karthik"
                     value={editingTestimonial.name}
                     onChange={(e) => setEditingTestimonial({ ...editingTestimonial, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                   />
                 </div>
                 <div>
@@ -278,7 +307,7 @@ export default function AdminTestimonialsPage() {
                     placeholder="e.g. Bride & Groom · Taj West End"
                     value={editingTestimonial.role}
                     onChange={(e) => setEditingTestimonial({ ...editingTestimonial, role: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                   />
                 </div>
               </div>
@@ -290,7 +319,7 @@ export default function AdminTestimonialsPage() {
                 <select
                   value={editingTestimonial.rating || 5}
                   onChange={(e) => setEditingTestimonial({ ...editingTestimonial, rating: Number(e.target.value) })}
-                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm cursor-pointer"
+                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm cursor-pointer"
                 >
                   <option value={5}>⭐⭐⭐⭐⭐ (5 Stars - Exceptional)</option>
                   <option value={4}>⭐⭐⭐⭐ (4 Stars - Great)</option>
@@ -314,7 +343,7 @@ export default function AdminTestimonialsPage() {
                       quote: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm resize-none"
                 />
               </div>
 
@@ -343,7 +372,7 @@ export default function AdminTestimonialsPage() {
                         onChange={(e) =>
                           setEditingTestimonial({ ...editingTestimonial, avatar: e.target.value })
                         }
-                        className="flex-1 px-3 py-2 rounded-xl bg-[#151215] border border-white/15 text-white text-xs focus:border-[#ff6d29] focus:outline-none"
+                        className="flex-1 px-3 py-2 rounded-xl bg-[#151215] border border-white/15 text-white text-xs focus:border-[#F28C3C] focus:outline-none"
                       />
                       <label className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs cursor-pointer whitespace-nowrap">
                         <span className="material-symbols-outlined text-sm">cloud_upload</span>
@@ -413,7 +442,7 @@ export default function AdminTestimonialsPage() {
                       enabled: e.target.checked,
                     })
                   }
-                  className="w-4 h-4 rounded text-[#ff6d29] bg-[#0c0a0c]"
+                  className="w-4 h-4 rounded text-[#F28C3C] accent-[#F28C3C] bg-[#0c0a0c]"
                 />
                 <label htmlFor="testi-en" className="text-sm font-semibold text-white cursor-pointer">
                   Publish to client reviews marquee
@@ -430,10 +459,13 @@ export default function AdminTestimonialsPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={isUploading}
-                  className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#eb5b1f] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-lg cursor-pointer"
+                  disabled={isSaving || isUploading}
+                  className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm tracking-wide shadow-lg hover:opacity-95 active:scale-95 transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  Save Testimonial
+                  {isSaving && (
+                    <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  )}
+                  <span>{isSaving ? 'Saving Testimonial...' : 'Save Testimonial'}</span>
                 </button>
               </div>
             </form>
@@ -443,8 +475,16 @@ export default function AdminTestimonialsPage() {
 
       {/* Delete Confirmation */}
       {testimonialToDelete && (
-        <div className="fixed inset-0 z-[100050] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-md rounded-3xl bg-[#181318] border border-red-500/30 p-6 sm:p-7 shadow-2xl text-center">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100050] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-3xl bg-[#181318] border border-red-500/30 p-6 sm:p-7 shadow-2xl text-center"
+          >
             <h3 className="text-xl font-extrabold text-white mb-2">Delete Testimonial?</h3>
             <p className="text-xs text-text-muted leading-relaxed mb-6">
               Are you sure you want to delete review from <strong className="text-white">&quot;{testimonialToDelete.name}&quot;</strong>?

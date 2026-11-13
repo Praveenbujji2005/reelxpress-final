@@ -10,14 +10,14 @@ export default function Footer() {
         
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
           <div className="max-w-md">
-            <Link href="/reelxpress" className="inline-flex items-center gap-3 mb-4 group" aria-label="reelXpress">
+            <Link href="/" className="inline-flex items-center gap-3 mb-4 group" aria-label="reelXpress Home">
               <ReelXpressWordmark className="h-8 sm:h-9 w-auto align-middle drop-shadow-[0_0_16px_rgba(255,94,30,0.4)] transition-transform duration-300 group-hover:scale-105" />
             </Link>
             <p className="text-body-sm font-body-sm text-text-muted leading-relaxed mb-6">
               The intersection of speed and cinema. On-demand video production for the modern era.
             </p>
 
-            {/* Quick Action CTA Buttons */}
+            {/* Quick Action CTA Button */}
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href="/#booking"
@@ -25,20 +25,6 @@ export default function Footer() {
               >
                 <span>Book a Creator</span>
                 <span className="material-symbols-outlined text-sm">bolt</span>
-              </Link>
-              <Link
-                href="/contact"
-                className="btn-glow-dark inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-white font-semibold text-xs sm:text-sm hover:border-primary transition-all cursor-pointer"
-              >
-                <span>Contact Us</span>
-                <span className="material-symbols-outlined text-sm text-primary">mail</span>
-              </Link>
-              <Link
-                href="/creators"
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-text-muted hover:text-white font-semibold text-xs sm:text-sm transition-all cursor-pointer"
-              >
-                <span>Become a Partner</span>
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
               </Link>
             </div>
           </div>
@@ -91,17 +77,13 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Legal Disclaimer */}
-        <div className="pt-6 border-t border-border-specular/30 text-xs text-text-muted/70 leading-relaxed text-center sm:text-left">
-          reelXpress is an independent service provider operated by QUANTELLOVENTURES PRIVATE LIMITED and is not affiliated with or endorsed by Instagram, Meta, or any brands shown unless explicitly stated.
-        </div>
 
         {/* Copyright Notice */}
         <div className="pt-4 border-t border-border-specular/40 flex flex-col sm:flex-row justify-between items-center gap-4 text-body-sm font-body-sm text-text-muted">
           <div>
             Copyright © 2026 by QUANTELLOVENTURES PRIVATE LIMITED. All rights reserved.
           </div>
-          <Link href="/reelxpress" className="flex items-center gap-2 text-label-sm font-label-sm text-text-muted/80 hover:text-white transition-colors">
+          <Link href="/#why-us" className="flex items-center gap-2 text-label-sm font-label-sm text-text-muted/80 hover:text-white transition-colors">
             <img src="/brand/icon-gold.png" alt="" className="w-4 h-4 object-contain opacity-75" />
             <span>reel<span className="brand-x-gold">X</span>press · Cinematic Quick Content Platform</span>
           </Link>

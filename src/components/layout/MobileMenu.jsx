@@ -9,7 +9,7 @@ import ReelXpressWordmark from '@/components/ui/ReelXpressWordmark';
 const MENU_LINKS = [
   { label: 'Home', href: '/#hero' },
   { label: 'Price', href: '/#pricing' },
-  { label: 'Why Us', href: '/reelxpress' },
+  { label: 'Why Us', href: '/#why-us' },
   { label: 'Testimonials', href: '/#testimonials' },
   { label: 'Contact Us', href: '/contact' },
 ];
@@ -182,7 +182,7 @@ export default function MobileMenu({ isOpen, onClose }) {
           </div>
         ))}
 
-        {/* 6. Become a Partner CTA Pill Button */}
+        {/* 6. Become a Creator CTA Pill Button */}
         <div
           className={`transition-all duration-300 ease-out transform ${
             isOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
@@ -194,9 +194,9 @@ export default function MobileMenu({ isOpen, onClose }) {
           <Link
             href="/creators"
             onClick={() => handleLinkClick('/creators')}
-            className="inline-flex items-center justify-center min-h-[52px] px-8 py-4 rounded-full bg-[#0D0D12] text-[#FF7A1A] font-extrabold text-sm sm:text-base uppercase tracking-[0.08em] shadow-[0_8px_24px_rgba(0,0,0,0.35)] hover:bg-black active:scale-95 transition-transform mt-3 touch-manipulation"
+            className="inline-flex items-center justify-center min-h-[52px] px-8 py-4 rounded-full bg-[#0D0D12] text-[#F28C3C] font-extrabold text-sm sm:text-base uppercase tracking-[0.08em] shadow-[0_8px_24px_rgba(0,0,0,0.35)] hover:bg-black active:scale-95 transition-transform mt-3 touch-manipulation"
           >
-            Become a Partner
+            Become a Creator
           </Link>
         </div>
       </nav>

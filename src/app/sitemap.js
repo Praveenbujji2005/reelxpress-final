@@ -1,7 +1,7 @@
-import { SITE_CONFIG } from '@/config/site';
+import { SITE_URL } from '@/config/site';
 
 export default function sitemap() {
-  const baseUrl = SITE_CONFIG.canonicalUrl;
+  const baseUrl = SITE_URL;
   const now = new Date();
 
   return [
@@ -24,16 +24,34 @@ export default function sitemap() {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/reelxpress`,
+      url: `${baseUrl}/contact`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blog`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: `${baseUrl}/blog/wedding-videography-packages-india-2026-cost-breakdown`,
       lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/blog/car-delivery-shoot-bangalore`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/blog/top-10-wedding-reel-trends-india-2026`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
     {
       url: `${baseUrl}/privacy`,

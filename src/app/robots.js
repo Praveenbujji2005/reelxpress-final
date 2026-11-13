@@ -1,8 +1,6 @@
-import { SITE_CONFIG } from '@/config/site';
+import { SITE_URL } from '@/config/site';
 
 export default function robots() {
-  const baseUrl = SITE_CONFIG.canonicalUrl;
-
   return {
     rules: [
       {
@@ -11,6 +9,6 @@ export default function robots() {
         disallow: ['/admin/', '/api/'],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

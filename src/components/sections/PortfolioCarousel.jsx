@@ -32,6 +32,10 @@ export default function PortfolioCarousel({ onShowToast: _onShowToast } = {}) {
   const [fullscreenDuration, setFullscreenDuration] = useState(0);
   const fullscreenVideoRef = useRef(null);
 
+  // Carousel card audio state (null = all muted autoplay; number = this reel plays audio)
+  const [unmutedIndex, setUnmutedIndex] = useState(null);
+  const cardVideoRefs = useRef({});
+
   // In-video Toast message state (replaces sound button)
   const [toast, setToast] = useState({ visible: false, message: '', icon: '' });
   const toastTimer = useRef(null);
@@ -105,6 +109,21 @@ export default function PortfolioCarousel({ onShowToast: _onShowToast } = {}) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Synchronize carousel video audio: only the active/clicked unmuted card plays sound
+  useEffect(() => {
+    Object.entries(cardVideoRefs.current).forEach(([idxStr, videoEl]) => {
+      const idx = Number(idxStr);
+      if (!videoEl) return;
+      if (unmutedIndex !== null && idx === unmutedIndex) {
+        videoEl.muted = false;
+        videoEl.volume = 1.0;
+        videoEl.play().catch(() => {});
+      } else {
+        videoEl.muted = true;
+      }
+    });
+  }, [unmutedIndex]);
 
   // Compute transform styles for each card based on activeReelIndex
   const getCardStyle = useCallback(
@@ -208,26 +227,30 @@ export default function PortfolioCarousel({ onShowToast: _onShowToast } = {}) {
     (index) => {
       const nextIndex = (index + totalCards) % totalCards;
       setActiveReelIndex(nextIndex);
+      // Seamlessly switch audio to newly centered reel if sound was turned on
+      setUnmutedIndex((prev) => (prev !== null ? nextIndex : null));
     },
     [totalCards]
   );
 
-  // Open Full Window Video Mode when card or play button is clicked
+  // Open Full Window Video Mode when expand button is clicked
   const openFullscreen = useCallback(
     (index, e) => {
       if (e) e.stopPropagation();
 
+      // Mute carousel cards while in fullscreen mode
+      setUnmutedIndex(null);
+
       setFullscreenIndex(index);
       setFullscreenCurrentTime(0);
       setIsFullscreenPlaying(true);
-      setIsFullscreenMuted(true); // Default muted autoplay
+      setIsFullscreenMuted(false); // Play with SOUND ON immediately
 
       if (typeof document !== 'undefined') {
         document.body.style.overflow = 'hidden';
       }
 
-      // Show toast message notifying user video is playing muted
-      showToast('Playing without sound · Tap video for sound', 'volume_off');
+      showToast('Sound ON', 'volume_up');
     },
     [showToast]
   );
@@ -240,24 +263,31 @@ export default function PortfolioCarousel({ onShowToast: _onShowToast } = {}) {
       fullscreenVideoRef.current.pause();
     }
 
+    const returningIndex = fullscreenIndex;
     setFullscreenIndex(null);
     setIsFullscreenPlaying(false);
+
+    // Keep active card unmuted on return to carousel
+    setUnmutedIndex(returningIndex);
 
     if (typeof document !== 'undefined') {
       document.body.style.overflow = '';
     }
   }, [fullscreenIndex]);
 
-  // Handle card click: center card if not active, and immediately launch Full Window video player
+  // Handle card click: select card and unmute/play sound on the carousel reel
   const handleCardClick = useCallback(
     (index) => {
       if (hasDragged.current) return;
       if (index !== activeReelIndex) {
         selectCard(index);
+        setUnmutedIndex(index);
+      } else {
+        // Clicking active reel toggles sound
+        setUnmutedIndex((prev) => (prev === index ? null : index));
       }
-      openFullscreen(index);
     },
-    [activeReelIndex, openFullscreen, selectCard]
+    [activeReelIndex, selectCard]
   );
 
   // Fullscreen video controls: toggle play/pause
@@ -425,45 +455,70 @@ export default function PortfolioCarousel({ onShowToast: _onShowToast } = {}) {
                 </div>
               )}
 
-              {/* Exact Matching Video Cover / Thumbnail Image */}
-              <picture className="w-full h-full block">
-                <img
-                  src={posterSrc}
-                  alt={reel.title || 'Reel Cover Photo'}
-                  width={290}
-                  height={516}
-                  loading="eager"
-                  decoding="async"
-                  onError={() => setFailedImages((prev) => ({ ...prev, [reelIdKey]: true }))}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-10 pointer-events-none"
-                />
-              </picture>
+              {/* Autoplaying Vertical Reel Video (Zero Info Overlays, Pure Cinematic Visual) */}
+              <video
+                ref={(el) => {
+                  if (el) cardVideoRefs.current[index] = el;
+                }}
+                src={reel.videoUrl || reel.videoSrc}
+                poster={posterSrc}
+                autoPlay
+                muted={unmutedIndex !== index}
+                loop
+                playsInline
+                webkit-playsinline="true"
+                x5-playsinline="true"
+                preload="metadata"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-10 pointer-events-none"
+              />
 
-              {/* Redesigned Compact Play Button (Reduced Size, Modern Glass Style) */}
+              {/* Sound Toggle Indicator */}
               <div
-                className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
-                aria-hidden="true"
+                className="absolute top-3 right-3 z-30 pointer-events-auto"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (unmutedIndex === index) {
+                    setUnmutedIndex(null);
+                  } else {
+                    if (index !== activeReelIndex) selectCard(index);
+                    setUnmutedIndex(index);
+                  }
+                }}
               >
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black/65 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shadow-[0_4px_18px_rgba(0,0,0,0.8)] group-hover:scale-110 group-hover:bg-[#ff6d29] group-hover:border-[#ff6d29] transition-all duration-300">
-                  <svg className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-white translate-x-0.5 transition-colors" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
+                <div
+                  className={`flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full backdrop-blur-md border transition-all cursor-pointer shadow-lg active:scale-95 ${
+                    unmutedIndex === index
+                      ? 'bg-[#ff6d29] border-[#ff6d29] text-white shadow-[0_0_15px_rgba(255,109,41,0.6)]'
+                      : 'bg-black/60 border-white/20 text-white/90 hover:bg-black/80'
+                  }`}
+                  title={unmutedIndex === index ? 'Mute audio' : 'Play sound'}
+                >
+                  <span className="material-symbols-outlined text-sm sm:text-base">
+                    {unmutedIndex === index ? 'volume_up' : 'volume_off'}
+                  </span>
+                  <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
+                    {unmutedIndex === index ? 'Sound ON' : 'Tap for sound'}
+                  </span>
                 </div>
               </div>
 
-              {/* Bottom Card Caption on Carousel */}
-              <div className="absolute inset-x-0 bottom-0 p-3 sm:p-3.5 bg-gradient-to-t from-black/95 via-black/55 to-transparent z-20 pointer-events-none">
-                <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#ff6d29] block mb-0.5">
-                  {reel.category || 'Featured Reel'}
-                </span>
-                <h4 className="text-xs sm:text-[13px] font-extrabold text-white leading-snug line-clamp-1">
-                  {reel.title}
-                </h4>
-                <div className="flex items-center justify-between text-[10px] text-white/70 mt-1">
-                  <span>{reel.creator}</span>
-                  {reel.views && <span className="text-white/50">{reel.views}</span>}
-                </div>
-              </div>
+              {/* Fullscreen Expand Action on Active Card */}
+              {isCenter && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openFullscreen(index, e);
+                  }}
+                  className="absolute bottom-3 right-3 z-30 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-[#ff6d29] backdrop-blur-md border border-white/25 text-white flex items-center justify-center transition-all shadow-xl active:scale-95 cursor-pointer pointer-events-auto group/fs"
+                  aria-label="Watch fullscreen"
+                  title="Watch fullscreen"
+                >
+                  <span className="material-symbols-outlined text-base sm:text-lg group-hover/fs:scale-110 transition-transform">
+                    open_in_full
+                  </span>
+                </button>
+              )}
             </div>
           );
         })}

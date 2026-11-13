@@ -110,6 +110,15 @@ section[id] {
   }
 }
 
+:root {
+  --brand-orange: #F28C3C;
+  --brand-orange-dark: #DC6A2C;
+  --brand-orange-soft: rgba(242, 140, 60, 0.15);
+  --surface: #151215;
+  --surface-2: #1E1B1F;
+  --border: rgba(255, 255, 255, 0.10);
+}
+
 /* Material Symbols configuration with font-display block and ligature protection */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined', sans-serif;
@@ -128,6 +137,8 @@ section[id] {
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: 'liga';
   font-display: block;
+  overflow: hidden;
+  user-select: none;
 }
 
 .material-symbols-outlined[data-weight="fill"] {

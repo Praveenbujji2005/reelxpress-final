@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/admin/login" className="inline-flex items-center gap-3 group mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#1c171c] border border-[#ff6d29]/50 flex items-center justify-center p-2.5 shadow-[0_0_25px_rgba(255,109,41,0.35)]">
+            <div className="w-12 h-12 rounded-2xl bg-[#1c171c] border border-[#F28C3C]/50 flex items-center justify-center p-2.5 shadow-[0_0_25px_rgba(242,140,60,0.35)]">
               <img src="/brand/icon-gold.png" alt="ReelXpress" className="w-full h-full object-contain" />
             </div>
           </Link>
@@ -72,14 +72,14 @@ export default function ForgotPasswordPage() {
                 placeholder="admin@reelxpress.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white placeholder:text-text-muted/40 focus:border-[#ff6d29] focus:outline-none focus:ring-2 focus:ring-[#ff6d29]/40 text-sm transition-all"
+                className="w-full px-4 py-3.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white placeholder:text-text-muted/40 focus:border-[#F28C3C] focus:outline-none focus:ring-2 focus:ring-[#F28C3C]/40 text-sm transition-all"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-[#eb5b1f] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm tracking-wide shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
@@ -95,7 +95,7 @@ export default function ForgotPasswordPage() {
           <div className="mt-6 pt-5 border-t border-white/10 text-center">
             <Link
               href="/admin/login"
-              className="text-xs font-semibold text-[#ff6d29] hover:underline"
+              className="text-xs font-semibold text-[#F28C3C] hover:underline"
             >
               ← Back to Sign In
             </Link>

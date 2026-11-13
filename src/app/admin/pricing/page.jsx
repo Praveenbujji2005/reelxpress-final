@@ -16,6 +16,24 @@ export default function AdminPricingPage() {
   const [planToDelete, setPlanToDelete] = useState(null);
   const [activeTab, setActiveTab] = useState('all');
   const [toastMessage, setToastMessage] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Prevent background scrolling while modal is open
+  useEffect(() => {
+    if (editingPlan || planToDelete) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.stop === 'function') {
+        window.lenis.stop();
+      }
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.start === 'function') {
+          window.lenis.start();
+        }
+      };
+    }
+  }, [editingPlan, planToDelete]);
 
   // Temporary feature text for adding to inclusions
   const [newFeatureText, setNewFeatureText] = useState('');
@@ -80,11 +98,12 @@ export default function AdminPricingPage() {
   };
 
   const handleSave = async (e) => {
-    e.preventDefault();
-    if (!editingPlan.name || !editingPlan.price) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!editingPlan?.name?.trim() || !editingPlan?.price?.trim()) {
       alert('Plan name and price are required.');
       return;
     }
+    setIsSaving(true);
     try {
       await savePricingPlan(editingPlan, user?.email);
       showToast('Pricing plan saved successfully!');
@@ -92,6 +111,8 @@ export default function AdminPricingPage() {
       await fetchPlans();
     } catch (err) {
       alert('Failed to save plan: ' + err.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -135,7 +156,7 @@ export default function AdminPricingPage() {
 
         <button
           onClick={handleCreateNew}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer self-start sm:self-auto"
+          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm tracking-wide shadow-lg hover:opacity-95 active:scale-95 transition-all flex items-center gap-2 cursor-pointer self-start sm:self-auto"
         >
           <span className="material-symbols-outlined text-sm">add</span>
           <span>Add Pricing Plan</span>
@@ -155,7 +176,7 @@ export default function AdminPricingPage() {
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === tab.id
-                ? 'bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white shadow-md'
+                ? 'bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white shadow-md'
                 : 'text-text-muted hover:text-white'
             }`}
           >
@@ -205,23 +226,23 @@ export default function AdminPricingPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPlans.map((plan, idx) => (
+          {(filteredPlans ?? []).map((plan, idx) => (
             <div
-              key={`admin-plan-${plan.id ?? idx}-${idx}`}
+              key={plan.id ?? `admin-plan-${idx}`}
               className={`rounded-3xl bg-[#151215] border p-6 flex flex-col justify-between shadow-xl transition-all ${
                 plan.isPopular
-                  ? 'border-[#ff6d29] shadow-[0_0_30px_rgba(255,109,41,0.2)]'
+                  ? 'border-[#F28C3C] shadow-[0_0_25px_rgba(242,140,60,0.25)]'
                   : 'border-white/10'
               }`}
             >
               <div>
                 {/* Top Badges */}
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#ff6d29]">
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#F28C3C]">
                     {plan.tag || plan.category}
                   </span>
                   {plan.badge && (
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#ff6d29] text-white">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white">
                       {plan.badge}
                     </span>
                   )}
@@ -242,7 +263,7 @@ export default function AdminPricingPage() {
                 <div className="space-y-2 mb-6">
                   {(plan.inclusions || []).slice(0, 5).map((inc, i) => (
                     <div key={i} className="flex items-start gap-2 text-xs text-white/80">
-                      <span className="material-symbols-outlined text-[15px] text-[#ff6d29] shrink-0 mt-0.5">
+                      <span className="material-symbols-outlined text-[15px] text-[#F28C3C] shrink-0 mt-0.5">
                         check_circle
                       </span>
                       <span className="truncate">{inc}</span>
@@ -292,8 +313,16 @@ export default function AdminPricingPage() {
           EDIT / CREATE PLAN MODAL
          ========================================================================= */}
       {editingPlan && (
-        <div className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-2xl rounded-3xl bg-[#151215] border border-white/15 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl rounded-3xl bg-[#161318] border border-white/15 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+          >
             <button
               onClick={() => setEditingPlan(null)}
               className="absolute top-5 right-5 p-2 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
@@ -314,7 +343,7 @@ export default function AdminPricingPage() {
                   <select
                     value={editingPlan.category}
                     onChange={(e) => setEditingPlan({ ...editingPlan, category: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm cursor-pointer"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm cursor-pointer"
                   >
                     <option value="instant">Instant Packages</option>
                     <option value="business">Business Packages</option>
@@ -331,7 +360,7 @@ export default function AdminPricingPage() {
                     placeholder="e.g. SINGLE EVENT, COMPREHENSIVE"
                     value={editingPlan.tag}
                     onChange={(e) => setEditingPlan({ ...editingPlan, tag: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                   />
                 </div>
               </div>
@@ -347,7 +376,7 @@ export default function AdminPricingPage() {
                     placeholder="e.g. Hourly Plan"
                     value={editingPlan.name}
                     onChange={(e) => setEditingPlan({ ...editingPlan, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                   />
                 </div>
 
@@ -361,7 +390,7 @@ export default function AdminPricingPage() {
                     placeholder="e.g. ₹ 2,200 or Customised"
                     value={editingPlan.price}
                     onChange={(e) => setEditingPlan({ ...editingPlan, price: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                   />
                 </div>
               </div>
@@ -375,7 +404,7 @@ export default function AdminPricingPage() {
                   placeholder="Short description of who this plan is ideal for..."
                   value={editingPlan.description}
                   onChange={(e) => setEditingPlan({ ...editingPlan, description: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm resize-none"
                 />
               </div>
 
@@ -414,7 +443,7 @@ export default function AdminPricingPage() {
                         handleAddFeature();
                       }
                     }}
-                    className="flex-1 px-3 py-2 rounded-xl bg-[#0c0a0c] border border-white/15 text-xs text-white focus:border-[#ff6d29] focus:outline-none"
+                    className="flex-1 px-3 py-2 rounded-xl bg-[#0c0a0c] border border-white/15 text-xs text-white focus:border-[#F28C3C] focus:outline-none"
                   />
                   <button
                     type="button"
@@ -433,7 +462,7 @@ export default function AdminPricingPage() {
                     id="plan-pop"
                     checked={editingPlan.isPopular}
                     onChange={(e) => setEditingPlan({ ...editingPlan, isPopular: e.target.checked })}
-                    className="w-4 h-4 rounded text-[#ff6d29] bg-[#0c0a0c]"
+                    className="w-4 h-4 rounded text-[#F28C3C] accent-[#F28C3C] bg-[#0c0a0c]"
                   />
                   <label htmlFor="plan-pop" className="text-xs font-semibold text-white">
                     Mark as Popular / Recommended
@@ -446,7 +475,7 @@ export default function AdminPricingPage() {
                     id="plan-en"
                     checked={editingPlan.enabled}
                     onChange={(e) => setEditingPlan({ ...editingPlan, enabled: e.target.checked })}
-                    className="w-4 h-4 rounded text-[#ff6d29] bg-[#0c0a0c]"
+                    className="w-4 h-4 rounded text-[#F28C3C] accent-[#F28C3C] bg-[#0c0a0c]"
                   />
                   <label htmlFor="plan-en" className="text-xs font-semibold text-white">
                     Active / Published
@@ -464,9 +493,13 @@ export default function AdminPricingPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#eb5b1f] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-lg cursor-pointer"
+                  disabled={isSaving}
+                  className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm tracking-wide shadow-lg hover:opacity-95 active:scale-95 transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  Save Pricing Plan
+                  {isSaving && (
+                    <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  )}
+                  <span>{isSaving ? 'Saving Changes...' : 'Save Pricing Plan'}</span>
                 </button>
               </div>
             </form>
@@ -476,8 +509,16 @@ export default function AdminPricingPage() {
 
       {/* Delete Confirmation */}
       {planToDelete && (
-        <div className="fixed inset-0 z-[100050] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-md rounded-3xl bg-[#181318] border border-red-500/30 p-6 sm:p-7 shadow-2xl text-center">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100050] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-3xl bg-[#181318] border border-red-500/30 p-6 sm:p-7 shadow-2xl text-center"
+          >
             <h3 className="text-xl font-extrabold text-white mb-2">Delete Pricing Plan?</h3>
             <p className="text-xs text-text-muted leading-relaxed mb-6">
               Are you sure you want to delete <strong className="text-white">&quot;{planToDelete.name}&quot;</strong>? This tier will be removed from the pricing section.

@@ -28,6 +28,23 @@ export default function AdminCreatorsPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
+  // Prevent background scrolling while modal is open
+  useEffect(() => {
+    if (selectedCreator || creatorToDelete) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.stop === 'function') {
+        window.lenis.stop();
+      }
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.start === 'function') {
+          window.lenis.start();
+        }
+      };
+    }
+  }, [selectedCreator, creatorToDelete]);
+
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
@@ -262,7 +279,7 @@ export default function AdminCreatorsPage() {
         );
       case 'approved':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase bg-[#ff6d29]/20 text-[#ff6d29] border border-[#ff6d29]/40">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase bg-[#F28C3C]/20 text-[#F28C3C] border border-[#F28C3C]/40">
             <span className="material-symbols-outlined text-[12px]">verified</span>
             Approved
           </span>
@@ -405,10 +422,10 @@ export default function AdminCreatorsPage() {
           <div className="text-3xl font-extrabold text-white tabular-nums">{metrics.reviewingCount}</div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-[#151215] border border-[#ff6d29]/40">
-          <div className="text-xs uppercase tracking-wider font-bold text-[#ff6d29] mb-1 flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-[#151215] border border-[#F28C3C]/40">
+          <div className="text-xs uppercase tracking-wider font-bold text-[#F28C3C] mb-1 flex items-center justify-between">
             <span>Approved Creators</span>
-            <span className="material-symbols-outlined text-base text-[#ff6d29]">verified</span>
+            <span className="material-symbols-outlined text-base text-[#F28C3C]">verified</span>
           </div>
           <div className="text-3xl font-extrabold text-white tabular-nums">{metrics.approvedCount}</div>
         </div>
@@ -430,7 +447,7 @@ export default function AdminCreatorsPage() {
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-sm focus:border-[#ff6d29] focus:outline-none placeholder:text-white/40"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-sm focus:border-[#F28C3C] focus:outline-none placeholder:text-white/40"
             />
           </div>
 
@@ -438,7 +455,7 @@ export default function AdminCreatorsPage() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-sm focus:border-[#ff6d29] focus:outline-none"
+            className="px-4 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-sm focus:border-[#F28C3C] focus:outline-none"
           >
             <option value="newest">Sort: Newest First</option>
             <option value="oldest">Sort: Oldest First</option>
@@ -457,7 +474,7 @@ export default function AdminCreatorsPage() {
               }}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                 statusFilter === st
-                  ? 'bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white shadow-md'
+                  ? 'bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white shadow-md'
                   : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
               }`}
             >
@@ -470,7 +487,7 @@ export default function AdminCreatorsPage() {
       {/* Creators Table / List */}
       {loading ? (
         <div className="p-16 rounded-3xl bg-[#151215] border border-white/10 text-center space-y-4">
-          <div className="w-10 h-10 border-3 border-[#ff6d29] border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-10 h-10 border-3 border-[#F28C3C] border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-text-muted text-sm">Loading creator applications from Firebase Firestore...</p>
         </div>
       ) : filteredCreators.length === 0 ? (
@@ -501,21 +518,21 @@ export default function AdminCreatorsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {paginatedCreators.map((creator, idx) => (
+                {(paginatedCreators ?? []).map((creator, idx) => (
                   <tr
-                    key={`creator-${creator.id ?? idx}-${idx}`}
+                    key={creator.id ?? `creator-${idx}`}
                     className="hover:bg-white/[0.02] transition-colors group"
                   >
                     {/* Creator Name & Initials */}
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#ff6d29] to-[#FFD700] text-black font-extrabold flex items-center justify-center shrink-0 shadow-md">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#F28C3C] to-[#FFD700] text-black font-extrabold flex items-center justify-center shrink-0 shadow-md">
                           {(creator.fullName || 'C').charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
                           <button
                             onClick={() => setSelectedCreator(creator)}
-                            className="font-bold text-white hover:text-[#ff6d29] transition-colors truncate block text-left cursor-pointer"
+                            className="font-bold text-white hover:text-[#F28C3C] transition-colors truncate block text-left cursor-pointer"
                           >
                             {creator.fullName}
                           </button>
@@ -530,7 +547,7 @@ export default function AdminCreatorsPage() {
                     <td className="py-4 px-6">
                       <div className="space-y-1">
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-xs font-semibold text-white">
-                          <span className="material-symbols-outlined text-[13px] text-[#ff6d29]">phone_iphone</span>
+                          <span className="material-symbols-outlined text-[13px] text-[#F28C3C]">phone_iphone</span>
                           {creator.phoneModel || creator.device || 'iPhone 13 Pro+'}
                         </span>
                         <div className="text-xs text-text-muted flex items-center gap-1">
@@ -576,7 +593,7 @@ export default function AdminCreatorsPage() {
                           }
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-[#ff6d29] hover:underline font-semibold"
+                          className="inline-flex items-center gap-1 text-xs text-[#F28C3C] hover:underline font-semibold"
                         >
                           <span>{creator.instagramLink}</span>
                           <span className="material-symbols-outlined text-[12px]">open_in_new</span>
@@ -597,7 +614,7 @@ export default function AdminCreatorsPage() {
                       <select
                         value={creator.status || 'New'}
                         onChange={(e) => handleStatusChange(creator.id, e.target.value)}
-                        className="px-2.5 py-1.5 rounded-lg bg-[#0c0a0c] border border-white/15 text-xs font-bold text-white focus:border-[#ff6d29] focus:outline-none cursor-pointer"
+                        className="px-2.5 py-1.5 rounded-lg bg-[#0c0a0c] border border-white/15 text-xs font-bold text-white focus:border-[#F28C3C] focus:outline-none cursor-pointer"
                       >
                         <option value="New">New</option>
                         <option value="Reviewing">Reviewing</option>
@@ -677,8 +694,16 @@ export default function AdminCreatorsPage() {
           DETAILED CREATOR APPLICATION MODAL
          ========================================================================= */}
       {selectedCreator && (
-        <div className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-2xl rounded-3xl bg-[#151215] border border-border-amber p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl rounded-3xl bg-[#151215] border border-border-amber p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto"
+          >
             {/* Ambient Top Glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-32 bg-primary-container/20 blur-3xl pointer-events-none rounded-full" />
 
@@ -691,7 +716,7 @@ export default function AdminCreatorsPage() {
 
             {/* Modal Header */}
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#ff6d29] to-[#FFD700] text-black font-black text-xl flex items-center justify-center shadow-lg">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#F28C3C] to-[#FFD700] text-black font-black text-xl flex items-center justify-center shadow-lg">
                 {(selectedCreator.fullName || 'C').charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0 pr-8">
@@ -736,7 +761,7 @@ export default function AdminCreatorsPage() {
                   iPhone Device Rig
                 </span>
                 <span className="text-white font-bold flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[#ff6d29] text-base">phone_iphone</span>
+                  <span className="material-symbols-outlined text-[#F28C3C] text-base">phone_iphone</span>
                   {selectedCreator.phoneModel || selectedCreator.device}
                 </span>
               </div>
@@ -773,7 +798,7 @@ export default function AdminCreatorsPage() {
                     }
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#ff6d29] hover:underline font-bold flex items-center gap-1 truncate block"
+                    className="text-[#F28C3C] hover:underline font-bold flex items-center gap-1 truncate block"
                   >
                     <span>{selectedCreator.instagramLink}</span>
                     <span className="material-symbols-outlined text-xs">open_in_new</span>
@@ -807,7 +832,7 @@ export default function AdminCreatorsPage() {
                     onClick={() => handleStatusChange(selectedCreator.id, statusOption)}
                     className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer disabled:opacity-40 ${
                       selectedCreator.status === statusOption
-                        ? 'bg-[#ff6d29] text-white shadow-md'
+                        ? 'bg-[#F28C3C] text-white shadow-md'
                         : 'bg-white/10 hover:bg-white/20 text-white'
                     }`}
                   >
@@ -824,8 +849,16 @@ export default function AdminCreatorsPage() {
           DELETE CONFIRMATION MODAL
          ========================================================================= */}
       {creatorToDelete && (
-        <div className="fixed inset-0 z-[100060] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-md rounded-3xl bg-[#151215] border border-red-500/40 p-6 sm:p-8 shadow-2xl text-center space-y-4">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100060] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-3xl bg-[#151215] border border-red-500/40 p-6 sm:p-8 shadow-2xl text-center space-y-4"
+          >
             <div className="w-14 h-14 rounded-2xl bg-red-500/15 text-red-400 mx-auto flex items-center justify-center">
               <span className="material-symbols-outlined text-2xl">delete_forever</span>
             </div>

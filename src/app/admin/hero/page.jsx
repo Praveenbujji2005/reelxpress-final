@@ -20,7 +20,25 @@ export default function AdminHeroPage() {
   const [slideToDelete, setSlideToDelete] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isVideoUploading, setIsVideoUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Prevent background scrolling while modal is open
+  useEffect(() => {
+    if (editingSlide || slideToDelete) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.stop === 'function') {
+        window.lenis.stop();
+      }
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.start === 'function') {
+          window.lenis.start();
+        }
+      };
+    }
+  }, [editingSlide, slideToDelete]);
 
   const fetchSlides = async () => {
     try {
@@ -84,7 +102,7 @@ export default function AdminHeroPage() {
     try {
       const url = await uploadVideoFile(file, 'hero');
       setEditingSlide((prev) => ({ ...prev, videoUrl: url, videoSrc: url }));
-      showToast('Video uploaded to Firebase Storage successfully!');
+      showToast('Video uploaded successfully!');
     } catch (err) {
       alert('Video upload failed: ' + err.message);
     } finally {
@@ -93,7 +111,7 @@ export default function AdminHeroPage() {
   };
 
   const handleSave = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (!editingSlide.title || !editingSlide.creator) {
       alert('Title and creator are required.');
       return;
@@ -103,6 +121,7 @@ export default function AdminHeroPage() {
       alert(`Cannot add more than ${MAX_HERO_REELS} reels. Please edit or delete an existing reel.`);
       return;
     }
+    setIsSaving(true);
     try {
       const payload = {
         ...editingSlide,
@@ -115,6 +134,8 @@ export default function AdminHeroPage() {
       await fetchSlides();
     } catch (err) {
       alert('Failed to save slide: ' + err.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -200,7 +221,7 @@ export default function AdminHeroPage() {
           className={`px-4 py-2.5 rounded-xl font-bold text-sm tracking-wide shadow-lg flex items-center gap-2 transition-all self-start sm:self-auto ${
             slides.length >= MAX_HERO_REELS
               ? 'bg-white/10 text-white/40 cursor-not-allowed border border-white/10'
-              : 'bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white hover:scale-105 active:scale-95 cursor-pointer'
+              : 'bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white hover:opacity-95 active:scale-95 cursor-pointer'
           }`}
           title={slides.length >= MAX_HERO_REELS ? `Maximum ${MAX_HERO_REELS} reels reached` : 'Add New Reel Slide'}
         >
@@ -240,12 +261,12 @@ export default function AdminHeroPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {slides.map((slide, idx) => (
+          {(slides ?? []).map((slide, idx) => (
             <div
               key={`admin-slide-${slide.id ?? idx}-${idx}`}
               className={`rounded-3xl bg-[#151215] border overflow-hidden shadow-xl flex flex-col transition-all ${
                 slide.enabled
-                  ? 'border-white/10 hover:border-[#ff6d29]/50'
+                  ? 'border-white/10 hover:border-[#F28C3C]/50'
                   : 'border-white/5 opacity-60'
               }`}
             >
@@ -278,7 +299,7 @@ export default function AdminHeroPage() {
                 {/* Center Video Play Action Icon */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-12 h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform">
-                    <svg className="w-6 h-6 fill-[#ff6d29] translate-x-0.5" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 fill-[#F28C3C] translate-x-0.5" viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   </div>
@@ -289,7 +310,7 @@ export default function AdminHeroPage() {
                   <h3 className="font-extrabold text-white text-base leading-tight truncate">
                     {slide.title}
                   </h3>
-                  <p className="text-xs text-[#ff6d29] font-semibold mt-0.5">
+                  <p className="text-xs text-[#F28C3C] font-semibold mt-0.5">
                     Shot by {slide.creator}
                   </p>
                 </div>
@@ -357,8 +378,16 @@ export default function AdminHeroPage() {
           CREATE / EDIT SLIDE MODAL
          ========================================================================= */}
       {editingSlide && (
-        <div className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-xl rounded-3xl bg-[#151215] border border-white/15 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-xl rounded-3xl bg-[#161318] border border-white/15 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+          >
             <button
               onClick={() => setEditingSlide(null)}
               className="absolute top-5 right-5 p-2 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
@@ -382,7 +411,7 @@ export default function AdminHeroPage() {
                   placeholder="e.g. SIIMA Awards - ReelXpress"
                   value={editingSlide.title}
                   onChange={(e) => setEditingSlide({ ...editingSlide, title: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                 />
               </div>
 
@@ -398,7 +427,7 @@ export default function AdminHeroPage() {
                     placeholder="e.g. Sneha D."
                     value={editingSlide.creator}
                     onChange={(e) => setEditingSlide({ ...editingSlide, creator: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                   />
                 </div>
                 <div>
@@ -411,7 +440,7 @@ export default function AdminHeroPage() {
                     placeholder="e.g. Red Carpet, Wedding"
                     value={editingSlide.category}
                     onChange={(e) => setEditingSlide({ ...editingSlide, category: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                   />
                 </div>
               </div>
@@ -427,7 +456,7 @@ export default function AdminHeroPage() {
                     placeholder="e.g. 310K views"
                     value={editingSlide.views}
                     onChange={(e) => setEditingSlide({ ...editingSlide, views: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                   />
                 </div>
                 <div>
@@ -439,7 +468,7 @@ export default function AdminHeroPage() {
                     placeholder="https://www.instagram.com/reelxpress___"
                     value={editingSlide.instagramUrl}
                     onChange={(e) => setEditingSlide({ ...editingSlide, instagramUrl: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#ff6d29] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0c0a0c] border border-white/15 text-white focus:border-[#F28C3C] focus:outline-none text-sm"
                   />
                 </div>
               </div>
@@ -447,7 +476,7 @@ export default function AdminHeroPage() {
               {/* Video URL & Video File Upload */}
               <div>
                 <label className="block text-xs uppercase tracking-wider font-bold text-text-muted mb-1.5 flex items-center justify-between">
-                  <span>Reel Video (Firebase Storage MP4)</span>
+                  <span>Reel Video (MP4 / WebM / QuickTime)</span>
                   {(editingSlide.videoUrl || editingSlide.videoSrc) && (
                     <span className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
                       <span className="material-symbols-outlined text-xs">check_circle</span>
@@ -486,17 +515,17 @@ export default function AdminHeroPage() {
                         />
                       </label>
                       <p className="text-[11px] text-text-muted mt-1.5">
-                        Upload 9:16 vertical MP4 video directly to Firebase Storage bucket.
+                        Upload 9:16 vertical video directly. Automatically optimized and persisted.
                       </p>
                     </div>
                   </div>
                   <div>
                     <label className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">
-                      Or Direct Firebase Video Download URL
+                      Or Direct Video URL
                     </label>
                     <input
                       type="url"
-                      placeholder="https://firebasestorage.googleapis.com/... or /assets/video.mp4"
+                      placeholder="https://... or /uploads/videos/... or /assets/video.mp4"
                       value={editingSlide.videoUrl || editingSlide.videoSrc || ''}
                       onChange={(e) =>
                         setEditingSlide({
@@ -505,7 +534,7 @@ export default function AdminHeroPage() {
                           videoSrc: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 rounded-xl bg-[#070507] border border-white/10 text-white text-xs focus:border-[#ff6d29] focus:outline-none font-mono"
+                      className="w-full px-3 py-2 rounded-xl bg-[#070507] border border-white/10 text-white text-xs focus:border-[#F28C3C] focus:outline-none font-mono"
                     />
                   </div>
                 </div>
@@ -551,7 +580,7 @@ export default function AdminHeroPage() {
                       placeholder="e.g. /thumbnails/reel-frame-1.jpg or https://..."
                       value={editingSlide.poster || ''}
                       onChange={(e) => setEditingSlide({ ...editingSlide, poster: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#070507] border border-white/10 text-white text-xs focus:border-[#ff6d29] focus:outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-[#070507] border border-white/10 text-white text-xs focus:border-[#F28C3C] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -564,7 +593,7 @@ export default function AdminHeroPage() {
                   id="slide-enabled"
                   checked={editingSlide.enabled}
                   onChange={(e) => setEditingSlide({ ...editingSlide, enabled: e.target.checked })}
-                  className="w-4 h-4 rounded text-[#ff6d29] focus:ring-[#ff6d29] bg-[#0c0a0c] border-white/20"
+                  className="w-4 h-4 rounded text-[#F28C3C] focus:ring-[#F28C3C] accent-[#F28C3C] bg-[#0c0a0c] border-white/20"
                 />
                 <label htmlFor="slide-enabled" className="text-sm font-semibold text-white">
                   Publish slide to live website carousel
@@ -581,10 +610,13 @@ export default function AdminHeroPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={isUploading}
-                  className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#eb5b1f] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-lg cursor-pointer"
+                  disabled={isSaving || isUploading || isVideoUploading}
+                  className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm tracking-wide shadow-lg hover:opacity-95 active:scale-95 transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  Save Reel Slide
+                  {isSaving && (
+                    <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  )}
+                  <span>{isSaving ? 'Saving Reel Slide...' : 'Save Reel Slide'}</span>
                 </button>
               </div>
             </form>
@@ -596,8 +628,16 @@ export default function AdminHeroPage() {
           DELETE CONFIRMATION MODAL
          ========================================================================= */}
       {slideToDelete && (
-        <div className="fixed inset-0 z-[100050] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-md rounded-3xl bg-[#181318] border border-red-500/30 p-6 sm:p-7 shadow-2xl text-center">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100050] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-3xl bg-[#181318] border border-red-500/30 p-6 sm:p-7 shadow-2xl text-center"
+          >
             <h3 className="text-xl font-extrabold text-white mb-2">Delete Carousel Slide?</h3>
             <p className="text-xs text-text-muted leading-relaxed mb-6">
               Are you sure you want to delete <strong className="text-white">&quot;{slideToDelete.title}&quot;</strong>? This reel will be removed from the public homepage.

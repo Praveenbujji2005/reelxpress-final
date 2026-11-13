@@ -32,6 +32,23 @@ export default function AdminInquiriesPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
+  // Prevent background scrolling while modal is open
+  useEffect(() => {
+    if (selectedInquiry || inquiryToDelete) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.stop === 'function') {
+        window.lenis.stop();
+      }
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        if (typeof window !== 'undefined' && window.lenis && typeof window.lenis.start === 'function') {
+          window.lenis.start();
+        }
+      };
+    }
+  }, [selectedInquiry, inquiryToDelete]);
+
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
@@ -350,7 +367,7 @@ export default function AdminInquiriesPage() {
           <button
             onClick={syncToCloud}
             disabled={syncing}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ff6d29] hover:from-[#ff6d29] hover:to-[#ff8547] text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all active:scale-95 disabled:opacity-60 shadow-[0_0_15px_rgba(255,109,41,0.3)]"
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] hover:opacity-95 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all active:scale-95 disabled:opacity-60 shadow-[0_0_15px_rgba(242,140,60,0.3)]"
             title="Upload pending server enquiries to Cloud Firestore"
           >
             <span className={`material-symbols-outlined text-sm ${syncing ? 'animate-spin' : ''}`}>cloud_upload</span>
@@ -404,7 +421,7 @@ export default function AdminInquiriesPage() {
             placeholder="Search by name, email, phone, service, date..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white placeholder:text-text-muted/40 focus:border-[#ff6d29] focus:outline-none text-sm transition-all"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white placeholder:text-text-muted/40 focus:border-[#F28C3C] focus:outline-none text-sm transition-all"
           />
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-lg">
             search
@@ -419,7 +436,7 @@ export default function AdminInquiriesPage() {
               onClick={() => setStatusFilter(st.toLowerCase())}
               className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap text-center ${
                 statusFilter === st.toLowerCase()
-                  ? 'bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white shadow-sm'
+                  ? 'bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white shadow-sm'
                   : 'text-white/60 hover:text-white'
               }`}
             >
@@ -433,7 +450,7 @@ export default function AdminInquiriesPage() {
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-xs font-semibold focus:border-[#ff6d29] focus:outline-none cursor-pointer"
+            className="w-full px-3 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-xs font-semibold focus:border-[#F28C3C] focus:outline-none cursor-pointer"
           >
             <option value="all">Dates: All Time</option>
             <option value="today">Dates: Today</option>
@@ -447,7 +464,7 @@ export default function AdminInquiriesPage() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-xs font-semibold focus:border-[#ff6d29] focus:outline-none cursor-pointer"
+            className="w-full px-3 py-2.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white text-xs font-semibold focus:border-[#F28C3C] focus:outline-none cursor-pointer"
           >
             <option value="newest">Sort: Newest</option>
             <option value="oldest">Sort: Oldest</option>
@@ -459,7 +476,7 @@ export default function AdminInquiriesPage() {
       <div className="rounded-3xl bg-[#151215] border border-white/10 overflow-hidden shadow-xl">
         {loading ? (
           <div className="py-20 text-center text-text-muted text-sm">
-            <div className="w-8 h-8 border-2 border-[#ff6d29] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+            <div className="w-8 h-8 border-2 border-[#F28C3C] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
             Connecting to Firestore database...
           </div>
         ) : paginatedInquiries.length === 0 ? (
@@ -483,7 +500,7 @@ export default function AdminInquiriesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {paginatedInquiries.map((inq) => {
+                {(paginatedInquiries ?? []).map((inq, idx) => {
                   const sanitizedPhone = (inq.phone || '').replace(/\D/g, '');
                   const waNumber = sanitizedPhone.startsWith('91') ? sanitizedPhone : `91${sanitizedPhone}`;
                   const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(
@@ -499,7 +516,7 @@ export default function AdminInquiriesPage() {
 
                   return (
                     <tr
-                      key={`inq-${inq.id ?? idx}-${idx}`}
+                      key={inq.id ?? `inq-${idx}`}
                       className="hover:bg-white/[0.02] transition-colors group cursor-pointer"
                       onClick={() => setSelectedInquiry(inq)}
                     >
@@ -509,7 +526,7 @@ export default function AdminInquiriesPage() {
                           {inq.customerName || inq.fullName}
                         </div>
                         {inq.companyName && (
-                          <div className="text-xs text-[#ff6d29] font-medium mt-0.5">
+                          <div className="text-xs text-[#F28C3C] font-medium mt-0.5">
                             🏢 {inq.companyName}
                           </div>
                         )}
@@ -532,7 +549,7 @@ export default function AdminInquiriesPage() {
                       {/* Email & Phone */}
                       <td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center gap-1.5 text-xs text-white/90">
-                          <span className="material-symbols-outlined text-[15px] text-[#ff6d29]">mail</span>
+                          <span className="material-symbols-outlined text-[15px] text-[#F28C3C]">mail</span>
                           <a href={mailLink} className="hover:underline">{inq.email}</a>
                         </div>
                         <div className="flex items-center gap-1.5 text-xs text-white/90 mt-1">
@@ -579,7 +596,7 @@ export default function AdminInquiriesPage() {
                           onChange={(e) => handleStatusChange(inq.id, e.target.value)}
                           className={`text-xs font-bold px-2.5 py-1 rounded-full border cursor-pointer focus:outline-none uppercase tracking-wider ${
                             currentStatus === 'new'
-                              ? 'bg-[#ff6d29]/20 text-[#ff6d29] border-[#ff6d29]/40'
+                              ? 'bg-[#F28C3C]/20 text-[#F28C3C] border-[#F28C3C]/40'
                               : currentStatus === 'contacted'
                               ? 'bg-blue-500/20 text-blue-300 border-blue-500/40'
                               : currentStatus === 'booked'
@@ -589,7 +606,7 @@ export default function AdminInquiriesPage() {
                               : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
                           }`}
                         >
-                          <option value="New" className="bg-[#151215] text-[#ff6d29]">NEW</option>
+                          <option value="New" className="bg-[#151215] text-[#F28C3C]">NEW</option>
                           <option value="Contacted" className="bg-[#151215] text-blue-300">CONTACTED</option>
                           <option value="Booked" className="bg-[#151215] text-purple-300">BOOKED</option>
                           <option value="Lost" className="bg-[#151215] text-zinc-400">LOST</option>
@@ -689,8 +706,16 @@ export default function AdminInquiriesPage() {
           ENQUIRY DETAIL DRAWER / MODAL
          ========================================================================= */}
       {selectedInquiry && (
-        <div className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-xl rounded-3xl bg-[#151215] border border-white/15 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100040] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-xl rounded-3xl bg-[#151215] border border-white/15 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+          >
             <button
               onClick={() => setSelectedInquiry(null)}
               className="absolute top-5 right-5 p-2 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
@@ -699,7 +724,7 @@ export default function AdminInquiriesPage() {
             </button>
 
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-[#ff6d29]/20 text-[#ff6d29] flex items-center justify-center font-extrabold text-lg">
+              <div className="w-12 h-12 rounded-2xl bg-[#F28C3C]/20 text-[#F28C3C] flex items-center justify-center font-extrabold text-lg">
                 {(selectedInquiry.customerName || selectedInquiry.fullName || 'C').charAt(0)}
               </div>
               <div>
@@ -720,7 +745,7 @@ export default function AdminInquiriesPage() {
                   </span>
                   <a
                     href={`tel:${selectedInquiry.phone}`}
-                    className="text-white font-semibold hover:text-[#ff6d29]"
+                    className="text-white font-semibold hover:text-[#F28C3C]"
                   >
                     {selectedInquiry.phone}
                   </a>
@@ -732,7 +757,7 @@ export default function AdminInquiriesPage() {
                   </span>
                   <a
                     href={`mailto:${selectedInquiry.email}`}
-                    className="text-white font-semibold hover:text-[#ff6d29] break-all"
+                    className="text-white font-semibold hover:text-[#F28C3C] break-all"
                   >
                     {selectedInquiry.email}
                   </a>
@@ -761,7 +786,7 @@ export default function AdminInquiriesPage() {
                     <span className="text-[11px] uppercase tracking-wider text-text-muted font-bold block mb-1">
                       Company / Brand
                     </span>
-                    <span className="text-[#ff6d29] font-bold">
+                    <span className="text-[#F28C3C] font-bold">
                       {selectedInquiry.companyName}
                     </span>
                   </div>
@@ -772,7 +797,7 @@ export default function AdminInquiriesPage() {
                 <span className="text-[11px] uppercase tracking-wider text-text-muted font-bold block mb-1">
                   Selected Shoot Service
                 </span>
-                <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10 font-semibold text-[#ff6d29]">
+                <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10 font-semibold text-[#F28C3C]">
                   {selectedInquiry.selectedService || selectedInquiry.serviceType}
                 </div>
               </div>
@@ -800,7 +825,7 @@ export default function AdminInquiriesPage() {
                         onClick={() => handleStatusChange(selectedInquiry.id, st)}
                         className={`py-2 px-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer text-center ${
                           isSelected
-                            ? 'bg-[#ff6d29] text-white shadow-md'
+                            ? 'bg-[#F28C3C] text-white shadow-md'
                             : 'bg-white/10 text-white/70 hover:bg-white/20'
                         }`}
                       >
@@ -842,8 +867,16 @@ export default function AdminInquiriesPage() {
           DELETE CONFIRMATION MODAL
          ========================================================================= */}
       {inquiryToDelete && (
-        <div className="fixed inset-0 z-[100050] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-md rounded-3xl bg-[#181318] border border-red-500/30 p-6 sm:p-7 shadow-2xl text-center">
+        <div
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[100050] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-3xl bg-[#181318] border border-red-500/30 p-6 sm:p-7 shadow-2xl text-center"
+          >
             <div className="w-14 h-14 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto mb-4">
               <span className="material-symbols-outlined text-3xl">delete_forever</span>
             </div>

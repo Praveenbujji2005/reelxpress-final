@@ -262,30 +262,51 @@ function PricingCardSkeleton({ count = 4, colsClass = 'grid-cols-1 sm:grid-cols-
   );
 }
 
+// Single Unified PriceBox Component across all packages & carousels
+function PriceBox({ price, priceSuffix, tag }) {
+  return (
+    <div className="rounded-[16px] bg-[#1E1B1F] border border-white/10 p-3.5 sm:p-4 mb-5 shadow-[0_4px_18px_rgba(0,0,0,0.4)] flex items-baseline justify-between gap-2">
+      <div className="flex items-baseline gap-1.5 flex-wrap">
+        <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          {price}
+        </span>
+        <span className="text-xs font-semibold text-white/70 tracking-normal">
+          {priceSuffix || '+ 18% GST'}
+        </span>
+      </div>
+      {tag && (
+        <span className="text-[10px] uppercase font-bold tracking-wider text-[#F28C3C] bg-[rgba(242,140,60,0.15)] px-2.5 py-0.5 rounded-full border border-[#F28C3C] shrink-0">
+          {tag}
+        </span>
+      )}
+    </div>
+  );
+}
+
 // Reusable Glassmorphism Pricing Card Component
 function PricingCard({ pkg, isCenter = false, isCarousel = false, onBooking }) {
   return (
     <div
       className={`relative rounded-2xl bg-[#130f14]/95 backdrop-blur-md p-5 sm:p-6 min-h-[530px] flex flex-col justify-between transition-all duration-500 ${
         pkg.isPopular
-          ? 'border border-[#ff6d29]/80 shadow-[0_12px_45px_rgba(255,109,41,0.25)]'
+          ? 'border border-[#F28C3C]/80 shadow-[0_12px_45px_rgba(242,140,60,0.25)]'
           : 'border border-white/10 hover:border-white/20 shadow-[0_10px_35px_rgba(0,0,0,0.6)]'
       } ${
         isCarousel
           ? isCenter
-            ? 'scale-[1.01] opacity-100 ring-1 ring-[#ff6d29]/50'
+            ? 'scale-[1.01] opacity-100 ring-1 ring-[#F28C3C]/50'
             : 'scale-[0.98] opacity-90 hover:opacity-100'
           : 'hover:-translate-y-1'
       }`}
     >
       {pkg.badge && (
-        <div className="absolute -top-3.5 right-6 sm:right-7 px-3.5 py-1 rounded-full bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white text-[10px] font-extrabold uppercase tracking-wider shadow-[0_4px_12px_rgba(255,109,41,0.45)]">
+        <div className="absolute -top-3.5 right-6 sm:right-7 px-3.5 py-1 rounded-full bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white text-[10px] font-extrabold uppercase tracking-wider shadow-[0_4px_12px_rgba(242,140,60,0.45)]">
           {pkg.badge}
         </div>
       )}
 
       <div>
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#ff6d29] mb-1.5 block">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-[#F28C3C] mb-1.5 block">
           {pkg.tag}
         </span>
 
@@ -297,20 +318,8 @@ function PricingCard({ pkg, isCenter = false, isCarousel = false, onBooking }) {
           {pkg.description}
         </p>
 
-        {/* Dedicated Elevated High-Contrast Price Box */}
-        <div className="rounded-xl bg-white/[0.07] border border-white/15 p-3.5 mb-5 shadow-[0_4px_18px_rgba(0,0,0,0.4)] flex items-baseline justify-between gap-2">
-          <div className="flex items-baseline gap-1.5 flex-wrap">
-            <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              {pkg.price}
-            </span>
-            <span className="text-xs font-semibold text-white/70 tracking-normal">
-              {pkg.priceSuffix}
-            </span>
-          </div>
-          <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#ff6d29] bg-[#ff6d29]/15 px-2 py-0.5 rounded-full border border-[#ff6d29]/30 shrink-0">
-            {pkg.tag}
-          </span>
-        </div>
+        {/* Dedicated Unified High-Contrast Price Box */}
+        <PriceBox price={pkg.price} priceSuffix={pkg.priceSuffix} tag={pkg.tag} />
 
         <div>
           <span className="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-3.5 block">
@@ -320,7 +329,7 @@ function PricingCard({ pkg, isCenter = false, isCarousel = false, onBooking }) {
             {pkg.inclusions.map((item, i) => (
               <li key={i} className="flex items-start gap-2.5 text-xs sm:text-[13px] text-white/80 leading-normal">
                 <svg
-                  className={`w-4 h-4 shrink-0 mt-0.5 ${pkg.isPopular ? 'text-[#ff6d29]' : 'text-white/60'}`}
+                  className="w-4 h-4 shrink-0 mt-0.5 text-[#F28C3C]"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                   aria-hidden="true"
@@ -370,7 +379,7 @@ export default function PricingSection() {
   const [instantPlans, setInstantPlans] = useState(INSTANT_PACKAGES);
   const [businessPlans, setBusinessPlans] = useState(BUSINESS_PACKAGES);
   const [weddingPlans, setWeddingPlans] = useState(WEDDING_PACKAGES);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Instant Packages Carousel State (for mobile/tablet)
   const [pricingIndex, setPricingIndex] = useState(0);
@@ -538,7 +547,7 @@ export default function PricingSection() {
                 onKeyDown={(e) => handleTabKeyDown(e, idx)}
                 className={`px-2.5 xs:px-3 sm:px-6 md:px-7 py-1.5 sm:py-2.5 md:py-3 rounded-full text-[11px] sm:text-sm md:text-[15px] font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container ${
                   isActive
-                    ? 'bg-gradient-to-r from-[#FF5E1E] to-[#FF7A00] text-white shadow-[0_4px_18px_rgba(255,94,30,0.55)]'
+                    ? 'bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white shadow-[0_4px_18px_rgba(242,140,60,0.45)]'
                     : 'text-[#9e969d] hover:text-white bg-transparent'
                 }`}
               >
@@ -553,7 +562,7 @@ export default function PricingSection() {
       <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
         {activeTab === 'wedding' && (
           <>
-            <span className="text-[#ff6d29] text-[11px] sm:text-xs font-bold uppercase tracking-[0.25em] block mb-2.5">
+            <span className="text-[#F28C3C] text-[11px] sm:text-xs font-bold uppercase tracking-[0.25em] block mb-2.5">
               WEDDING REEL PACKAGES
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
@@ -567,7 +576,7 @@ export default function PricingSection() {
 
         {activeTab === 'business' && (
           <>
-            <span className="text-[#ff6d29] text-[11px] sm:text-xs font-bold uppercase tracking-[0.25em] block mb-2.5">
+            <span className="text-[#F28C3C] text-[11px] sm:text-xs font-bold uppercase tracking-[0.25em] block mb-2.5">
               FOR BUSINESS AND BRANDS
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
@@ -581,12 +590,15 @@ export default function PricingSection() {
 
         {activeTab === 'instant' && (
           <>
-            <span className="text-[#ff6d29] text-[11px] sm:text-xs font-bold uppercase tracking-[0.25em] block mb-2.5">
+            <span className="text-[#F28C3C] text-[11px] sm:text-xs font-bold uppercase tracking-[0.25em] block mb-2.5">
               INSTANT CONTENT PACKAGES
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               Minutes to Delivery. <span className="font-serif italic font-normal text-white/70">Zero Hassle.</span>
             </h2>
+            <p className="text-sm sm:text-base text-white/70 mt-3 max-w-xl mx-auto leading-relaxed">
+              Starting at ₹1,999 · On-demand shoots with delivery in minutes across Bengaluru.
+            </p>
           </>
         )}
       </div>
@@ -733,20 +745,8 @@ export default function PricingSection() {
                   {pkg.description}
                 </p>
 
-                {/* Dedicated Elevated High-Contrast Price Box */}
-                <div className="rounded-xl bg-white/[0.07] border border-white/15 p-3.5 mb-5 shadow-[0_4px_18px_rgba(0,0,0,0.4)] flex items-baseline justify-between gap-2">
-                  <div className="flex items-baseline gap-1.5 flex-wrap">
-                    <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                      {pkg.price}
-                    </span>
-                    <span className="text-xs font-semibold text-white/70 tracking-normal">
-                      {pkg.priceSuffix}
-                    </span>
-                  </div>
-                  <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#ff6d29] bg-[#ff6d29]/15 px-2 py-0.5 rounded-full border border-[#ff6d29]/30 shrink-0">
-                    {pkg.tag}
-                  </span>
-                </div>
+                {/* Dedicated Unified High-Contrast Price Box */}
+                <PriceBox price={pkg.price} priceSuffix={pkg.priceSuffix} tag={pkg.tag} />
 
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-3.5 block">
@@ -838,20 +838,8 @@ export default function PricingSection() {
                   {pkg.description}
                 </p>
 
-                {/* Dedicated Elevated High-Contrast Price Box */}
-                <div className="rounded-xl bg-white/[0.07] border border-white/15 p-3.5 mb-5 shadow-[0_4px_18px_rgba(0,0,0,0.4)] flex items-baseline justify-between gap-2">
-                  <div className="flex items-baseline gap-1.5 flex-wrap">
-                    <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                      {pkg.price}
-                    </span>
-                    <span className="text-xs font-semibold text-white/70 tracking-normal">
-                      {pkg.priceSuffix}
-                    </span>
-                  </div>
-                  <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#ff6d29] bg-[#ff6d29]/15 px-2 py-0.5 rounded-full border border-[#ff6d29]/30 shrink-0">
-                    {pkg.tag}
-                  </span>
-                </div>
+                {/* Dedicated Unified High-Contrast Price Box */}
+                <PriceBox price={pkg.price} priceSuffix={pkg.priceSuffix} tag={pkg.tag} />
 
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-3.5 block">

@@ -33,13 +33,13 @@ export default function AdminActivityPage() {
           <div className="py-20 text-center text-text-muted">No activity recorded yet.</div>
         ) : (
           <div className="space-y-4">
-            {logs.map((log, idx) => (
+            {(logs ?? []).map((log, idx) => (
               <div
-                key={`${log.id || 'log'}-${idx}`}
+                key={log.id ?? `log-${idx}`}
                 className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-4 rounded-2xl bg-[#0c0a0c] border border-white/10 text-sm"
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-[#ff6d29]/20 text-[#ff6d29] flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-xl bg-[#F28C3C]/20 text-[#F28C3C] flex items-center justify-center shrink-0 mt-0.5">
                     <span className="material-symbols-outlined text-base">history</span>
                   </div>
                   <div>

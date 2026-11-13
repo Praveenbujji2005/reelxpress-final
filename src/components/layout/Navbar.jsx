@@ -78,11 +78,11 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
           visibility: isHeroVisible ? 'visible' : 'hidden',
           pointerEvents: isHeroVisible ? 'auto' : 'none',
         }}
-        className="fixed top-3 sm:top-4 left-0 right-0 z-50 px-3 w-full flex justify-center transition-all duration-300 ease-out"
+        className="fixed top-0 md:top-4 left-0 right-0 z-50 px-0 md:px-3 w-full flex justify-center transition-all duration-300 ease-out pt-[env(safe-area-inset-top,0px)] md:pt-0"
         aria-hidden={!isHeroVisible}
       >
         <div
-          className="rounded-full px-4 sm:px-7 py-2 sm:py-2.5 flex items-center justify-between gap-4 sm:gap-8 bg-[#110e13]/95 border border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.8)] select-none transition-all duration-200"
+          className="w-full rounded-none md:w-auto md:rounded-full px-4 sm:px-7 py-2.5 sm:py-2.5 flex items-center justify-between gap-4 sm:gap-8 bg-[#110e13]/95 border-b border-white/[0.08] border-t-0 border-l-0 border-r-0 md:border md:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.6)] md:shadow-[0_10px_35px_rgba(0,0,0,0.8)] select-none transition-all duration-200"
           role="navigation"
           aria-label="Main Navigation"
         >
@@ -99,7 +99,7 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
                 Pricing
               </Link>
               <Link
-                href="/reelxpress"
+                href="/#why-us"
                 className="hover:text-white transition-colors py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-primary-container hover:after:w-full after:transition-all after:duration-200"
               >
                 Why us
@@ -117,7 +117,7 @@ export default function Navbar({ onOpenMobileMenu, isMobileMenuOpen = false }) {
             <Link
               href="/"
               className="inline-flex items-center justify-center group select-none py-1 min-w-[44px] min-h-[44px] transition-transform duration-200 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container rounded-full"
-              aria-label={`${SITE_CONFIG.name} Home`}
+              aria-label="reelXpress home"
             >
               <ReelXpressWordmark className="h-6 sm:h-7 w-auto align-middle drop-shadow-[0_0_14px_rgba(255,94,30,0.45)] transition-transform duration-200 group-hover:scale-105" />
             </Link>

@@ -126,7 +126,7 @@ export default function AdminDashboardPage() {
   if (loading) {
     return (
       <div className="py-20 flex flex-col items-center justify-center text-center">
-        <div className="w-10 h-10 border-3 border-[#ff6d29] border-t-transparent rounded-full animate-spin mb-3" />
+        <div className="w-10 h-10 border-3 border-[#F28C3C] border-t-transparent rounded-full animate-spin mb-3" />
         <p className="text-sm text-text-muted">Loading CMS metrics &amp; enquiries...</p>
       </div>
     );
@@ -137,8 +137,8 @@ export default function AdminDashboardPage() {
       {/* Top Welcome Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ff6d29]/15 border border-[#ff6d29]/30 text-[#ff6d29] text-xs font-bold uppercase tracking-wider mb-2">
-            <span className="w-2 h-2 rounded-full bg-[#ff6d29] animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F28C3C]/15 border border-[#F28C3C]/30 text-[#F28C3C] text-xs font-bold uppercase tracking-wider mb-2">
+            <span className="w-2 h-2 rounded-full bg-[#F28C3C] animate-pulse" />
             <span>Live Cloud CMS</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -152,7 +152,7 @@ export default function AdminDashboardPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/admin/inquiries"
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white font-bold text-sm tracking-wide shadow-[0_0_20px_rgba(255,109,41,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm tracking-wide shadow-[0_0_20px_rgba(242,140,60,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
           >
             <span className="material-symbols-outlined text-sm">mark_email_unread</span>
             <span>View Inquiries ({stats.newInquiries} New)</span>
@@ -175,17 +175,17 @@ export default function AdminDashboardPage() {
         {/* Total Customer Inquiries */}
         <Link
           href="/admin/inquiries"
-          className="rounded-2xl p-5 bg-[#151215] border border-white/10 hover:border-[#ff6d29]/60 transition-all hover:scale-[1.02] group"
+          className="rounded-2xl p-5 bg-[#151215] border border-white/10 hover:border-[#F28C3C]/60 transition-all hover:scale-[1.02] group"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-text-muted uppercase tracking-wider">
               Customer Enquiries
             </span>
-            <div className="w-9 h-9 rounded-xl bg-[#ff6d29]/20 text-[#ff6d29] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-[#F28C3C]/20 text-[#F28C3C] flex items-center justify-center">
               <span className="material-symbols-outlined text-lg">inbox</span>
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-white group-hover:text-[#ff6d29] transition-colors tabular-nums">
+          <div className="text-3xl font-extrabold text-white group-hover:text-[#F28C3C] transition-colors tabular-nums">
             {stats.totalInquiries}
           </div>
           <div className="mt-2 text-xs text-text-muted flex items-center gap-1.5">
@@ -242,7 +242,7 @@ export default function AdminDashboardPage() {
         {/* Pricing Plans */}
         <Link
           href="/admin/pricing"
-          className="rounded-2xl p-5 bg-[#151215] border border-white/10 hover:border-[#ff6d29]/60 transition-all hover:scale-[1.02] group"
+          className="rounded-2xl p-5 bg-[#151215] border border-white/10 hover:border-[#F28C3C]/60 transition-all hover:scale-[1.02] group"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-text-muted uppercase tracking-wider">
@@ -293,7 +293,7 @@ export default function AdminDashboardPage() {
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <span>Recent Customer Enquiries</span>
                 {stats.newInquiries > 0 && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-[#ff6d29] text-white">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-[#F28C3C] text-white">
                     {stats.newInquiries} New
                   </span>
                 )}
@@ -305,7 +305,7 @@ export default function AdminDashboardPage() {
 
             <Link
               href="/admin/inquiries"
-              className="text-xs text-[#ff6d29] hover:underline font-bold flex items-center gap-1"
+              className="text-xs text-[#F28C3C] hover:underline font-bold flex items-center gap-1"
             >
               <span>Manage All Enquiries</span>
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -329,11 +329,11 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {recentInquiries.map((inq, idx) => {
+                  {(recentInquiries ?? []).map((inq, idx) => {
                     const st = (inq.status || 'New').toLowerCase();
                     const statusBadgeClass =
                       st === 'new'
-                        ? 'bg-[#ff6d29]/20 text-[#ff6d29] border-[#ff6d29]/40'
+                        ? 'bg-[#F28C3C]/20 text-[#F28C3C] border-[#F28C3C]/40'
                         : st === 'contacted'
                         ? 'bg-blue-500/20 text-blue-300 border-blue-500/40'
                         : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
@@ -342,7 +342,7 @@ export default function AdminDashboardPage() {
                       st === 'completed' || st === 'resolved' ? 'COMPLETED' : st === 'contacted' ? 'CONTACTED' : 'NEW';
 
                     return (
-                      <tr key={`recent-inq-${inq.id ?? idx}-${idx}`} className="hover:bg-white/[0.02] transition-colors">
+                      <tr key={inq.id ?? `recent-inq-${idx}`} className="hover:bg-white/[0.02] transition-colors">
                         <td className="py-3.5 pr-3">
                           <div className="font-bold text-white">{inq.customerName || inq.fullName}</div>
                           <div className="text-xs text-text-muted">{inq.phone}</div>
@@ -364,7 +364,7 @@ export default function AdminDashboardPage() {
                         <td className="py-3.5 text-right whitespace-nowrap">
                           <Link
                             href="/admin/inquiries"
-                            className="inline-flex items-center gap-1 text-xs text-[#ff6d29] hover:underline font-semibold"
+                            className="inline-flex items-center gap-1 text-xs text-[#F28C3C] hover:underline font-semibold"
                           >
                             <span>Details</span>
                             <span className="material-symbols-outlined text-xs">arrow_forward</span>
@@ -422,26 +422,26 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {recentCreators.map((creator, idx) => {
+                  {(recentCreators ?? []).map((creator, idx) => {
                     const st = (creator.status || 'New').toLowerCase();
                     const statusBadge =
                       st === 'new'
                         ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
                         : st === 'approved'
-                        ? 'bg-[#ff6d29]/20 text-[#ff6d29] border-[#ff6d29]/40'
+                        ? 'bg-[#F28C3C]/20 text-[#F28C3C] border-[#F28C3C]/40'
                         : st === 'reviewing'
                         ? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
                         : 'bg-white/10 text-white/70 border-white/20';
 
                     return (
-                      <tr key={`recent-creator-${creator.id ?? idx}-${idx}`} className="hover:bg-white/[0.02] transition-colors">
+                      <tr key={creator.id ?? `recent-creator-${idx}`} className="hover:bg-white/[0.02] transition-colors">
                         <td className="py-3.5 pr-3">
                           <div className="font-bold text-white">{creator.fullName}</div>
                           <div className="text-xs text-text-muted font-mono">{creator.mobileNumber}</div>
                         </td>
                         <td className="py-3.5 pr-3 text-xs text-white">
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/5 border border-white/10">
-                            <span className="material-symbols-outlined text-xs text-[#ff6d29]">phone_iphone</span>
+                            <span className="material-symbols-outlined text-xs text-[#F28C3C]">phone_iphone</span>
                             {creator.phoneModel}
                           </span>
                         </td>
@@ -480,10 +480,10 @@ export default function AdminDashboardPage() {
             <div className="space-y-2">
               <Link
                 href="/admin/inquiries"
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-white/[0.03] hover:bg-[#ff6d29]/15 border border-white/5 hover:border-[#ff6d29]/40 text-sm font-semibold text-white transition-all group"
+                className="w-full flex items-center justify-between p-3 rounded-xl bg-white/[0.03] hover:bg-[#F28C3C]/15 border border-white/5 hover:border-[#F28C3C]/40 text-sm font-semibold text-white transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[#ff6d29] text-base">inbox</span>
+                  <span className="material-symbols-outlined text-[#F28C3C] text-base">inbox</span>
                   <span>Customer Enquiries</span>
                 </div>
                 <span className="material-symbols-outlined text-xs text-text-muted group-hover:translate-x-1 transition-transform">
@@ -552,8 +552,8 @@ export default function AdminDashboardPage() {
               <p className="text-xs text-text-muted">No recent admin actions recorded.</p>
             ) : (
               <div className="space-y-3">
-                {activityLogs.map((log, idx) => (
-                  <div key={`${log.id || 'log'}-${idx}`} className="text-xs pb-3 border-b border-white/5 last:border-b-0">
+                {(activityLogs ?? []).map((log, idx) => (
+                  <div key={log.id ?? `log-${idx}`} className="text-xs pb-3 border-b border-white/5 last:border-b-0">
                     <div className="text-white font-medium">{log.action}</div>
                     <div className="text-text-muted text-[11px] mt-0.5">
                       {log.userEmail} · {new Date(log.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

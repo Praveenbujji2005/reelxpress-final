@@ -51,7 +51,7 @@ function AdminLayoutInner({ children }) {
   if (loading || (!isAuthenticated && !isAuthPage)) {
     return (
       <div className="min-h-screen bg-[#0c0a0c] flex flex-col items-center justify-center text-white">
-        <div className="w-12 h-12 rounded-full border-3 border-[#ff6d29] border-t-transparent animate-spin mb-4" />
+        <div className="w-12 h-12 rounded-full border-3 border-[#F28C3C] border-t-transparent animate-spin mb-4" />
         <p className="text-text-muted text-sm tracking-wide">Authenticating Admin Access...</p>
       </div>
     );
@@ -79,7 +79,7 @@ function AdminLayoutInner({ children }) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0c0a0c] text-white flex flex-col md:flex-row font-sans selection:bg-[#ff6d29] selection:text-white">
+    <div className="min-h-screen bg-[#0c0a0c] text-white flex flex-col md:flex-row font-sans selection:bg-[#F28C3C] selection:text-white">
       {/* =========================================================================
           DESKTOP SIDEBAR (Fixed Left Column)
          ========================================================================= */}
@@ -87,7 +87,7 @@ function AdminLayoutInner({ children }) {
         {/* Brand Header */}
         <div className="p-6 border-b border-white/10 flex items-center justify-between">
           <Link href="/admin" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-[#1c171c] border border-[#ff6d29]/40 flex items-center justify-center p-2 shadow-[0_0_15px_rgba(255,109,41,0.25)] group-hover:border-[#ff6d29] transition-all">
+            <div className="w-10 h-10 rounded-xl bg-[#1c171c] border border-[#F28C3C]/40 flex items-center justify-center p-2 shadow-[0_0_15px_rgba(242,140,60,0.25)] group-hover:border-[#F28C3C] transition-all">
               <img
                 src="/brand/icon-gold.png"
                 alt="ReelXpress"
@@ -97,7 +97,7 @@ function AdminLayoutInner({ children }) {
             <div>
               <div className="font-extrabold text-base tracking-tight text-white flex items-center gap-1.5">
                 <span>reelXpress</span>
-                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#ff6d29]/20 text-[#ff6d29] border border-[#ff6d29]/40">
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#F28C3C]/20 text-[#F28C3C] border border-[#F28C3C]/40">
                   ADMIN
                 </span>
               </div>
@@ -120,7 +120,7 @@ function AdminLayoutInner({ children }) {
                 href={item.href}
                 className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                   isActive
-                    ? 'bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white shadow-[0_0_20px_rgba(255,109,41,0.4)]'
+                    ? 'bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white shadow-[0_0_20px_rgba(242,140,60,0.4)]'
                     : 'text-white/70 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >
@@ -131,7 +131,7 @@ function AdminLayoutInner({ children }) {
                   <span>{item.label}</span>
                 </div>
                 {item.badge && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-white text-[#ff6d29] shadow-sm animate-pulse">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-white text-[#DC6A2C] shadow-sm animate-pulse">
                     {item.badge}
                   </span>
                 )}
@@ -161,7 +161,7 @@ function AdminLayoutInner({ children }) {
         <div className="p-4 border-t border-white/10 bg-[#0e0b0e]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-full bg-[#ff6d29]/20 border border-[#ff6d29]/40 flex items-center justify-center text-[#ff6d29] font-bold text-sm shrink-0">
+              <div className="w-9 h-9 rounded-full bg-[#F28C3C]/20 border border-[#F28C3C]/40 flex items-center justify-center text-[#F28C3C] font-bold text-sm shrink-0">
                 {user?.email?.charAt(0).toUpperCase() || 'A'}
               </div>
               <div className="min-w-0">
@@ -190,7 +190,7 @@ function AdminLayoutInner({ children }) {
          ========================================================================= */}
       <header className="md:hidden sticky top-0 z-50 bg-[#120f12]/95 backdrop-blur-md border-b border-white/10 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-[#1c171c] border border-[#ff6d29]/40 flex items-center justify-center p-1.5">
+          <div className="w-8 h-8 rounded-lg bg-[#1c171c] border border-[#F28C3C]/40 flex items-center justify-center p-1.5">
             <img src="/brand/icon-gold.png" alt="ReelXpress" className="w-full h-full object-contain" />
           </div>
           <span className="font-extrabold text-sm text-white">reelXpress Admin</span>
@@ -198,7 +198,7 @@ function AdminLayoutInner({ children }) {
 
         <div className="flex items-center gap-2">
           {newInquiriesCount > 0 && (
-            <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#ff6d29] text-white">
+            <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#F28C3C] text-white">
               {newInquiriesCount} new
             </span>
           )}
@@ -230,7 +230,7 @@ function AdminLayoutInner({ children }) {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-semibold ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#ff5722] to-[#ff6d29] text-white'
+                      ? 'bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white'
                       : 'text-white/80 hover:bg-white/10'
                   }`}
                 >
@@ -239,7 +239,7 @@ function AdminLayoutInner({ children }) {
                     <span>{item.label}</span>
                   </div>
                   {item.badge && (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-white text-[#ff6d29]">
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-white text-[#DC6A2C]">
                       {item.badge}
                     </span>
                   )}

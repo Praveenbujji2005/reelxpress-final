@@ -8,6 +8,7 @@ import ScrollProgress from '@/components/ui/ScrollProgress';
 import FloatingActionButtons from '@/components/ui/FloatingActionButtons';
 import WhatsAppWidget from '@/components/ui/WhatsAppWidget/WhatsAppWidget';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
+import JsonLd from '@/components/seo/JsonLd';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -46,7 +47,7 @@ export const metadata = {
   openGraph: {
     title: `${SITE_CONFIG.name} | ${SITE_CONFIG.tagline}`,
     description: SITE_CONFIG.description,
-    url: SITE_CONFIG.canonicalUrl,
+    url: '/',
     siteName: SITE_CONFIG.name,
     locale: 'en_IN',
     type: 'website',
@@ -99,12 +100,14 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
+        {/* Structured Data JSON-LD Schemas */}
+        <JsonLd />
       </head>
       <body
         className={`${plusJakartaSans.variable} ${cormorantGaramond.variable} bg-background text-text-primary antialiased selection:bg-primary-container selection:text-text-primary min-h-screen min-h-[100dvh] relative font-sans`}
         suppressHydrationWarning
       >
-        {/* Full-Screen ReelXpress Pro Loading Experience */}
+        {/* Full-Screen reelXpress Loading Experience */}
         <FullScreenLoader />
 
         <ErrorBoundary>

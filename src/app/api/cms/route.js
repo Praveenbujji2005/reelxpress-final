@@ -1,20 +1,20 @@
 import { NextResponse } from 'next/server';
 import {
-  getTestimonials,
   saveTestimonial,
   deleteTestimonial,
-  getPricingPlans,
   savePricingPlan,
   deletePricingPlan,
-  getFaqs,
   saveFaq,
   deleteFaq,
-  getHeroSlides,
   saveHeroSlide,
   deleteHeroSlide,
-  getActivityLogs,
   invalidateCmsCache,
 } from '@/lib/cmsServices';
+import {
+  getServerCmsItems,
+  saveServerCmsItem,
+  deleteServerCmsItem,
+} from '@/lib/serverCmsStore';
 
 const PUBLIC_CMS_TYPES = ['testimonials', 'reviews', 'pricing', 'faqs', 'hero', 'slides'];
 const ALL_CMS_TYPES = [...PUBLIC_CMS_TYPES, 'activity'];
@@ -34,32 +34,10 @@ export async function GET(request) {
       );
     }
 
-    let data = [];
-    switch (type) {
-      case 'testimonials':
-      case 'reviews':
-        data = await getTestimonials();
-        break;
-      case 'pricing':
-        data = await getPricingPlans();
-        break;
-      case 'faqs':
-        data = await getFaqs();
-        break;
-      case 'hero':
-      case 'slides':
-        data = await getHeroSlides();
-        break;
-      case 'activity':
-        data = await getActivityLogs();
-        break;
-      default:
-        data = [];
-    }
+    // Read persistently from server-side store
+    const data = getServerCmsItems(type);
 
-    // Set cache headers:
-    // Admin activity must NEVER be cached by public CDNs or shared caches
-    // Public CMS items use no-cache, no-store to prevent stale public content upon admin edit
+    // Set cache headers: no-cache, no-store to prevent stale public content upon admin edit
     const isActivity = type === 'activity';
     const cacheHeader = isActivity
       ? 'private, no-cache, no-store, must-revalidate'
@@ -105,24 +83,29 @@ export async function POST(request) {
       );
     }
 
-    let savedItem = null;
-    switch (normalizedType) {
-      case 'testimonials':
-      case 'reviews':
-        savedItem = await saveTestimonial(item, adminEmail);
-        break;
-      case 'pricing':
-        savedItem = await savePricingPlan(item, adminEmail);
-        break;
-      case 'faqs':
-        savedItem = await saveFaq(item, adminEmail);
-        break;
-      case 'hero':
-      case 'slides':
-        savedItem = await saveHeroSlide(item, adminEmail);
-        break;
-      default:
-        throw new Error(`Unsupported CMS type: ${normalizedType}`);
+    // 1. Reliably persist to server-side CMS store
+    const savedItem = saveServerCmsItem(normalizedType, item, adminEmail);
+
+    // 2. Also try persisting to Firestore in background (if configured & accessible)
+    try {
+      switch (normalizedType) {
+        case 'testimonials':
+        case 'reviews':
+          await saveTestimonial(item, adminEmail);
+          break;
+        case 'pricing':
+          await savePricingPlan(item, adminEmail);
+          break;
+        case 'faqs':
+          await saveFaq(item, adminEmail);
+          break;
+        case 'hero':
+        case 'slides':
+          await saveHeroSlide(item, adminEmail);
+          break;
+      }
+    } catch (fbErr) {
+      console.warn('[API /api/cms POST] Secondary Firestore sync notice:', fbErr?.message);
     }
 
     invalidateCmsCache(normalizedType);
@@ -167,23 +150,29 @@ export async function DELETE(request) {
       );
     }
 
-    switch (type) {
-      case 'testimonials':
-      case 'reviews':
-        await deleteTestimonial(id, adminEmail);
-        break;
-      case 'pricing':
-        await deletePricingPlan(id, adminEmail);
-        break;
-      case 'faqs':
-        await deleteFaq(id, adminEmail);
-        break;
-      case 'hero':
-      case 'slides':
-        await deleteHeroSlide(id, adminEmail);
-        break;
-      default:
-        throw new Error(`Unsupported CMS type: ${type}`);
+    // 1. Delete from persistent server-side store
+    deleteServerCmsItem(type, id, adminEmail);
+
+    // 2. Also attempt Firestore delete
+    try {
+      switch (type) {
+        case 'testimonials':
+        case 'reviews':
+          await deleteTestimonial(id, adminEmail);
+          break;
+        case 'pricing':
+          await deletePricingPlan(id, adminEmail);
+          break;
+        case 'faqs':
+          await deleteFaq(id, adminEmail);
+          break;
+        case 'hero':
+        case 'slides':
+          await deleteHeroSlide(id, adminEmail);
+          break;
+      }
+    } catch (fbErr) {
+      console.warn('[API /api/cms DELETE] Secondary Firestore delete notice:', fbErr?.message);
     }
 
     invalidateCmsCache(type);

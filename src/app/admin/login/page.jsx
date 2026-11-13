@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-[#0c0a0c] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden select-none">
       {/* Background Radial Glow */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[#ff6d29]/15 via-[#ff5722]/08 to-transparent blur-3xl pointer-events-none -z-10"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[#F28C3C]/15 via-[#DC6A2C]/08 to-transparent blur-3xl pointer-events-none -z-10"
         aria-hidden="true"
       />
 
@@ -66,7 +66,7 @@ export default function AdminLoginPage() {
         {/* Logo & Headline */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3 group mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#1c171c] border border-[#ff6d29]/50 flex items-center justify-center p-2.5 shadow-[0_0_25px_rgba(255,109,41,0.35)] group-hover:scale-105 transition-transform">
+            <div className="w-12 h-12 rounded-2xl bg-[#1c171c] border border-[#F28C3C]/50 flex items-center justify-center p-2.5 shadow-[0_0_25px_rgba(242,140,60,0.35)] group-hover:scale-105 transition-transform">
               <img src="/brand/icon-gold.png" alt="ReelXpress" className="w-full h-full object-contain" />
             </div>
           </Link>
@@ -112,7 +112,7 @@ export default function AdminLoginPage() {
                   placeholder="admin@reelxpress.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white placeholder:text-text-muted/40 focus:border-[#ff6d29] focus:outline-none focus:ring-2 focus:ring-[#ff6d29]/40 text-sm transition-all"
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white placeholder:text-text-muted/40 focus:border-[#F28C3C] focus:outline-none focus:ring-2 focus:ring-[#F28C3C]/40 text-sm transition-all"
                 />
                 <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 text-lg">
                   mail
@@ -128,7 +128,7 @@ export default function AdminLoginPage() {
                 </label>
                 <Link
                   href="/admin/forgot-password"
-                  className="text-xs text-[#ff6d29] hover:underline font-semibold"
+                  className="text-xs text-[#F28C3C] hover:underline font-semibold"
                 >
                   Forgot Password?
                 </Link>
@@ -142,7 +142,7 @@ export default function AdminLoginPage() {
                   placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-11 pr-12 py-3.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white placeholder:text-text-muted/40 focus:border-[#ff6d29] focus:outline-none focus:ring-2 focus:ring-[#ff6d29]/40 text-sm transition-all"
+                  className="w-full pl-11 pr-12 py-3.5 rounded-xl bg-[#0c0a0c] border border-white/15 text-white placeholder:text-text-muted/40 focus:border-[#F28C3C] focus:outline-none focus:ring-2 focus:ring-[#F28C3C]/40 text-sm transition-all"
                 />
                 <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 text-lg">
                   lock
@@ -165,7 +165,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isLocked || isSubmitting}
-              className="btn-shine-sweep btn-ripple w-full py-4 mt-2 rounded-xl bg-gradient-to-r from-[#eb5b1f] to-[#ff6d29] text-white font-bold text-sm uppercase tracking-wider shadow-[0_0_25px_rgba(255,109,41,0.5)] hover:shadow-[0_0_40px_rgba(255,109,41,0.85)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="btn-shine-sweep btn-ripple w-full py-4 mt-2 rounded-xl bg-gradient-to-r from-[#F28C3C] to-[#DC6A2C] text-white font-bold text-sm uppercase tracking-wider shadow-[0_0_25px_rgba(242,140,60,0.5)] hover:shadow-[0_0_40px_rgba(242,140,60,0.85)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
@@ -189,7 +189,7 @@ export default function AdminLoginPage() {
               disabled={isSubmitting}
               className="w-full py-2.5 px-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 text-xs font-semibold text-white/90 hover:text-white transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <span className="material-symbols-outlined text-sm text-[#ff6d29]">key</span>
+              <span className="material-symbols-outlined text-sm text-[#F28C3C]">key</span>
               <span>1-Click Demo Admin Login</span>
             </button>
           </div>
